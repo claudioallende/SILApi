@@ -31,6 +31,10 @@ namespace ResourceServer.Models
         public virtual string cuposnomrteent { get; set; }
         public virtual string cuposcuitdestinatario { get; set; }
         public virtual string cuposnomdestinatario { get; set; }
+        public virtual string cuposcuitrtecomercialprod { get; set; }
+        public virtual string cuposnomrtecomercialprod { get; set; }
+        public virtual string cuposcuitrtecomercialvtaprim { get; set; }
+        public virtual string cuposnomrtecomercialvtaprim { get; set; }
         public virtual string cuposcentro { get; set; }
         public virtual string cuposcentrodist { get; set; }
         public virtual string cuposcontrato { get; set; }
@@ -97,7 +101,11 @@ namespace ResourceServer.Models
                 Cuitrteent = this.cuposcuitrteent,
                 Nomrteent = this.cuposnomrteent,
                 Cuitdestinatario = this.cuposcuitdestinatario,
-                Nomdestinatario = this.cuposnomdestinatario
+                Nomdestinatario = this.cuposnomdestinatario,
+                CuitRteComercialProductor = this.cuposcuitrtecomercialprod,
+                NomRteComercialProductor = this.cuposnomrtecomercialprod,
+                CuitRteComercialVentaPrimaria = this.cuposcuitrtecomercialvtaprim,
+                NomRteComercialVentaPrimaria = this.cuposnomrtecomercialvtaprim
             };
         }
 

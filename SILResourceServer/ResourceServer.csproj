@@ -19,6 +19,8 @@
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -136,11 +138,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Oracle.DataAccess, Version=2.112.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
-      <HintPath>packages\OracleLibrary.2.0.1\lib\net45\Oracle.DataAccess.dll</HintPath>
+      <HintPath>packages\OracleLibrary.3.0.0\lib\net45\Oracle.DataAccess.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OracleLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\OracleLibrary.2.0.1\lib\net45\OracleLibrary.dll</HintPath>
+      <HintPath>packages\OracleLibrary.3.0.0\lib\net45\OracleLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
@@ -240,6 +242,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Mappings\CuposPuertoSTOP.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\RelacionPuertoSILPuetoSTOP.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Mappings\RelacionGranoSILGranoSTOP.mpg.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -354,6 +362,7 @@
     <Compile Include="Controllers\MediadorSTOPandSILController.cs" />
     <Compile Include="Controllers\ProcesoController.cs" />
     <Compile Include="Controllers\ProtectedController.cs" />
+    <Compile Include="Controllers\PuertosSTOPController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -405,6 +414,7 @@
     <Compile Include="Models\CuposCentroPorPuerto.cs" />
     <Compile Include="Models\CuposDist.cs" />
     <Compile Include="Models\CuposGranoSTOP.cs" />
+    <Compile Include="Models\CuposPuertoSTOP.cs" />
     <Compile Include="Models\Cupo\CYO\EstadoAnulado.cs" />
     <Compile Include="Models\Cupo\CYO\EstadoCreado.cs" />
     <Compile Include="Models\Cupo\CYO\EstadoDistribuidoConHijoDistribuido.cs" />
@@ -434,6 +444,8 @@
     <Compile Include="Models\DataAccess\CuposAgrupadosStore.cs" />
     <Compile Include="Models\DataAccess\CuposDistStore.cs" />
     <Compile Include="Models\DataAccess\CuposGranoSTOPStore.cs" />
+    <Compile Include="Models\DataAccess\CuposPuertoSTOPStore.cs" />
+    <Compile Include="Models\DataAccess\ICuposPuertoSTOPStore.cs" />
     <Compile Include="Models\DataAccess\ICuposGranoSTOPStore.cs" />
     <Compile Include="Models\DataAccess\CuposStore.cs" />
     <Compile Include="Models\DataAccess\DistribucionStore.cs" />
@@ -443,13 +455,16 @@
     <Compile Include="Models\DataAccess\EstadoProcesoStore.cs" />
     <Compile Include="Models\DataAccess\ICupoInStopAndNotSILStore.cs" />
     <Compile Include="Models\DataAccess\ICentroPorPuertoStore.cs" />
+    <Compile Include="Models\DataAccess\IRelacionPuertoSILPuertoSTOPStore.cs" />
     <Compile Include="Models\DataAccess\IRelacionGranoSILGranoSTOPStore.cs" />
     <Compile Include="Models\DataAccess\ISessionProvider.cs" />
     <Compile Include="Models\DataAccess\ProcesoStore.cs" />
     <Compile Include="Models\DataAccess\RelacionGranoSILGranoSTOPStore.cs" />
+    <Compile Include="Models\DataAccess\RelacionPuertoSILPuertoSTOPStore.cs" />
     <Compile Include="Models\DataAccess\TbCoperStore.cs" />
     <Compile Include="Models\DateTimeExtensions.cs" />
     <Compile Include="Models\DetalleCupo.cs" />
+    <Compile Include="Models\DTO\RelacionPuertoSILPuertoSTOPDTO.cs" />
     <Compile Include="Models\Email\EmailAnulacionCupos.cs" />
     <Compile Include="Models\Email\EmailDistribucionMultiplesPdfs.cs" />
     <Compile Include="Models\Email\EstilosEmail.cs" />
@@ -587,6 +602,7 @@
     <Compile Include="Models\Puerto.cs" />
     <Compile Include="Models\RegistroDistribucionViewModel.cs" />
     <Compile Include="Models\RelacionDistribucionCupos.cs" />
+    <Compile Include="Models\RelacionPuertoSILPuertoSTOP.cs" />
     <Compile Include="Models\ServerPathProvider.cs" />
     <Compile Include="Models\ServicioCentroPorPuerto.cs" />
     <Compile Include="Models\ServicioCliente.cs" />
@@ -602,6 +618,8 @@
     <Compile Include="Models\ServicioInformarPorEmail.cs" />
     <Compile Include="Models\ServicioMediadorSTOPandSIL.cs" />
     <Compile Include="Models\ServicioProceso.cs" />
+    <Compile Include="Models\ServicioPuertoStop.cs" />
+    <Compile Include="Models\ServicioRelacionPuertoSILPuertoSTOP.cs" />
     <Compile Include="Models\ServicioRelacionGranoSILGranoSTOP.cs" />
     <Compile Include="Models\ServicioVarios.cs" />
     <Compile Include="Models\TablaIndexViewModel.cs" />
@@ -646,6 +664,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\Pdf\Files\" />
+    <Folder Include="Views\PuertosSTOP\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -14,6 +14,10 @@ namespace ResourceServer.Models
         {
             this.Store = s;
         }
+        public IList<ICuenta> GetAll()
+        {
+            return Store.GetAll();
+        }
         public IList<ICuenta> Get(string Text)
         {
             if (EsNumero(Text))

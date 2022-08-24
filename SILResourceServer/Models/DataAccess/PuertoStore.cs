@@ -332,5 +332,10 @@ namespace ResourceServer.Models.DataAccess
         {
             throw new NotImplementedException();
         }
+
+        public IList<ICuenta> GetAll()
+        {
+            return FindAll().ToList<ICuenta>();
+        }
     }
 }

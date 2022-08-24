@@ -9,6 +9,7 @@ namespace ResourceServer.Models.DataAccess
 {
     public interface ICuentaStore
     {
+        IList<ICuenta> GetAll();
         IList<ICuenta> FindStartsWithCuentaLimit(long cuenta, int limit);
         IList<ICuenta> FindStartsWithCuentaLimit(long cuenta, ISession session, int limit);
         IList<ICuenta> FindStartsWithIgnoreCaseNombreLimit(string nombre, int limit); 

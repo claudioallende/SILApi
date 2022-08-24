@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="RelacionPuertoSILPuertoSTOP" table="RelacionPuertoSilPuertoStop">
+    <cache usage="read-write"/>
+    <id name="Id">
+        <column name="Id"/>
+    </id>
+    <property name="NroPuertoSIL" column="NROPUERTOSIL"/>
+    <property name="NroPuertoSTOP" column="NROPUERTOSTOP"/>          
+    <property name="ValorPorDefecto">
+      <column name="VALORPORDEFECTO"/>
+    </property>
+  </class>
+</hibernate-mapping>

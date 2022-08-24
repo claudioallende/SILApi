@@ -129,5 +129,20 @@ namespace ResourceServer.Controllers
             var servicio = new ServicioCuenta(new PuertoStore());
             return Request.CreateResponse(HttpStatusCode.OK, servicio.Get(Texto));
         }
+
+        [HttpPost]
+        [Route("api/Cuenta/GetPuertoStopFromNroCuentaOrNombre")]
+        public HttpResponseMessage GetPuertoStopFromNroCuentaOrNombre([FromBody] string Texto)
+        {
+            var servicio = new ServicioCuenta(new CuposPuertoSTOPStore());
+            return Request.CreateResponse(HttpStatusCode.OK, servicio.Get(Texto));
+        }
+
+        [Route("api/Cuenta/GetPuertos")]
+        public HttpResponseMessage GetPuertos()
+        {
+            var servicio = new ServicioCuenta(new PuertoStore());
+            return Request.CreateResponse(HttpStatusCode.OK, servicio.GetAll());
+        }
     }
 }

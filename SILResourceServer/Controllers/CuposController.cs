@@ -19,7 +19,6 @@ using Newtonsoft.Json.Linq;
 
 namespace ResourceServer.Controllers
 {
-    [Authorize]
     [ExceptionHandling]
     public class CuposController : ApiController
     {

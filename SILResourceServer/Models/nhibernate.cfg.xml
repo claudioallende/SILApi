@@ -8,8 +8,8 @@
       NHibernate.Driver.OracleDataClientDriver
     </property>
     <property name="connection.connection_string">
-      Data Source=ACA_ROSARIO;User Id=corretaje; Password=bitss79; Pooling=true; Min Pool Size=5; Incr Pool Size=5; Max Pool Size=50; Connection Timeout=60; Connection Lifetime= 30;
-    <!--Data Source=ROSLAB;User Id=cuposcorretaje; Password=bitss79; Pooling=true; Min Pool Size=5; Incr Pool Size=5; Max Pool Size=50; Connection Timeout=60; Connection Lifetime= 30;-->
+		Data Source=ACA_ROSARIO;User Id=cuposcorretaje; Password=bitss79; Pooling=true; Min Pool Size=5; Incr Pool Size=5; Max Pool Size=50; Connection Timeout=60; Connection Lifetime= 30;
+		<!--Data Source=ROSLAB;User Id=cuposcorretaje; Password=bitss79; Pooling=true; Min Pool Size=5; Incr Pool Size=5; Max Pool Size=50; Connection Timeout=60; Connection Lifetime= 30;-->
   </property>
     <property name="dialect">
       NHibernate.Dialect.Oracle10gDialect

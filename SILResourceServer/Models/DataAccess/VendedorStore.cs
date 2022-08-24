@@ -296,5 +296,10 @@ namespace ResourceServer.Models.DataAccess
         {
             throw new NotImplementedException();
         }
+
+        public IList<ICuenta> GetAll()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
