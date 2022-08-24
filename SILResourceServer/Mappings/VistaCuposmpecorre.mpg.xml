@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="VistaCuposmpecorre" table="vista_cuposmpecorre">
+    <cache usage="read-write"/>
+    <composite-id>
+      <key-property name="Producto"/>
+      <key-property name="Compcta"/>
+      <key-property name="Centro"/>
+      <key-property name="Vendcta"/>
+    </composite-id>
+    <property name="Empresa" />
+    <property name="Numcorrel" />
+    <property name="Carporte" />
+    <!--<property name="Compcta" />-->
+    <property name="Cuitcomp" />
+    <property name="Comprador" />
+    <!--<property name="Vendcta" />-->
+    <property name="Cuitvend" />
+    <property name="Vendedor" />
+    <!--<property name="Producto" />-->
+    <property name="Nomgrano" />
+    <property name="Ctadestino" />
+    <property name="Destino" />
+    <property name="Zonainfluencia" />
+    <property name="Codcentro" />
+    <!--<property name="Centro" />-->
+    <property name="Tipcta" />
+    <property name="Opera" />
+    <property name="Pactado" />
+    <property name="Pendentrega" />
+    <property name="Fijado" />
+    <property name="Liquidado" />
+    <property name="Pendaplicar" />
+    <property name="Transito" />
+    <property name="Cupotorgado" />
+  </class>
+</hibernate-mapping>
+
+

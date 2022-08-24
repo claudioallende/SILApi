@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="TbCoper" table="tb_coper">
+    <cache usage="read-write"/>
+    <id name="Codigo">
+      <column name="Codigo"/>
+    </id>
+    <property name="Descripcion" />
+  </class>
+</hibernate-mapping>

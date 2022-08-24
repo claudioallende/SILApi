@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models.Auditoria">
+  <class name="CupAuditHijo" table="CupAuditHijo">
+    <cache usage="read-write"/>
+    <id name="Uvalue" />
+    <property name="Campo" />
+    <property name="Vnew" />
+    <property name="Vold" />
+    <property name="UvaluePadre" />
+  </class>
+</hibernate-mapping>

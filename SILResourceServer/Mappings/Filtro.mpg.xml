@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models.Filtro">
+  <class name="FiltroDistribucion" table="FILTRODISTRIBUCION">
+    <cache usage="read-write"/>
+    <composite-id>
+      <key-property name="CuentaComprador" column="Compcta"/>
+      <key-property name="CuentaVendedor" column="vendcta"/>
+      <key-property name="CuentaPuerto" column="Puertocta"/>
+      <key-property name="CodigoGrano" column="grano"/>
+    </composite-id>
+    <property name="EntregaDesde" />
+    <property name="EntregaHasta" />
+    <property name="CosechaDesde" />
+    <property name="CosechaHasta" />
+    <property name="Centro" />
+    <property name="Fecha" />
+    <property name="Hora" />
+    <property name="Uvdist" />
+  </class>
+</hibernate-mapping>

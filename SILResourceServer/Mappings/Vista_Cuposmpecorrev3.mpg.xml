@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="ResourceServer" namespace="ResourceServer.Models.Contratos">
+  <class name="Vista_CuposMpeCorreV3" table="VISTA_CUPOSMPECORREV3">
+    <cache usage="read-write"/>
+    <composite-id>
+      <key-property name="Compcta" column="compcta"/>
+      <key-property name="Vendcta" column="Vendcta"/>
+      <key-property name="Cosecha" column="Cosecha"/>
+      <key-property name="Ctadestino" column="Ctadestino"/>
+      <key-property name="Producto" column="Producto"/>
+      <key-property name="Codcentro" column="Codcentro"/>
+    </composite-id>
+    <property name="Empresa" />
+    <property name="Numcorrel" />
+    <property name="Carporte" />
+    <property name="Cuitcomp" />
+    <property name="Comprador" />
+    <property name="Cuitvend" />
+    <property name="Vendedor" />
+    <property name="Nomgrano" />
+    <property name="Destino" />
+    <property name="Zonainfluencia" />
+    <property name="Centro" />
+    <property name="Tipcta" />
+    <property name="Opera" />
+    <property name="Pactado" />
+    <property name="Pendentrega" />
+    <property name="Fijado" />
+    <property name="Liquidado" />
+    <property name="Pendaplicar" />
+    <property name="Transito" />
+    <property name="Cupotorgado" />
+    <property name="Fecha" />
+  </class>
+</hibernate-mapping>
+

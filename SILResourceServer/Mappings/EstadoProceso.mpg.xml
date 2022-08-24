@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="EstadoProceso" table="EstadoProceso">
+    <cache usage="read-write"/>
+    <id name="Id">
+      <column name="Id"/>
+      <generator class="sequence-identity">
+        <param name="sequence">SEC_PROCESO</param>
+      </generator>
+    </id>
+    <property name="IdProceso">
+      <column name="Proceso"/>
+    </property>
+    <property name="FechaExec" />
+    <property name="Estado" />
+    <property name="ErrorDetalle" />
+    <property name="ErrorDetalExec" />
+  </class>
+</hibernate-mapping>

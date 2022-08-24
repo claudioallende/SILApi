@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="RelacionGranoSILGranoSTOPCompleta" table="RelacionGranoSILGranoSTOP">
+    <cache usage="read-write"/>
+    <id name="Id">
+        <column name="Id"/>
+    </id>
+    <property name="NroGranoSIL" column="NROGRANOSIL"/>
+    <property name="NroGranoSTOP" column="NROGRANOSTOP"/>          
+    <property name="ValorPorDefecto">
+      <column name="VALORPORDEFECTO"/>
+    </property>
+  </class>
+</hibernate-mapping>

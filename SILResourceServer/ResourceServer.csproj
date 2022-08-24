@@ -1,0 +1,682 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6ADE0E36-8959-4B00-B1CE-35D6FBA2EEBF}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ResourceServer</RootNamespace>
+    <AssemblyName>ResourceServer</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort>44305</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IdentityModel.Owin.ClaimsTransformation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IdentityModel.Owin.ClaimsTransformation.1.0.0\lib\net45\IdentityModel.Owin.ClaimsTransformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IdentityServer3.AccessTokenValidation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IdentityServer3.AccessTokenValidation.2.1.0\lib\net45\IdentityServer3.AccessTokenValidation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=5.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.5.5.0\lib\net461\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=5.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.5.5.0\lib\net461\Microsoft.IdentityModel.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocol.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocol.Extensions.1.0.0\lib\net45\Microsoft.IdentityModel.Protocol.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.5.0\lib\net461\Microsoft.IdentityModel.Tokens.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Cors, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Cors.3.0.0\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Jwt, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Jwt.3.0.1\lib\net45\Microsoft.Owin.Security.Jwt.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OpenIdConnect, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OpenIdConnect.3.0.1\lib\net45\Microsoft.Owin.Security.OpenIdConnect.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NHibernate, Version=5.1.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Oracle.DataAccess, Version=2.112.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
+      <HintPath>packages\OracleLibrary.2.0.1\lib\net45\Oracle.DataAccess.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OracleLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OracleLibrary.2.0.1\lib\net45\OracleLibrary.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Remotion.Linq, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.2.1.2\lib\net45\Remotion.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.EagerFetching.2.1.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.20622.1351, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.2.206221351\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encodings.Web, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.4.5.0\lib\netstandard1.0\System.Text.Encodings.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Cors, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.0.0\lib\net45\System.Web.Cors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.DataVisualization" />
+    <Reference Include="System.Web.DataVisualization.Design" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.2\lib\net45\System.Web.Http.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Global.asax" />
+    <Content Include="Mappings\RelacionGranoSILGranoSTOP.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CuposGranoSTOP.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CuposCentroPorPuerto.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\Centro.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\Comprador.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CupAudit.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CupAuditHijo.mpg.xml" />
+    <Content Include="Mappings\Cupos.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CuposAgrupadosPdf.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CuposAgrupadosPdfCyo.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CuposAgrupAll.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CuposAgrupCompPuerto.mpg.xml" />
+    <Content Include="Mappings\CuposAgrupCompPuertoCyO.mpg.xml" />
+    <Content Include="Mappings\CuposAgrupCyO.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CuposAgrupVendedor.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CuposCuit.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\CuposDist.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\DTabla.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\Proceso.mpg.xml" />
+    <Content Include="Mappings\EstadoProceso.mpg.xml" />
+    <Content Include="Mappings\Filtro.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\Grano.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\Puerto.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\ReporteClienteSil.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\stopnocorre.mpg.xml" />
+    <Content Include="Mappings\TbCoper.mpg.xml" />
+    <Content Include="Mappings\User.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\Vendedor.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\ViewInterfazSil.mpg.xml" />
+    <Content Include="Mappings\VistaCtoCorre.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\VistaCuposDistribuidos.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\VistaCuposmpecorre.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\Vista_Cuposmpecorrev3.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Mappings\Vista_estadoalfa.mpg.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Models\Error\Log.txt" />
+    <Content Include="Models\Images\PdfImages\EncabezadoPdf.jpg" />
+    <Content Include="Models\Images\PdfImages\PiePdf.jpg" />
+    <None Include="Models\nhibernate.cfg.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Models\nhibernateacabsas.cfg.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AuditoriaController.cs" />
+    <Compile Include="Controllers\ClienteController.cs" />
+    <Compile Include="Controllers\ConfiguracionController.cs" />
+    <Compile Include="Controllers\ContratoController.cs" />
+    <Compile Include="Controllers\CuentaController.cs" />
+    <Compile Include="Controllers\CupoController.cs" />
+    <Compile Include="Controllers\CuposController.cs" />
+    <Compile Include="Controllers\DatosController.cs" />
+    <Compile Include="Controllers\GranosSTOPController.cs" />
+    <Compile Include="Controllers\MediadorSTOPandSILController.cs" />
+    <Compile Include="Controllers\ProcesoController.cs" />
+    <Compile Include="Controllers\ProtectedController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="ListToHtmlTable.cs" />
+    <Compile Include="Models\AccountViewModel.cs" />
+    <Compile Include="Models\AgrupamientoCupos.cs" />
+    <Compile Include="Models\AlfanumericosDia.cs" />
+    <Compile Include="Models\AtributosValidacion\ClaimsAuthorizeAttribute.cs" />
+    <Compile Include="Models\AtributosValidacion\ExceptionHandlingAttribute.cs" />
+    <Compile Include="Models\AtributosValidacion\NotEqualAttribute.cs" />
+    <Compile Include="Models\Auditoria\AuditoriaCuposCorre.cs" />
+    <Compile Include="Models\Auditoria\AuditoriaCuposCorreViewModel.cs" />
+    <Compile Include="Models\Auditoria\CupAudit.cs" />
+    <Compile Include="Models\Auditoria\CupAuditHijo.cs" />
+    <Compile Include="Models\Auditoria\ServicioAuditoria.cs" />
+    <Compile Include="Models\Authentication\Permiso.cs" />
+    <Compile Include="Models\Authentication\Token.cs" />
+    <Compile Include="Models\Centro.cs" />
+    <Compile Include="Models\ClaimsUtil.cs" />
+    <Compile Include="Models\ClaveCupo.cs" />
+    <Compile Include="Models\Cliente\ConjuntoCuposAgrupadosPorVendedor.cs" />
+    <Compile Include="Models\Cliente\ReporteViewModel.cs" />
+    <Compile Include="Models\Cliente\ServicioReporteCliente.cs" />
+    <Compile Include="Models\CodigosAlfanumericos.cs" />
+    <Compile Include="Models\Comprador.cs" />
+    <Compile Include="Models\Configuracion\AppSettingConfig.cs" />
+    <Compile Include="Models\Configuracion\CuentaCYOViewModel.cs" />
+    <Compile Include="Models\Configuracion\EmailViewModel.cs" />
+    <Compile Include="Models\Configuracion\PanelViewModel.cs" />
+    <Compile Include="Models\Configuracion\ServicioConfiguracionCuentaCYO.cs" />
+    <Compile Include="Models\Configuracion\ServicioConfiguracionEmail.cs" />
+    <Compile Include="Models\Consignacion.cs" />
+    <Compile Include="Models\Contratos\ServicioContratos.cs" />
+    <Compile Include="Models\Contratos\Vista_CuposMpeCorreV3.cs" />
+    <Compile Include="Models\Counter.cs" />
+    <Compile Include="Models\CuentaViewModel.cs" />
+    <Compile Include="Models\Cuerpo.cs" />
+    <Compile Include="Models\Cuit.cs" />
+    <Compile Include="Models\CupoCuentaYOrden.cs" />
+    <Compile Include="Models\CupoInStopAndNotSIL.cs" />
+    <Compile Include="Models\Cupos.cs" />
+    <Compile Include="Models\CuposAgrupados.cs" />
+    <Compile Include="Models\CuposAgrupadosCyo.cs" />
+    <Compile Include="Models\CuposAgrupadosDetalle.cs" />
+    <Compile Include="Models\CuposAgrupadosDetalleCyo.cs" />
+    <Compile Include="Models\CuposAgrupadosPdf.cs" />
+    <Compile Include="Models\CuposAgrupadosPdfCyo.cs" />
+    <Compile Include="Models\CuposAgrupadosPorVendedor.cs" />
+    <Compile Include="Models\CuposCentroPorPuerto.cs" />
+    <Compile Include="Models\CuposDist.cs" />
+    <Compile Include="Models\CuposGranoSTOP.cs" />
+    <Compile Include="Models\Cupo\CYO\EstadoAnulado.cs" />
+    <Compile Include="Models\Cupo\CYO\EstadoCreado.cs" />
+    <Compile Include="Models\Cupo\CYO\EstadoDistribuidoConHijoDistribuido.cs" />
+    <Compile Include="Models\Cupo\CYO\EstadoDistribuidoPendienteDistribuirHijo.cs" />
+    <Compile Include="Models\Cupo\CYO\EstadoPendienteDistribuirConHijoPendienteInformar.cs" />
+    <Compile Include="Models\Cupo\EstadoAnulado.cs" />
+    <Compile Include="Models\Cupo\EstadoAnuladoPendienteInformar.cs" />
+    <Compile Include="Models\Cupo\EstadoCreado.cs" />
+    <Compile Include="Models\Cupo\EstadoCupo.cs" />
+    <Compile Include="Models\Cupo\EstadoDistribucionAnuladaInformada.cs" />
+    <Compile Include="Models\Cupo\EstadoDistribucionAnuladaPendienteInformar.cs" />
+    <Compile Include="Models\Cupo\EstadoDistribuidoInformado.cs" />
+    <Compile Include="Models\Cupo\EstadoDistribuidoPendienteInformar.cs" />
+    <Compile Include="Models\Cupo\InformacionModificacionEstado.cs" />
+    <Compile Include="Models\Cupo\TransicionDeEstado.cs" />
+    <Compile Include="Models\Cupo\TransicionesDeEstadoFactory.cs" />
+    <Compile Include="Models\DataAccess\CentroPorPuertoStore.cs" />
+    <Compile Include="Models\DataAccess\CentroStore.cs" />
+    <Compile Include="Models\DataAccess\CompradorStore.cs" />
+    <Compile Include="Models\DataAccess\ConsignacionStore.cs" />
+    <Compile Include="Models\DataAccess\CuitStore.cs" />
+    <Compile Include="Models\DataAccess\CupAuditHijoStore.cs" />
+    <Compile Include="Models\DataAccess\CupAuditStore.cs" />
+    <Compile Include="Models\DataAccess\CupoInStopAndNotSILStore.cs" />
+    <Compile Include="Models\DataAccess\CuposAgrupadosPdfStore.cs" />
+    <Compile Include="Models\DataAccess\CuposAgrupadosPorVendedorStore.cs" />
+    <Compile Include="Models\DataAccess\CuposAgrupadosStore.cs" />
+    <Compile Include="Models\DataAccess\CuposDistStore.cs" />
+    <Compile Include="Models\DataAccess\CuposGranoSTOPStore.cs" />
+    <Compile Include="Models\DataAccess\ICuposGranoSTOPStore.cs" />
+    <Compile Include="Models\DataAccess\CuposStore.cs" />
+    <Compile Include="Models\DataAccess\DistribucionStore.cs" />
+    <Compile Include="Models\DataAccess\DTablaStore.cs" />
+    <Compile Include="Models\DataAccess\EncabezadoStore.cs" />
+    <Compile Include="Models\DataAccess\EstadoAlfanumericoStore.cs" />
+    <Compile Include="Models\DataAccess\EstadoProcesoStore.cs" />
+    <Compile Include="Models\DataAccess\ICupoInStopAndNotSILStore.cs" />
+    <Compile Include="Models\DataAccess\ICentroPorPuertoStore.cs" />
+    <Compile Include="Models\DataAccess\IRelacionGranoSILGranoSTOPStore.cs" />
+    <Compile Include="Models\DataAccess\ISessionProvider.cs" />
+    <Compile Include="Models\DataAccess\ProcesoStore.cs" />
+    <Compile Include="Models\DataAccess\RelacionGranoSILGranoSTOPStore.cs" />
+    <Compile Include="Models\DataAccess\TbCoperStore.cs" />
+    <Compile Include="Models\DateTimeExtensions.cs" />
+    <Compile Include="Models\DetalleCupo.cs" />
+    <Compile Include="Models\Email\EmailAnulacionCupos.cs" />
+    <Compile Include="Models\Email\EmailDistribucionMultiplesPdfs.cs" />
+    <Compile Include="Models\Email\EstilosEmail.cs" />
+    <Compile Include="Models\Email\ServicioInformarAVendedor.cs" />
+    <Compile Include="Models\Email\ServicioInformarCupos.cs" />
+    <Compile Include="Models\Email\ServicioInformarCuposPdf.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Error\Exceptions\RegistroDuplicadoException.cs" />
+    <Compile Include="Models\Identity\IClaimsContext.cs" />
+    <Compile Include="Models\RelacionGranoSILGranoSTOPCompleta.cs" />
+    <Compile Include="Models\DetalleDeIncumplimientoCupo.cs" />
+    <Compile Include="Models\DTO\CentroPorPuertoDTO.cs" />
+    <Compile Include="Models\DTO\CuposPorDiaDTO.cs" />
+    <Compile Include="Models\DTO\NuevoCupoViewModelDTO.cs" />
+    <Compile Include="Models\DTO\RelacionGranoSILGranoSTOPDTO.cs" />
+    <Compile Include="Models\Email\DominioEImagen.cs" />
+    <Compile Include="Models\Email\EmailChart.cs" />
+    <Compile Include="Models\Email\EmailDetalleDeIncumplimientoCTG.cs" />
+    <Compile Include="Models\Email\IMailInformation.cs" />
+    <Compile Include="Models\Email\InfoDeCupoPendDeCTG.cs" />
+    <Compile Include="Models\Email\InformarDetalleDeIncumplimientoCTGPorMail.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Email\MailDTO.cs" />
+    <Compile Include="Models\Email\MailIncumplimientoGrano.cs" />
+    <Compile Include="Models\Email\MailIncumplimientoVendedor.cs" />
+    <Compile Include="Models\Email\PdfCupos.cs" />
+    <Compile Include="Models\Error\Exceptions\CodigosAlfanumericoDuplicadosException.cs" />
+    <Compile Include="Models\Error\Exceptions\CupoBloqueadoParaDistribuirException.cs" />
+    <Compile Include="Models\Error\Exceptions\CuposNoAnulablesException.cs" />
+    <Compile Include="Models\ICupo.cs" />
+    <Compile Include="Models\IndexCupoAutorizarViewModel.cs" />
+    <Compile Include="Models\Proceso.cs" />
+    <Compile Include="Models\EstadoProceso.cs" />
+    <Compile Include="Models\DataAccess\FiltroStore.cs" />
+    <Compile Include="Models\DataAccess\GranoStore.cs" />
+    <Compile Include="Models\DataAccess\HibernateUtil.cs" />
+    <Compile Include="Models\DataAccess\ICentroStore.cs" />
+    <Compile Include="Models\DataAccess\ICompradorStore.cs" />
+    <Compile Include="Models\DataAccess\IConsignacionStore.cs" />
+    <Compile Include="Models\DataAccess\ICuentaStore.cs" />
+    <Compile Include="Models\DataAccess\ICuitStore.cs" />
+    <Compile Include="Models\DataAccess\ICuposAgrupadosPdfStore.cs" />
+    <Compile Include="Models\DataAccess\ICuposAgrupadosPorVendedorStore.cs" />
+    <Compile Include="Models\DataAccess\ICuposAgrupadosStore.cs" />
+    <Compile Include="Models\DataAccess\ICuposDistStore.cs" />
+    <Compile Include="Models\DataAccess\ICuposStore.cs" />
+    <Compile Include="Models\DataAccess\IDistribucionStore.cs" />
+    <Compile Include="Models\DataAccess\IDTablaStore.cs" />
+    <Compile Include="Models\DataAccess\IEncabezadoStore.cs" />
+    <Compile Include="Models\DataAccess\IFiltroStore.cs" />
+    <Compile Include="Models\DataAccess\IGranoStore.cs" />
+    <Compile Include="Models\DataAccess\IPuertoStore.cs" />
+    <Compile Include="Models\DataAccess\IVendedorStore.cs" />
+    <Compile Include="Models\DataAccess\IVistaCtoCorreStore.cs" />
+    <Compile Include="Models\DataAccess\IVistaCuposDistribuidosStore.cs" />
+    <Compile Include="Models\DataAccess\PuertoStore.cs" />
+    <Compile Include="Models\DataAccess\ReporteClienteStore.cs" />
+    <Compile Include="Models\DataAccess\VendedorStore.cs" />
+    <Compile Include="Models\DataAccess\VistaCtoCorreStore.cs" />
+    <Compile Include="Models\DataAccess\VistaCuposDistribuidosStore.cs" />
+    <Compile Include="Models\DataAccess\VistaCuposmpecorreStore.cs" />
+    <Compile Include="Models\DataAccess\Vista_Cuposmpecorrev3Store.cs" />
+    <Compile Include="Models\DateUtils.cs" />
+    <Compile Include="Models\DetalleCuposCliente.cs" />
+    <Compile Include="Models\DetalleCupoViewModel.cs" />
+    <Compile Include="Models\DistribucionDisponible.cs" />
+    <Compile Include="Models\DistribuirCupoViewModel.cs" />
+    <Compile Include="Models\DTabla.cs" />
+    <Compile Include="Models\DTO\DTOs.cs" />
+    <Compile Include="Models\EditarCupoViewModel.cs" />
+    <Compile Include="Models\Email\EmailAnulacion.cs" />
+    <Compile Include="Models\Email\EmailDistribucion.cs" />
+    <Compile Include="Models\Email\EmailDistribucionConHorario.cs" />
+    <Compile Include="Models\Email\EmailInformado.cs" />
+    <Compile Include="Models\Email\EmailPendienteDeCTG.cs" />
+    <Compile Include="Models\Email\ServicioInformarCuposPendienteDeCTG.cs" />
+    <Compile Include="Models\Email\InformarAnulacionPorMail.cs" />
+    <Compile Include="Models\Email\InformarDistribucionPorMail.cs" />
+    <Compile Include="Models\Email\InformarPendienteDeCTGPorMail.cs" />
+    <Compile Include="Models\Email\MailPdf.cs" />
+    <Compile Include="Models\Email\ServiceEmail.cs" />
+    <Compile Include="Models\Email\ServiceEmailEstadoCupo.cs" />
+    <Compile Include="Models\Email\ServicioInformar.cs" />
+    <Compile Include="Models\Encabezado.cs" />
+    <Compile Include="Models\Error\ErrorLog.cs" />
+    <Compile Include="Models\Error\Exceptions\AsignacionDeCentrosVacioException.cs" />
+    <Compile Include="Models\Error\Exceptions\BusinessException.cs" />
+    <Compile Include="Models\Error\Exceptions\CodigoAlfanumericoDuplicadoException.cs" />
+    <Compile Include="Models\Error\Exceptions\CupoSinDistribucionException.cs" />
+    <Compile Include="Models\Error\Exceptions\CuposPorConsignacionExcedidosException.cs" />
+    <Compile Include="Models\Error\Exceptions\ErrorEnEnvioDeEmailException.cs" />
+    <Compile Include="Models\Error\Exceptions\InsuficienteCantidadCuposPuertoSeleccionado.cs" />
+    <Compile Include="Models\Error\Exceptions\NeedEmailException.cs" />
+    <Compile Include="Models\Error\Exceptions\NoSeGeneraronPdfsException.cs" />
+    <Compile Include="Models\Error\Exceptions\RechazoDeServidorAutenticacionException.cs" />
+    <Compile Include="Models\Error\Exceptions\ValidacionCupoException.cs" />
+    <Compile Include="Models\EstadoAlfanumericoModel.cs" />
+    <Compile Include="Models\FiltroCentro.cs" />
+    <Compile Include="Models\Filtro\FiltroDistribucion.cs" />
+    <Compile Include="Models\Filtro\FiltroPorDefecto.cs" />
+    <Compile Include="Models\Filtro\GranoCompradorPuerto.cs" />
+    <Compile Include="Models\Filtro\ServicioFiltro.cs" />
+    <Compile Include="Models\GenerarYObtenerCodigosAlfanumericos.cs" />
+    <Compile Include="Models\Grano.cs" />
+    <Compile Include="Models\ICuenta.cs" />
+    <Compile Include="Models\ICuposAgrupados.cs" />
+    <Compile Include="Models\ICuposAgrupadosDetalle.cs" />
+    <Compile Include="Models\ICuposAgrupadosPdf.cs" />
+    <Compile Include="Models\IdentidadDetalle.cs" />
+    <Compile Include="Models\Identity\DatosUsuario.cs" />
+    <Compile Include="Models\Identity\IdentityHelper.cs" />
+    <Compile Include="Models\Identity\User.cs" />
+    <Compile Include="Models\IdViewModel.cs" />
+    <Compile Include="Models\IndexCupoViewModel.cs" />
+    <Compile Include="Models\InformacionAlfanumerico.cs" />
+    <Compile Include="Models\InformarPorLoteViewModel.cs" />
+    <Compile Include="Models\IObtenerCodigosAlfanumericos.cs" />
+    <Compile Include="Models\IPathProvider.cs" />
+    <Compile Include="Models\LocalType.cs" />
+    <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\NuevoCupoViewModel.cs" />
+    <Compile Include="Models\Observacion.cs" />
+    <Compile Include="Models\ObtenerCodigosDesdeNroDeAlfa.cs" />
+    <Compile Include="Models\ObtenerCodigosDesdeString.cs" />
+    <Compile Include="Models\Pdf\IPdfBuilder.cs" />
+    <Compile Include="Models\Pdf\ManagerPdf.cs" />
+    <Compile Include="Models\Pdf\PdfAnulacionBuilder.cs" />
+    <Compile Include="Models\Pdf\PdfDistribucionBuilder.cs" />
+    <Compile Include="Models\Pdf\PlantillaPdf.cs" />
+    <Compile Include="Models\Pdf\ServicioPdfDistribucion.cs" />
+    <Compile Include="Models\PendienteAplicarViewModel.cs" />
+    <Compile Include="Models\Puerto.cs" />
+    <Compile Include="Models\RegistroDistribucionViewModel.cs" />
+    <Compile Include="Models\RelacionDistribucionCupos.cs" />
+    <Compile Include="Models\ServerPathProvider.cs" />
+    <Compile Include="Models\ServicioCentroPorPuerto.cs" />
+    <Compile Include="Models\ServicioCliente.cs" />
+    <Compile Include="Models\ServicioCuenta.cs" />
+    <Compile Include="Models\ServicioCuit.cs" />
+    <Compile Include="Models\ServicioCupo.cs" />
+    <Compile Include="Models\ServicioDistribucion.cs" />
+    <Compile Include="Models\ServicioDistribuir.cs" />
+    <Compile Include="Models\ServicioEditar.cs" />
+    <Compile Include="Models\ServicioGrano.cs" />
+    <Compile Include="Models\Email\ServicioInformarEstadoCupo.cs" />
+    <Compile Include="Models\ServicioGranoSTOP.cs" />
+    <Compile Include="Models\ServicioInformarPorEmail.cs" />
+    <Compile Include="Models\ServicioMediadorSTOPandSIL.cs" />
+    <Compile Include="Models\ServicioProceso.cs" />
+    <Compile Include="Models\ServicioRelacionGranoSILGranoSTOP.cs" />
+    <Compile Include="Models\ServicioVarios.cs" />
+    <Compile Include="Models\TablaIndexViewModel.cs" />
+    <Compile Include="Models\TbCoper.cs" />
+    <Compile Include="Models\TurnoViewModel.cs" />
+    <Compile Include="Models\ValidaView.cs" />
+    <Compile Include="Models\Vendedor.cs" />
+    <Compile Include="Models\ViewInterfazSil.cs" />
+    <Compile Include="Models\VistaCtoCorre.cs" />
+    <Compile Include="Models\VistaCuposDistribuidos.cs" />
+    <Compile Include="Models\VistaCuposmpecorre.cs" />
+    <Compile Include="Models\Vista\ColumnaTablaHTML.cs" />
+    <Compile Include="Models\WriteLog.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ServiceCupo.cs" />
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+    <Content Include="custom.config" />
+    <Content Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="log4net.config" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\PublishProfiles\RSCSV_Sil_Cliente.pubxml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Models\Pdf\Files\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>62391</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:62391/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

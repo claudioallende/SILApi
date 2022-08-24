@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="CuposAgrupadosPorVendedor" table="CUPOSAGRUPVENDEDOR"><cache usage="read-write"/>
+    <composite-id>
+      <key-property name="GRANO" column="GRANO"/>
+      <key-property name="COMPCTA" column="COMPCTA"/>
+      <key-property name="PUERTOCTA" column="PUERTOCTA"/>
+      <key-property name="VENDCTA" column="VENDCTA"/>
+      <key-property name="INFORMADOSTOP" column="INFORMADOSTOP"/>
+    </composite-id>
+    <property name="CUITSOLICITANTE" />
+    <property name="CUITINTERMEDIARIO" />
+    <property name="CUITRTECOMERCIAL"/>
+    <property name="CUITCORRCOMP" />
+    <property name="CUITMAT" />
+    <property name="CUITCORRVTA"/>
+    <property name="CUITRTEENT" />
+    <property name="CUITDESTINATARIO" />
+    <property name="CuitRteComercialProductor">
+      <column name ="CUITRTECOMERCIALPROD"/>
+    </property>
+    <property name="NomRteComercialProductor">
+      <column name ="NOMRTECOMERCIALPROD"/>
+    </property>
+    <property name="CuitRteComercialVentaPrimaria">
+      <column name ="CUITRTECOMERCIALVTAPRIM"/>
+    </property>
+    <property name="NomRteComercialVentaPrimaria">
+      <column name ="NOMRTECOMERCIALVTAPRIM"/>
+    </property>    
+    <property name="NOMGRANO">
+      <column name ="NOMGRANO"/>
+    </property>
+    <property name="COMPRADOR">
+      <column name ="COMPRADOR"/>
+    </property>
+    <property name="PUERTO">
+      <column name ="PUERTO"/>
+    </property>
+    <property name="VENDEDOR">
+      <column name ="VENDEDOR"/>
+    </property>
+    <property name="D0CO">
+      <column name ="D0CO"/>
+    </property>
+    <property name="D0CC">
+      <column name ="D0CC"/>
+    </property>
+    <property name="D1CO">
+      <column name ="D1CO"/>
+    </property>
+    <property name="D1CC">
+      <column name ="D1CC"/>
+    </property>
+    <property name="D2CO">
+      <column name ="D2CO"/>
+    </property>
+    <property name="D2CC">
+      <column name ="D2CC"/>
+    </property>
+    <property name="D3CO">
+      <column name ="D3CO"/>
+    </property>
+    <property name="D3CC">
+      <column name ="D3CC"/>
+    </property>
+    <property name="D4CO">
+      <column name ="D4CO"/>
+    </property>
+    <property name="D4CC">
+      <column name ="D4CC"/>
+    </property>
+    <property name="D5CO">
+      <column name ="D5CO"/>
+    </property>
+    <property name="D5CC">
+      <column name ="D5CC"/>
+    </property>
+    <property name="D6CO">
+      <column name ="D6CO"/>
+    </property>
+    <property name="D6CC">
+      <column name ="D6CC"/>
+    </property>
+    <property name="D7CO">
+      <column name ="D7CO"/>
+    </property>
+    <property name="D7CC">
+      <column name ="D7CC"/>
+    </property>
+    <property name="D8CO">
+      <column name ="D8CO"/>
+    </property>
+    <property name="D8CC">
+      <column name ="D8CC"/>
+    </property>
+    <property name="D9CO">
+      <column name ="D9CO"/>
+    </property>
+    <property name="D9CC">
+      <column name ="D9CC"/>
+    </property>
+    <property name="D10CO">
+      <column name ="D10CO"/>
+    </property>
+    <property name="D10CC">
+      <column name ="D10CC"/>
+    </property>
+    <property name="D11CO">
+      <column name ="D11CO"/>
+    </property>
+    <property name="D11CC">
+      <column name ="D11CC"/>
+    </property>
+    <property name="D12CO">
+      <column name ="D12CO"/>
+    </property>
+    <property name="D12CC">
+      <column name ="D12CC"/>
+    </property>
+    <property name="D13CO">
+      <column name ="D13CO"/>
+    </property>
+    <property name="D13CC">
+      <column name ="D13CC"/>
+    </property>
+    <property name="D14CO">
+      <column name ="D14CO"/>
+    </property>
+    <property name="D14CC">
+      <column name ="D14CC"/>
+    </property>
+    <property name="D15CO">
+      <column name ="D15CO"/>
+    </property>
+    <property name="D15CC">
+      <column name ="D15CC"/>
+    </property>
+    <property name="D16CO">
+      <column name ="D16CO"/>
+    </property>
+    <property name="D16CC">
+      <column name ="D16CC"/>
+    </property>
+    <property name="D17CO">
+      <column name ="D17CO"/>
+    </property>
+    <property name="D17CC">
+      <column name ="D17CC"/>
+    </property>
+    <property name="D18CO">
+      <column name ="D18CO"/>
+    </property>
+    <property name="D18CC">
+      <column name ="D18CC"/>
+    </property>
+    <property name="D19CO">
+      <column name ="D19CO"/>
+    </property>
+    <property name="D19CC">
+      <column name ="D19CC"/>
+    </property>
+    <property name="D20CO">
+      <column name ="D20CO"/>
+    </property>
+    <property name="D20CC">
+      <column name ="D20CC"/>
+    </property>
+    <property name="HOY">
+      <column name ="HOY"/>
+    </property>
+    <property name="DIA1">
+      <column name ="DIA1"/>
+    </property>
+    <property name="DIA2">
+      <column name ="DIA2"/>
+    </property>
+    <property name="DIA3">
+      <column name ="DIA3"/>
+    </property>
+    <property name="DIA4">
+      <column name ="DIA4"/>
+    </property>
+    <property name="DIA5">
+      <column name ="DIA5"/>
+    </property>
+    <property name="DIA6">
+      <column name ="DIA6"/>
+    </property>
+    <property name="DIA7">
+      <column name ="DIA7"/>
+    </property>
+    <property name="DIA8">
+      <column name ="DIA8"/>
+    </property>
+    <property name="DIA9">
+      <column name ="DIA9"/>
+    </property>
+    <property name="DIA10">
+      <column name ="DIA10"/>
+    </property>
+    <property name="DIA11">
+      <column name ="DIA11"/>
+    </property>
+    <property name="DIA12">
+      <column name ="DIA12"/>
+    </property>
+    <property name="DIA13">
+      <column name ="DIA13"/>
+    </property>
+    <property name="DIA14">
+      <column name ="DIA14"/>
+    </property>
+    <property name="DIA15">
+      <column name ="DIA15"/>
+    </property>
+    <property name="DIA16">
+      <column name ="DIA16"/>
+    </property>
+    <property name="DIA17">
+      <column name ="DIA17"/>
+    </property>
+    <property name="DIA18">
+      <column name ="DIA18"/>
+    </property>
+    <property name="DIA19">
+      <column name ="DIA19"/>
+    </property>
+    <property name="DIA20">
+      <column name ="DIA20"/>
+    </property>
+    <property name="NOMSOLICITANTE">
+      <column name ="NOMSOLICITANTE"/>
+    </property>
+    <property name="NOMINTERMEDIARIO">
+      <column name ="NOMINTERMEDIARIO"/>
+    </property>
+    <property name="NOMRTECOMERCIAL">
+      <column name ="NOMRTECOMERCIAL"/>
+    </property>
+    <property name="NOMCORRCOMP">
+      <column name ="NOMCORRCOMP"/>
+    </property>
+    <property name="NOMMAT">
+      <column name ="NOMMAT"/>
+    </property>
+    <property name="NOMCORRVTA">
+      <column name ="NOMCORRVTA"/>
+    </property>
+    <property name="NOMRTEENT">
+      <column name ="NOMRTEENT"/>
+    </property>
+    <property name="NOMDESTINATARIO">
+      <column name ="NOMDESTINATARIO"/>
+    </property>
+    <property name="CYO" />
+  </class>
+</hibernate-mapping>

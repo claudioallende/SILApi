@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="CuposCentroPorPuerto" table="cupospuertocentro">
+    <cache usage="read-write"/>
+    
+    <id name="Id">
+      <column name = "Id" not-null="true"/>
+      <generator class="sequence-identity">
+        <param name="sequence">SEQ_PuertoCentro</param>
+      </generator>
+    </id>
+    <property name="IdTerminal">
+      <column name="IdTerminal"/>
+    </property>
+    <property name="CodigoCentro">
+      <column name="Centro"/>
+    </property>
+  </class>
+</hibernate-mapping>

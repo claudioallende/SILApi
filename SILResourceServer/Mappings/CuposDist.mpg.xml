@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="CuposDist" table="Cupodist">
+    <id name="Uvalue">
+      <column name = "Uvalue" not-null="true"/>
+      <generator class="sequence-identity">
+        <param name="sequence">CuposCorr</param>
+      </generator>
+    </id>
+    <property name="Ctacomp">
+      <column name="Ctacomp"/>
+    </property>
+    <property name="CtaVend">
+      <column name="CtaVend"/>
+    </property>
+    <property name="Grano">
+      <column name="Grano"/>
+    </property>
+    <property name="Destino">
+      <column name="Destino"/>
+    </property>
+    <property name="Centro">
+      <column name="Centro"/>
+    </property>
+    <property name="Fecha">
+      <column name="Fecha"/>
+    </property>
+    <property name="Cupos">
+      <column name="Cupos"/>
+    </property>
+    <property name="Cupospedidos">
+      <column name="Cupospedidos"/>
+    </property>
+    <property name="Contrato">
+      <column name="Contrato"/>
+    </property>
+    
+    <property name="Cuitsolicitante">
+      <column name="Cuitsolicitante"/>
+    </property>
+    <property name="Cuitintermediario">
+      <column name="Cuitintermediario"/>
+    </property>
+    <property name="Cuitrtecomercial">
+      <column name="Cuitrtecomercial"/>
+    </property>
+    <property name="Cuitcorrcomp">
+      <column name="Cuitcorrcomp"/>
+    </property>
+    <property name="Cuitmat">
+      <column name="Cuitmat"/>
+    </property>
+    <property name="Cuitcorrvta">
+      <column name="Cuitcorrvta"/>
+    </property>
+    <property name="Cuitrteent">
+      <column name="Cuitrteent"/>
+    </property>
+    <property name="Cuitdestinatario">
+      <column name="Cuitdestinatario"/>
+    </property>
+    <property name="CuitRteComercialProductor">
+      <column name="Cuitrtecomercialprod"/>
+    </property>
+    <property name="CuitRteComercialVentaPrimaria">
+      <column name="Cuitrtecomercialvtaprim"/>
+    </property>
+    <property name="Usuario" />
+  </class>
+</hibernate-mapping>

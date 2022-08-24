@@ -1,0 +1,73 @@
+﻿using NHibernate;
+using ResourceServer.Models.DataAccess;
+using ResourceServer.Models.Error.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ResourceServer.Models.Email
+{
+    public abstract class ServicioInformarCupos : ServicioInformarAVendedor
+    {
+        protected abstract string TipoServicioInformar { get; set; }
+
+        public ServicioInformarCupos()
+        {
+        }
+
+        protected abstract IList<Cupos> GetCuposInformar(long CuentaVendedor);
+
+        public override IList<EmailInformado> InformarMails(long CuentaVendedor)
+        {
+            IList<EmailInformado> EmailsInformados = new List<EmailInformado>();
+            IList<Cupos> CuposAInformar = GetCuposInformar(CuentaVendedor);
+            if (CuposAInformar.Count > 0)
+            {
+                using (ISession session = HibernateUtil.OpenSession())
+                using (ITransaction tx = session.BeginTransaction())
+                {
+                    try
+                    {
+                        EmailsInformados = ObtenerServiceEInformar(CuposAInformar, CuentaVendedor, session);
+                        tx.Commit();
+                    }
+                    catch
+                    {
+                        tx.Rollback();
+                        throw;
+                    }
+                }
+            }
+            return EmailsInformados;
+        }
+
+        public IList<EmailInformado> ObtenerServiceEInformar(IList<Cupos> CuposAInformar, long CuentaVendedor, ISession session)
+        {
+            IList<EmailInformado> EmailsInformados = new List<EmailInformado>();
+            string CorreosElectronicosDestinatarios = GetEmails(CuentaVendedor, session);
+            try
+            {
+                //En caso de que haya solo 1 pdf que informar el dto va null
+                ServiceEmail ServicioEmail = GetServiceEmail(CuposAInformar, CuentaVendedor, session);
+                InformarYGuardarCupos(CuposAInformar, ServicioEmail, CorreosElectronicosDestinatarios, session);
+                EmailsInformados.Add(new EmailInformado { Estado = 0, Mensaje = "OK", CuentaVendedor = CuentaVendedor, TipoEmail = this.TipoServicioInformar });
+            }
+            catch (NeedEmailException e)
+            {
+                EmailsInformados.Add(new EmailInformado { Estado = 1, Mensaje = "CORREO NO CONFIGURADO", CuentaVendedor = CuentaVendedor, TipoEmail = this.TipoServicioInformar });
+                throw e;
+            }
+            catch (Exception e)
+            {
+                EmailsInformados.Add(new EmailInformado { Estado = 2, Mensaje = "ERROR", CuentaVendedor = CuentaVendedor, TipoEmail = this.TipoServicioInformar });
+                throw e;
+            }
+            return EmailsInformados;
+        }
+
+        protected abstract void InformarYGuardarCupos(IList<Cupos> CuposInformar, ServiceEmail ServicioEmail, string CorreosElectronicosDestinatarios, ISession session);
+
+        protected abstract ServiceEmail GetServiceEmail(IList<Cupos> CuposAInformar, long CuentaVendedor, NHibernate.ISession Session);
+    }
+}

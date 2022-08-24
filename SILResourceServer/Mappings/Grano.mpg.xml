@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="Grano" table="Cuposgrano">
+    <cache usage="read-write"/>
+    <id name="Id">
+      <column name="Grano"/>
+    </id>
+    <property name="CodigoGrano">
+      <column name="Grano"/>
+    </property>
+    <property name="Nombre" />
+  </class>
+</hibernate-mapping>

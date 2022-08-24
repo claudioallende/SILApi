@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="CupoInStopAndNotSIL" table="stopnocorre" dynamic-update="true" >
+    <cache usage="read-write"/>
+    <id name="Id">
+        <column name = "Id" not-null="true"/>
+        <generator class="sequence-identity">
+          <param name="sequence">SEQ_NOCORRE</param>
+        </generator>
+    </id>
+    <property name="Fecha">
+      <column name="Fecha"/>
+    </property>
+    <property name="Idcupo">
+      <column name="Idcupo"/>
+    </property>
+    <property name="Nrocupo">
+      <column name="Nrocupo"/>
+    </property>
+    <property name="Idterminal">
+      <column name="Idterminal"/>
+    </property>
+    <property name="Cuitorigen">
+      <column name="Cuitorigen"/>
+    </property>
+    <property name="Cuitintermediario">
+      <column name="Cuitintermediario"/>
+    </property>
+    <property name="Cuitmercadoatermino">
+      <column name="Cuitmercadoatermino"/>
+    </property>
+    <property name="Cuitremcomercial">
+      <column name="Cuitremcomercial"/>
+    </property>
+    <property name="Cuitcorredorv">
+      <column name="Cuitcorredorv"/>
+    </property>
+    <property name="Cuitcorredorc">
+      <column name="Cuitcorredorc"/>
+    </property>
+    <property name="Cuitrepresentanteentregador">
+      <column name="Cuitrepresentanteentregador"/>
+    </property>
+    <property name="Cuitdestino">
+      <column name="Cuitdestino"/>
+    </property>
+    <property name="Cuitdestinatario">
+      <column name="Cuitdestinatario"/>
+    </property>
+    <property name="Cuitintermediarioflete">
+      <column name="Cuitintermediarioflete"/>
+    </property>
+    <property name="Cuittransportista">
+      <column name="Cuittransportista"/>
+    </property>
+    <property name="Cuitchofer">
+      <column name="Cuitchofer"/>
+    </property>
+    <property name="Detallecupo">
+      <column name="Detallecupo"/>
+    </property>
+    <property name="CodigoEstadoCupo">
+      <column name="CODESTADOCUPO"/>
+    </property>
+    <property name="Grano">
+      <column name="GRANO"/>
+    </property>
+    <property name="Centro">
+      <column name="CENTRO"/>
+    </property>
+  </class>
+</hibernate-mapping>

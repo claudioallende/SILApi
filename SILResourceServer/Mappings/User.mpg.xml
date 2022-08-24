@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models.Identity">
+  
+  <class name="User" table="acaclave" mutable="false">
+    <cache usage="read-write"/>
+    <id name="Id">
+      <column name="usuario"/>
+    </id>
+    <property name="UserName">
+      <column name="usuario"/>
+    </property>
+    <property name="Password" />
+  </class>
+</hibernate-mapping>

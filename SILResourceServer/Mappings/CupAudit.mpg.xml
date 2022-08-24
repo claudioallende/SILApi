@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models.Auditoria">
+  <class name="CupAudit" table="CupAudit">
+    <cache usage="read-write"/>
+    <id name="Uvalue" />
+    <property name="Tabla" />
+    <property name="IdInterno" />
+    <property name="TipoAudit" />
+    <property name="Usuario" />
+    <property name="Fecha" />
+    <property name="Hora" />
+    <property name="Observacion" />
+    <set name="ListaCupAuditHijo" lazy="false">
+      <key column="UvaluePadre" not-null="true"/>
+      <one-to-many class="CupAuditHijo"/>
+    </set>
+    <many-to-one name="Cupo" column="IdInterno" />
+  </class>
+</hibernate-mapping>

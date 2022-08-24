@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="Cupos" table="cuposcorre" dynamic-update="true" >
+    <cache usage="read-write"/>
+    <id name="Id">
+        <column name = "Id" not-null="true"/>
+        <generator class="sequence-identity">
+          <param name="sequence">Sec_CUPOSCORRE</param>
+        </generator>
+    </id>
+    <property name="Grano">
+        <column name ="Grano"/>
+    </property>
+    <property name="Compcta">
+      <column name ="Compcta"/>
+    </property>
+    <property name="Puerto">
+        <column name="Puertocta"/>
+    </property>
+    <property name="Cuitsolicitante">
+        <column name="Cuitsolicitante"/>
+    </property>
+    <property name="Cuitintermediario">
+        <column name="Cuitintermediario"/>
+    </property>
+    <property name="Nrocupo">
+        <column name="Nrocupo"/>
+    </property>
+    <property name="Vendcta">
+      <column name="Vendcta"/>
+    </property>
+    <property name="Vendcyo">
+      <column name="Vendcyo"/>
+    </property>    
+    <property name="Nomsolicitante">
+      <column name="Nomsolicitante"/>
+    </property>
+    <property name="Nomintermediario">
+      <column name="Nomintermediario"/>
+    </property>
+    <property name="Cuitrtecomercial">
+      <column name="Cuitrtecomercial"/>
+    </property>
+    <property name="Nomrtecomercial">
+      <column name="Nomrtecomercial"/>
+    </property>
+    <property name="Cuitcorrcomp">
+      <column name="Cuitcorrcomp"/>
+    </property>
+    <property name="Nomcorrcomp">
+      <column name="Nomcorrcomp"/>
+    </property>
+    <property name="Cuitmat">
+      <column name="Cuitmat"/>
+    </property>
+    <property name="Nommat">
+      <column name="Nommat"/>
+    </property>
+    <property name="Cuitcorrvta">
+      <column name="Cuitcorrvta"/>
+    </property>
+    <property name="Nomcorrvta">
+      <column name="Nomcorrvta"/>
+    </property>
+    <property name="Cuitrteent">
+      <column name="Cuitrteent"/>
+    </property>
+    <property name="Nomrteent">
+      <column name="Nomrteent"/>
+    </property>
+    <property name="Cuitdestinatario">
+      <column name="Cuitdestinatario"/>
+    </property>
+    <property name="Nomdestinatario">
+      <column name="Nomdestinatario"/>
+    </property>
+    <property name="CuitRteComercialProductor">
+      <column name="Cuitrtecomercialprod"/>
+    </property>
+    <property name="NomRteComercialProductor">
+      <column name="Nomrtecomercialprod"/>
+    </property>
+    <property name="CuitRteComercialVentaPrimaria">
+      <column name="Cuitrtecomercialvtaprim"/>
+    </property>
+    <property name="NomRteComercialVentaPrimaria">
+      <column name="Nomrtecomercialvtaprim"/>
+    </property>    
+    <property name="Alfadia0">
+      <column name="Alfadia0"/>
+    </property>
+    <property name="Alfadia1">
+      <column name="Alfadia1"/>
+    </property>
+    <property name="Alfadia2">
+      <column name="Alfadia2"/>
+    </property>
+    <property name="Alfadia3">
+      <column name="Alfadia3"/>
+    </property>
+    <property name="Alfadia4">
+      <column name="Alfadia4"/>
+    </property>
+    <property name="Alfadia5">
+      <column name="Alfadia5"/>
+    </property>
+    <property name="Centro">
+      <column name="Centro"/>
+    </property>
+    <property name="Centrodist" />
+    <property name="Contrato">
+      <column name="Contrato"/>
+    </property>
+    <property name="Corrcta">
+      <column name="Corrcta"/>
+    </property>
+    <property name="Cuposotorgados">
+      <column name="Cuposotorgados"/>
+    </property>
+    <property name="Cupospedidos">
+      <column name="Cupospedidos"/>
+    </property>
+    <property name="Cuposrecibidos">
+      <column name="Cuposrecibidos"/>
+    </property>
+    <property name="Dia0">
+      <column name="Dia0"/>
+    </property>
+    <property name="Dia1">
+      <column name="Dia1"/>
+    </property>
+    <property name="Dia2">
+      <column name="Dia2"/>
+    </property>
+    <property name="Dia3">
+      <column name="Dia3"/>
+    </property>
+    <property name="Dia4">
+      <column name="Dia4"/>
+    </property>
+    <property name="Dia5">
+      <column name="Dia5"/>
+    </property>
+    <property name="Dia6" />
+    <property name="Dia7" />
+    <property name="Dia8" />
+    <property name="Dia9" />
+    <property name="Dia10" />
+    <property name="Dia11" />
+    <property name="Dia12" />
+    <property name="Dia13" />
+    <property name="Dia14" />
+    <property name="Dia15" />
+    <property name="Dia16" />
+    <property name="Dia17" />
+    <property name="Dia18" />
+    <property name="Dia19" />
+    <property name="Dia20" />
+    <property name="Fecha">
+      <column name="Fecha"/>
+    </property>
+    <property name="Status">
+      <column name="Status"/>
+    </property>
+    <property name="Tipo">
+      <column name="Tipo"/>
+    </property>
+    <property name="Idorigen">
+      <column name="Idorigen"/>
+    </property>
+    <property name="Uvcupodist" />
+    <property name="Motbaja" />
+    <property name="Observa" />
+    <property name="Pdf" />
+    <property name="Usuario" />
+    <property name="DetalleCupoCNRT">
+      <column name="Detallecupocnrt"/>
+    </property>
+    <property name="EstadoCupoCNRT">
+      <column name="Estadocupocnrt"/>
+    </property>
+    <property name="FechaYHoraInformado"/>
+  </class>
+</hibernate-mapping>

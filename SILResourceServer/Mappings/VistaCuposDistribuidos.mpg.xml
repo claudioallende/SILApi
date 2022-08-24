@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="VistaCuposDistribuidos" table="VISTA_CUPOSDISTRIBUIDOV4">
+    <cache usage="read-write"/>
+    <composite-id>
+      <key-property name="Compcta" column="Compcta"/>
+      <key-property name="Vendcta" column="Vendcta"/>
+      <key-property name="Codproducto" column="Codproducto"/>
+      <key-property name="Codcentro" column="Codcentro"/>
+    </composite-id>
+    <property name="Cosecha"/>
+    <property name="Ctadestino"/>
+    <property name="Cuitcomp">
+      <column name ="Cuitcomp "/>
+    </property>
+    <property name="Comprador">
+      <column name ="comprador"/>
+    </property>
+    <property name="Cuitvend">
+      <column name ="Cuitvend"/>
+    </property>
+    <property name="Vendedor">
+      <column name ="Vendedor"/>
+    </property>
+    <property name="Producto">
+      <column name ="Producto"/>
+    </property>
+    <property name="Destino">
+      <column name ="Destino"/>
+    </property>
+    <property name="Zonainfluencia">
+      <column name ="Zonainfluencia"/>
+    </property>
+    <property name="Centro">
+      <column name ="Centro"/>
+    </property>
+    <property name="Tipcta">
+      <column name ="Tipcta"/>
+    </property>
+    <property name="Pactado">
+      <column name ="Pactado"/>
+    </property>
+    <property name="Pendentrega">
+      <column name ="Pendentrega"/>
+    </property>
+    <property name="Fijado">
+      <column name ="Fijado"/>
+    </property>
+    <property name="Liquidado">
+      <column name ="Liquidado"/>
+    </property>
+    <property name="Pendaplicar">
+      <column name ="Pendaplicar"/>
+    </property>
+    <property name="Cuposadist">
+      <column name ="Cuposadist"/>
+    </property>
+    <property name="Cuposotorgados"/>
+    <property name="Cupostotalesadist"/>
+    <property name="Fechaent">
+      <column name ="Fechaent"/>
+    </property>
+    <property name="Fechavto">
+      <column name ="Fechavto"/>
+    </property>
+    <property name="Ayer">
+      <column name ="Ayer"/>
+    </property>
+    <property name="Hoy">
+      <column name ="Hoy"/>
+    </property>      
+    <property name="Dia1">
+      <column name ="Dia1"/>
+    </property>
+    <property name="Dia2">
+      <column name ="Dia2"/>
+    </property>
+    <property name="Dia3">
+      <column name ="Dia3"/>
+    </property>
+    <property name="Dia4">
+      <column name ="Dia4"/>
+    </property>
+    <property name="Dia5">
+      <column name ="Dia5"/>
+    </property>
+    <property name="Dia6">
+      <column name ="Dia6"/>
+    </property>
+    <property name="Dia7">
+      <column name ="Dia7"/>
+    </property>
+    <property name="Dia8">
+      <column name ="Dia8"/>
+    </property>
+    <property name="Dia9" />
+    <property name="Dia10" />
+    <property name="Dia11" />
+    <property name="Dia12" />
+    <property name="Dia13" />
+    <property name="Dia14" />
+    <property name="Dia15" />
+    <property name="Dia16" />
+    <property name="Dia17" />
+    <property name="Dia18" />
+    <property name="Dia19" />
+    <property name="Dia20" />
+    <property name="Pedidosayer">
+      <column name ="Pedidosayer"/>
+    </property>
+    <property name="Pedidoshoy">
+      <column name ="Pedidoshoy"/>
+    </property>
+    <property name="Pedidosdia1">
+      <column name ="Pedidosdia1"/>
+    </property>
+    <property name="Pedidosdia2">
+      <column name ="Pedidosdia2"/>
+    </property>
+    <property name="Pedidosdia3">
+      <column name ="Pedidosdia3"/>
+    </property>
+    <property name="Pedidosdia4">
+      <column name ="Pedidosdia4"/>
+    </property>
+    <property name="Pedidosdia5">
+      <column name ="Pedidosdia5"/>
+    </property>
+    <property name="Pedidosdia6">
+      <column name ="Pedidosdia6"/>
+    </property>
+    <property name="Pedidosdia7">
+      <column name ="Pedidosdia7"/>
+    </property>
+    <property name="Pedidosdia8">
+      <column name ="Pedidosdia8"/>
+    </property>
+    <property name="Pedidosdia9" />
+    <property name="Pedidosdia10" />
+    <property name="Pedidosdia11" />
+    <property name="Pedidosdia12" />
+    <property name="Pedidosdia13" />
+    <property name="Pedidosdia14" />
+    <property name="Pedidosdia15" />
+    <property name="Pedidosdia16" />
+    <property name="Pedidosdia17" />
+    <property name="Pedidosdia18" />
+    <property name="Pedidosdia19" />
+    <property name="Pedidosdia20" />
+    <property name="Cuitsolicitante"/>
+    <property name="Cuitintermediario"/>
+    <property name="Cuitrtecomercial"/>
+    <property name="Cuitcorrcomp"/>
+    <property name="Cuitmat"/>
+    <property name="Cuitcorrvta"/>
+    <property name="Cuitrteent"/>
+    <property name="Cuitdestinatario"/>
+    <property name="CuitRteComercialProductor">
+      <column name ="CUITRTECOMERCIALPROD"/>
+    </property>
+    <property name="CuitRteComercialVentaPrimaria">
+      <column name ="CUITRTECOMERCIALVTAPRIM"/>
+    </property>
+    <property name="Vendcyo"/>
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="CuposAgrupadosDetalleCyo" table="CuposAgrupaCyoCvend" schema-action="none">
+    <composite-id>
+      <key-property name="Compcta" column="compcta"/>
+      <key-property name="PuertoCta" column="puertocta"/>
+      <key-property name="Grano" column="Grano"/>
+      <key-property name="VendCta" column="VenCta"/>
+    </composite-id>
+    <property name="Comprador">
+      <column name ="comprador"/>
+    </property>
+    <property name="Vendedor"/>
+    <property name="Puerto">
+      <column name ="puerto"/>
+    </property>
+    <property name="Nomgrano"/>
+    <property name="CodCentro" />
+    <property name="Centro" />
+    <property name="CodCentroDist" />
+    <property name="CentroDist" />
+    <property name="D0Cr">
+      <column name ="d0cr"/>
+    </property>
+    <property name="D0Co">
+      <column name ="d0co"/>
+    </property>
+    <property name="D1Cr">
+      <column name ="d1cr"/>
+    </property>
+    <property name="D1Co">
+      <column name ="d1co"/>
+    </property>
+    <property name="D2Cr">
+      <column name ="d2cr"/>
+    </property>
+    <property name="D2Co">
+      <column name ="d2co"/>
+    </property>
+    <property name="D3Cr">
+      <column name ="d3cr"/>
+    </property>
+    <property name="D3Co">
+      <column name ="d3co"/>
+    </property>
+    <property name="D4Cr">
+      <column name ="d4cr"/>
+    </property>
+    <property name="D4Co">
+      <column name ="d4co"/>
+    </property>
+    <property name="D5Cr">
+      <column name ="d5cr"/>
+    </property>
+    <property name="D5Co">
+      <column name ="d5co"/>
+    </property>
+    <property name="Hoy">
+      <column name ="hoy"/>
+    </property>
+    <property name="Dia1">
+      <column name ="dia1"/>
+    </property>
+    <property name="Dia2">
+      <column name ="dia2"/>
+    </property>
+    <property name="Dia3">
+      <column name ="dia3"/>
+    </property>
+    <property name="Dia4">
+      <column name ="dia4"/>
+    </property>
+    <property name="Dia5">
+      <column name ="dia5"/>
+    </property>
+    <property name="PendPdf"/>
+    <property name="D6Cr" />
+    <property name="D6Co" />
+    <property name="D7Cr" />
+    <property name="D7Co" />
+    <property name="D8Cr" />
+    <property name="D8Co" />
+    <property name="D9Cr" />
+    <property name="D9Co" />
+    <property name="D10Cr" />
+    <property name="D10Co" />
+    <property name="D11Cr" />
+    <property name="D11Co" />
+    <property name="D12Cr" />
+    <property name="D12Co" />
+    <property name="D13Cr" />
+    <property name="D13Co" />
+    <property name="D14Cr" />
+    <property name="D14Co" />
+    <property name="D15Cr" />
+    <property name="D15Co" />
+    <property name="D16Cr" />
+    <property name="D16Co" />
+    <property name="D17Cr" />
+    <property name="D17Co" />
+    <property name="D18Cr" />
+    <property name="D18Co" />
+    <property name="D19Cr" />
+    <property name="D19Co" />
+    <property name="D20Cr" />
+    <property name="D20Co" />
+    <property name="Dia6" />
+    <property name="Dia7" />
+    <property name="Dia8" />
+    <property name="Dia9" />
+    <property name="Dia10" />
+    <property name="Dia11" />
+    <property name="Dia12" />
+    <property name="Dia13" />
+    <property name="Dia14" />
+    <property name="Dia15" />
+    <property name="Dia16" />
+    <property name="Dia17" />
+    <property name="Dia18" />
+    <property name="Dia19" />
+    <property name="Dia20" />
+  </class>
+</hibernate-mapping>

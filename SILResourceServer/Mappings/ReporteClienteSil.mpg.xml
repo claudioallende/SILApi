@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models.Cliente">
+  <class name="ReporteViewModel" table="Vista_ReporteClienteSIL">
+    <cache usage="read-write"/>
+    <id name="Id">
+      <column name="Id"/>
+    </id>
+    <property name="Fecha" />
+    <property name="Grano" />
+    <property name="Alfanumerico">
+      <column name="Cupo"/>
+    </property>
+    <property name="DetalleCupoSTOP">
+      <column name="DetalleSTOP"/>
+    </property>
+    <property name="Observacion">
+      <column name="Observa"/>
+    </property>
+    <property name="Exportador" />
+    <property name="Intermediario" />
+    <property name="RteComercial" />
+    <property name="CorredorComp" />
+    <property name="CorredorVend" />
+    <property name="Solicitante" />
+    <property name="Mat" />
+    <property name="Rteent" />
+    <property name="CuentaVendedor" />
+    <property name="CodigoGrano">
+      <column name="CodGrano"/>
+    </property>
+    <property name="Destino"/>
+    <property name="Vendcyo"/>
+  </class>
+</hibernate-mapping>

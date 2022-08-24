@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="Comprador" table="Cuposcomprador">
+    <cache usage="read-write"/>
+    <id name="Id">
+      <column name="cuenta"/>
+    </id>
+    <property name="Cuenta" />
+    <property name="Cuit" />
+    <property name="Domicilio" />
+    <property name="Localidad" />
+    <property name="Nombre" />
+    <property name="Provincia" />
+    <property name="Stipprovee" />
+    <property name="Tipodecuenta" />
+  </class>
+</hibernate-mapping>

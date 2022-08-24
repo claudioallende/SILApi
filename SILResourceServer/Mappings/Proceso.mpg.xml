@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="Proceso" table="Proceso">
+    <cache usage="read-write"/>
+    <id name="Id">
+      <column name="Id"/>
+      <generator class="sequence-identity">
+        <param name="sequence">SEC_PROCESO</param>
+      </generator>
+    </id>
+    <property name="Nombre" />
+    <property name="Detalle" />
+    <property name="ComandoExec" />
+    <property name="EmailError" />
+    <bag name="Estados"
+       lazy="false"
+       inverse="true"
+       batch-size="25">
+      <key column="Proceso" />
+      <one-to-many class="EstadoProceso" />
+    </bag>
+  </class>
+</hibernate-mapping>

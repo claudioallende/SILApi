@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="ResourceServer" namespace="ResourceServer.Models">
+  <class name="VistaCtoCorre" table="vista_cuposctocorre">
+    <cache usage="read-write"/>
+    <id name="Id">
+      <column name="Contrato"/>
+    </id>
+    <property name="Empresa" />
+    <property name="Contrato" />
+    <property name="Compcta" />
+    <property name="Cuitcomp" />
+    <property name="Comprador" />
+    <property name="Vendcta" />
+    <property name="Cuitvend" />
+    <property name="Vendedor" />
+    <property name="Grano" />
+    <property name="Producto" />
+    <property name="Cosecha" />
+    <property name="Ctadestino" />
+    <property name="Destino" />
+    <property name="Zonainfluencia" />
+    <property name="Codcentro" />
+    <property name="Centro" />
+    <property name="Tipcta" />
+    <property name="Opera" />
+    <property name="Entrega" />
+    <property name="Vtoent" />
+    <property name="Prorroga" />
+    <property name="Pactadas" />
+    <property name="Pendientes" />
+    <property name="Ittfijadas" />
+    <property name="Ittparciales" />
+    <property name="Operacion" />
+    <property name="Precio" />
+    <property name="Fecha" />
+    <property name="Contparte" />
+    <property name="Fechaent" />
+    <property name="Fechavto" />
+    <property name="Negocio" />
+    <property name="Aplicadas" />
+    <property name="Liquidadas" />
+  </class>
+</hibernate-mapping>
+
