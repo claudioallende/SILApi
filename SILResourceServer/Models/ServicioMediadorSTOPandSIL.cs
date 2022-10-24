@@ -695,6 +695,7 @@ namespace ResourceServer.Models
       CupoInStopAndNotSIL turno;
       CupoInStopAndNotSILStore stonNoCo = new CupoInStopAndNotSILStore();
       RelacionGranoSILGranoSTOPStore relacSTO = new RelacionGranoSILGranoSTOPStore();
+      RelacionPuertoSILPuertoSTOPStore relacPuertoSTO = new RelacionPuertoSILPuertoSTOPStore();
       /*tendre que recibir el granoSTO y granoSIL esto ret uno solo*/
 
       foreach (string alfa in alfas)
@@ -704,8 +705,8 @@ namespace ResourceServer.Models
         turno.Fecha = fechaDeAlfa;
         turno.Nrocupo = alfa;
         turno.Grano = (int)relacSTO.FindRelacionCompletaByNroGranoSIL(ncvmDTO.Producto, session).FirstOrDefault().NroGranoSTOP;
-        Puerto puerto = this.ObtenerPuertoPorCuenta(ncvmDTO.Puerto, session);
-        turno.Idterminal = (puerto != null) ? Int32.Parse(puerto.IdTerminal.Trim()) : 0;
+        int idPuerto = (int)relacPuertoSTO.FindCompleteRelationByPuertoSIL(Convert.ToInt64(ncvmDTO.Puerto), session).FirstOrDefault().NroPuertoSTOP;
+        turno.Idterminal = idPuerto;
         turno.Cuitdestinatario = !string.IsNullOrEmpty(ncvmDTO.Cuitdestinatario) ? ncvmDTO.Cuitdestinatario.Replace("-", string.Empty) : "";
         //if (!string.IsNullOrEmpty(ncvmDTO.Cuitrtecomercial))
         //{
