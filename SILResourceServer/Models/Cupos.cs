@@ -122,7 +122,8 @@ namespace ResourceServer.Models
         public virtual string Usuario { get; set; }
         public virtual string DetalleCupoCNRT { get; set; }
         public virtual DateTime? FechaYHoraInformado { get; set; }
-
+        public virtual string Caratula { get; set; }
+        public virtual string ContactoComercial { get; set; }
         public virtual bool VendcyoBoolValue
         {
             get { return Vendcyo != 0; }
