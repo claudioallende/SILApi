@@ -322,7 +322,7 @@ namespace ResourceServer.Models.DataAccess
                             CuitRteComercialProductor = x.CuitRteComercialProductor.Trim(),
                             NomRteComercialProductor = x.NomRteComercialProductor.Trim(),
                             CuitRteComercialVentaPrimaria = x.CuitRteComercialVentaPrimaria.Trim(),
-                            NomRteComercialVentaPrimaria = x.NomRteComercialVentaPrimaria.Trim()
+                            NomRteComercialVentaPrimaria = x.NomRteComercialVentaPrimaria.Trim()                            
                         })
                     .GroupBy(y =>
                         new

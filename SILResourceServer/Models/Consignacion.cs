@@ -50,8 +50,11 @@ namespace ResourceServer.Models
         [Display(Name = "Nombre")]
         public virtual string NomRteComercialVentaPrimaria { get; set; }
         public string Observacion { get; set; }
-
-        public Consignacion()
+        [Display(Name = "Caratula")]
+        public virtual string Caratula { get; set; }
+        [Display(Name = "Contacto Comercial")]
+        public virtual string ContactoComercial { get; set; }
+    public Consignacion()
         {
 
         }

@@ -71,7 +71,7 @@ namespace ResourceServer.Models
             BuscarYMostrarComprador();
             BuscarYMostrarPuerto();
             BuscarYMostrarCentros();
-            BuscarYMostrarConsignaciones();
+            BuscarYMostrarConsignaciones(); /*CA: ver que hacer con caratula y CC. es consigna o no. lo manejamos como observa?*/
             ObtenerUltimaObservacionPorDia();
             BuscarYMostrarCuposAgrupadosInforamdos();
         }

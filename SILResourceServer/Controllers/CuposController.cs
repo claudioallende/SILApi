@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using ResourceServer.Models;
-using ResourceServer.Models.DataAccess;
 using ResourceServer.Models.Contratos;
 using ResourceServer.Models.Email;
 using ResourceServer.Models.Filtro;
 using ResourceServer.Models.Error.Exceptions;
-using ResourceServer.Models.Error;
-using System.Security.Claims;
-using ResourceServer.Models.Auditoria;
 using System.Web.Http;
 using System.Net.Http;
 using System.Net;
 using ResourceServer.Models.AtributosValidacion;
-using Newtonsoft.Json.Linq;
 
 namespace ResourceServer.Controllers
 {
-    [ExceptionHandling]
+  [ExceptionHandling]
     public class CuposController : ApiController
     {
         [Route("api/Cupos/Index")]
@@ -136,7 +130,7 @@ namespace ResourceServer.Controllers
             model.ObtenerFiltro();
             return Request.CreateResponse(HttpStatusCode.OK, model);
         }
-
+/*CA: En este endpoint retornamos las consignaciones para la consulta de la pagina distribucion. definir que hacemos con caratula y CC*/
         [HttpPost]
         [Route("api/Cupos/Distribucion")]
         public HttpResponseMessage Distribucion(BusquedaDistribucionViewModel model)
@@ -176,24 +170,10 @@ namespace ResourceServer.Controllers
             {
                 ServicioDistribuir servicio = new ServicioDistribuir(model.Confirmacion);
                 int response = 0;
-                //try
-                //{
-                    response = servicio.ValidarYGuardar(model);
-                    ServicioFiltro filtro = new ServicioFiltro(model.anterior.Grano, model.anterior.Puerto, model.anterior.Compcta);
-                    filtro.GuardarFiltro(model.cupos, model.fechaDesde, model.fecha, model.CosechaDesde, model.CosechaHasta, model.CentroSeleccionado);
-                    return Request.CreateResponse(HttpStatusCode.OK, response);
-                //}
-                //catch (CuposNoAnulablesException e)
-                //{
-                //    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Cupos no anulables: " + e.Message);
-                //}
-                //catch (Exception ex)
-                //{
-                //    if (ex is InsuficienteCantidadCuposPuertoSeleccionado || ex is CupoBloqueadoParaDistribuirException)
-                //        return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
-                //    else
-                //        throw ex;
-                //}
+                response = servicio.ValidarYGuardar(model);
+                ServicioFiltro filtro = new ServicioFiltro(model.anterior.Grano, model.anterior.Puerto, model.anterior.Compcta);
+                filtro.GuardarFiltro(model.cupos, model.fechaDesde, model.fecha, model.CosechaDesde, model.CosechaHasta, model.CentroSeleccionado);
+                return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             else
             {
@@ -278,20 +258,6 @@ namespace ResourceServer.Controllers
             DistribucionDisponible Distribucion = servicio.ObtenerContratosEInformacion(model.datosContrato, model.CuentaPuerto, model.fechaDesde, model.fechaHasta, model.cosechaDesde, model.cosechaHasta, model.ConsignacionSeleccionada, model.Cyo);
             return Request.CreateResponse(HttpStatusCode.OK, Distribucion);
         }
-
-        //[HttpPost]
-        //[Route("api/Cupos/GetFilasContratos")]
-        //public HttpResponseMessage GetFilasContratos(BusquedaContratosViewModel model)
-        //{
-        //    ServicioDistribuir servicio = new ServicioDistribuir();
-        //    DistribucionDisponible Distribucion = servicio.ObtenerContratosEInformacion(model.datosContrato, model.CuentaPuerto, model.fechaDesde, model.fechaHasta, model.cosechaDesde, model.cosechaHasta, model.Cyo);
-        //    return Request.CreateResponse(HttpStatusCode.OK, new
-        //    { 
-        //        Distribuciones = Distribucion.Distribuciones,
-        //        TotalesDisponibles = Distribucion.TotalesDisponiblesDias,
-        //        TotalesDistribuidos = Distribucion.TotalesDistribuidosDias
-        //    });
-        //}
 
         [HttpPost]
         [Route("api/Cupos/GetCuposPorCodigoAlfanumerico")]
