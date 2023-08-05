@@ -130,7 +130,7 @@ namespace ResourceServer.Controllers
             model.ObtenerFiltro();
             return Request.CreateResponse(HttpStatusCode.OK, model);
         }
-/*CA: En este endpoint retornamos las consignaciones para la consulta de la pagina distribucion. definir que hacemos con caratula y CC*/
+        /*CA: En este endpoint retornamos las consignaciones para la consulta de la pagina distribucion. definir que hacemos con caratula y CC*/
         [HttpPost]
         [Route("api/Cupos/Distribucion")]
         public HttpResponseMessage Distribucion(BusquedaDistribucionViewModel model)
@@ -254,6 +254,7 @@ namespace ResourceServer.Controllers
         [Route("api/Cupos/GetContratos")]
         public HttpResponseMessage GetTablaContratos(BusquedaContratosViewModel model)
         {
+  /*CA: ver si en esta etapa del cambio es necesario modificar este metodo - ver con el front*/
             ServicioDistribuir servicio = new ServicioDistribuir();
             DistribucionDisponible Distribucion = servicio.ObtenerContratosEInformacion(model.datosContrato, model.CuentaPuerto, model.fechaDesde, model.fechaHasta, model.cosechaDesde, model.cosechaHasta, model.ConsignacionSeleccionada, model.Cyo);
             return Request.CreateResponse(HttpStatusCode.OK, Distribucion);
