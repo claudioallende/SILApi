@@ -79,7 +79,8 @@ namespace ResourceServer.Models.DTO
         public virtual int EstadoCupoCNRT { get; set; }
         public virtual bool EmparejoTurnos{ get; set; }
         public virtual string CentroAnterior { get; set; }
-
+        public virtual string Caratula { get; set; }
+        public virtual string ContactoComercial { get; set; }
         public NuevoCupoViewModelDTO() { }
 
         public NuevoCupoViewModelDTO(NuevoCupoViewModel cupoVM)

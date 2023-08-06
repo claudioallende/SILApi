@@ -179,6 +179,12 @@
     <property name="EstadoCupoCNRT">
       <column name="Estadocupocnrt"/>
     </property>
+	<property name="Caratula">
+		<column name="Caratula"/>
+	</property>
+	<property name="ContactoComercial">
+		<column name="ContactoComercial"/>
+	</property>
     <property name="FechaYHoraInformado"/>
   </class>
 </hibernate-mapping>

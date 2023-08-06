@@ -322,7 +322,8 @@ namespace ResourceServer.Models.DataAccess
                             CuitRteComercialProductor = x.CuitRteComercialProductor.Trim(),
                             NomRteComercialProductor = x.NomRteComercialProductor.Trim(),
                             CuitRteComercialVentaPrimaria = x.CuitRteComercialVentaPrimaria.Trim(),
-                            NomRteComercialVentaPrimaria = x.NomRteComercialVentaPrimaria.Trim()
+                            NomRteComercialVentaPrimaria = x.NomRteComercialVentaPrimaria.Trim(),
+                            Caratula = x.Caratula.Trim()
                         })
                     .GroupBy(y =>
                         new
@@ -346,7 +347,8 @@ namespace ResourceServer.Models.DataAccess
                             y.CuitRteComercialProductor,
                             y.NomRteComercialProductor,
                             y.CuitRteComercialVentaPrimaria,
-                            y.NomRteComercialVentaPrimaria
+                            y.NomRteComercialVentaPrimaria,
+                            y.Caratula
                         }
                     )
                     .Select(z => new Consignacion
@@ -370,7 +372,8 @@ namespace ResourceServer.Models.DataAccess
                         CuitRteComercialProductor = z.Key.CuitRteComercialProductor,
                         NomRteComercialProductor = z.Key.NomRteComercialProductor,
                         CuitRteComercialVentaPrimaria = z.Key.CuitRteComercialVentaPrimaria,
-                        NomRteComercialVentaPrimaria = z.Key.NomRteComercialVentaPrimaria
+                        NomRteComercialVentaPrimaria = z.Key.NomRteComercialVentaPrimaria,
+                        Caratula = z.Key.Caratula
                     })
                     .ToList();
                 HibernateUtil.Dispose();

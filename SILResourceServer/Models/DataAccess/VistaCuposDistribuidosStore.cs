@@ -34,7 +34,7 @@ namespace ResourceServer.Models.DataAccess
         {
             throw new NotImplementedException();
         }
-
+  /*CA: Para la etapa 2 de la inclusion de caratula - aca debemos filtrar tbn por caratula -  debemos incluir la columna en la vista*/
         public IList<VistaCuposDistribuidos> FindByFilterOfView(VistaCuposDistribuidos CompVendDestProdCenConsignacion, string cosechaDesde, 
             string cosechaHasta, int fechaDesde, int fechaEntrega, LocalType.ContratosPor contratosPor, IList<long> vendedores)
         {

@@ -122,7 +122,8 @@ namespace ResourceServer.Models
         public virtual string Usuario { get; set; }
         public virtual string DetalleCupoCNRT { get; set; }
         public virtual DateTime? FechaYHoraInformado { get; set; }
-
+        public virtual string Caratula { get; set; }
+        public virtual string ContactoComercial { get; set; }
         public virtual bool VendcyoBoolValue
         {
             get { return Vendcyo != 0; }
@@ -166,7 +167,8 @@ namespace ResourceServer.Models
                 CuitRteComercialProductor = this.CuitRteComercialProductor,
                 NomRteComercialProductor = this.NomRteComercialProductor,
                 CuitRteComercialVentaPrimaria = this.CuitRteComercialVentaPrimaria,
-                NomRteComercialVentaPrimaria = this.NomRteComercialVentaPrimaria
+                NomRteComercialVentaPrimaria = this.NomRteComercialVentaPrimaria,
+                Caratula = this.Caratula
             };
         }
 
@@ -193,7 +195,8 @@ namespace ResourceServer.Models
                 CuitRteComercialProductor = string.IsNullOrEmpty(this.CuitRteComercialProductor)? null : this.CuitRteComercialProductor.Trim(),
                 NomRteComercialProductor = string.IsNullOrEmpty(this.NomRteComercialProductor) ? null : this.NomRteComercialProductor.Trim(),
                 CuitRteComercialVentaPrimaria = string.IsNullOrEmpty(this.CuitRteComercialVentaPrimaria) ? null : this.CuitRteComercialVentaPrimaria.Trim(),
-                NomRteComercialVentaPrimaria = string.IsNullOrEmpty(this.NomRteComercialVentaPrimaria) ? null : this.NomRteComercialVentaPrimaria.Trim()
+                NomRteComercialVentaPrimaria = string.IsNullOrEmpty(this.NomRteComercialVentaPrimaria) ? null : this.NomRteComercialVentaPrimaria.Trim(),
+                Caratula = string.IsNullOrEmpty(this.Caratula) ? null : this.Caratula.Trim()
             };
         }
 

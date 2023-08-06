@@ -50,8 +50,11 @@ namespace ResourceServer.Models
         [Display(Name = "Nombre")]
         public virtual string NomRteComercialVentaPrimaria { get; set; }
         public string Observacion { get; set; }
-
-        public Consignacion()
+        [Display(Name = "Caratula")]
+        public virtual string Caratula { get; set; }
+        [Display(Name = "Contacto Comercial")]
+        public virtual string ContactoComercial { get; set; }
+    public Consignacion()
         {
 
         }
@@ -252,7 +255,15 @@ namespace ResourceServer.Models
             {
               cupos = cupos.Where(x => this.CuitRteComercialVentaPrimaria == x.CuitRteComercialVentaPrimaria);
             }
-            return cupos;
+            if (this.Caratula == null || this.Caratula.Trim() == "")
+            {
+              cupos = cupos.Where(x => x.Caratula== null || x.Caratula.Trim() == "");
+            }
+            else
+            {
+              cupos = cupos.Where(x => this.Caratula == x.Caratula);
+            }
+        return cupos;
         }
 
         public IQueryable<Cupos> FiltroConsignacionIgnoreIfIsNull(IQueryable<Cupos> cupos)

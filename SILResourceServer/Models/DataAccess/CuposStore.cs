@@ -1526,7 +1526,8 @@ namespace ResourceServer.Models.DataAccess
                         x.Cuerpo.NomRteComercialProductor.Trim() == (!string.IsNullOrEmpty(Consignacion.CuitRteComercialProductor) ? Consignacion.CuitRteComercialProductor.Trim() : Consignacion.CuitRteComercialProductor) &&
                         x.Cuerpo.CuitRteComercialProductor == Consignacion.CuitRteComercialProductor &&
                         x.Cuerpo.NomRteComercialVentaPrimaria.Trim() == (!string.IsNullOrEmpty(Consignacion.NomRteComercialVentaPrimaria) ? Consignacion.NomRteComercialVentaPrimaria.Trim() : Consignacion.NomRteComercialVentaPrimaria) &&
-                        x.Cuerpo.CuitRteComercialVentaPrimaria == Consignacion.CuitRteComercialVentaPrimaria
+                        x.Cuerpo.CuitRteComercialVentaPrimaria == Consignacion.CuitRteComercialVentaPrimaria &&
+                        x.Cuerpo.Caratula == (!string.IsNullOrEmpty(Consignacion.Caratula) ? Consignacion.Caratula.Trim() : Consignacion.Caratula)
                     )
                     .GroupBy(y =>
                         new
@@ -1552,6 +1553,7 @@ namespace ResourceServer.Models.DataAccess
                             y.Cuerpo.NomRteComercialProductor,
                             y.Cuerpo.CuitRteComercialVentaPrimaria,
                             y.Cuerpo.NomRteComercialVentaPrimaria,
+                            y.Cuerpo.Caratula,
                             y.Cuerpo.Observa
                         }
                     )
@@ -2412,6 +2414,7 @@ namespace ResourceServer.Models.DataAccess
                             y.NomRteComercialProductor,
                             y.CuitRteComercialVentaPrimaria,
                             y.NomRteComercialVentaPrimaria,
+                            y.Caratula,
                             y.Fecha
                         }
                     )
@@ -2440,6 +2443,7 @@ namespace ResourceServer.Models.DataAccess
                                 NomRteComercialProductor = z.Key.NomRteComercialProductor,
                                 CuitRteComercialVentaPrimaria = z.Key.CuitRteComercialVentaPrimaria,
                                 NomRteComercialVentaPrimaria = z.Key.NomRteComercialVentaPrimaria,
+                                Caratula= z.Key.Caratula,
                                 Fecha = z.Key.Fecha
                             },
                             Count = z.Count()
