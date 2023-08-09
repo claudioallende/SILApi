@@ -32,7 +32,8 @@ namespace ResourceServer.Models
 
     public CuposDist() { }
 
-        public CuposDist(long CuentaComprador, long CuentaVendedor, int CodigoGrano, long CuentaDestino, string Centro, DateTime Fecha, Consignacion Consignacion) {
+        public CuposDist(long CuentaComprador, long CuentaVendedor, int CodigoGrano, long CuentaDestino, string Centro, DateTime Fecha, Consignacion Consignacion) 
+        {
             this.Ctacomp = CuentaComprador;
             this.CtaVend = CuentaVendedor;
             this.Grano = CodigoGrano;
@@ -49,6 +50,7 @@ namespace ResourceServer.Models
             this.Cuitdestinatario = Consignacion.Cuitdestinatario;
             this.CuitRteComercialProductor = Consignacion.CuitRteComercialProductor;
             this.CuitRteComercialVentaPrimaria = Consignacion.CuitRteComercialVentaPrimaria;
+            this.Caratula = Consignacion.Caratula;
         }
 
         public virtual Consignacion GetConsignacion()
@@ -64,7 +66,8 @@ namespace ResourceServer.Models
                 Cuitrteent = this.Cuitrteent,
                 Cuitdestinatario = this.Cuitdestinatario,
                 CuitRteComercialProductor = this.CuitRteComercialProductor,
-                CuitRteComercialVentaPrimaria = this.CuitRteComercialVentaPrimaria
+                CuitRteComercialVentaPrimaria = this.CuitRteComercialVentaPrimaria,
+                Caratula = this.Caratula
             };
         }
 
@@ -79,6 +82,7 @@ namespace ResourceServer.Models
             this.Cuitdestinatario = consignacion.Cuitdestinatario;
             this.CuitRteComercialProductor = consignacion.CuitRteComercialProductor;
             this.CuitRteComercialVentaPrimaria = consignacion.CuitRteComercialVentaPrimaria;
+            this.Caratula = consignacion.Caratula;
         }
     }
 }

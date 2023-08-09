@@ -86,6 +86,9 @@ namespace ResourceServer.Models
         public virtual string Cuitdestinatario { get; set; }
         public virtual string CuitRteComercialProductor { get; set; }
         public virtual string CuitRteComercialVentaPrimaria { get; set; }
+        //public virtual string Caratula { get; set; }
+        //public virtual string ContactoComercial { get; set; }
+
     public virtual int Vendcyo { get; set; }
 
         public virtual Consignacion GetConsignacion()
