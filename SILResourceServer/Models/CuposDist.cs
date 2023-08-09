@@ -28,8 +28,9 @@ namespace ResourceServer.Models
         public virtual string CuitRteComercialProductor { get; set; }
         public virtual string CuitRteComercialVentaPrimaria { get; set; }
         public virtual string Usuario { get; set; }
+        public virtual string Caratula { get; set; }
 
-        public CuposDist() { }
+    public CuposDist() { }
 
         public CuposDist(long CuentaComprador, long CuentaVendedor, int CodigoGrano, long CuentaDestino, string Centro, DateTime Fecha, Consignacion Consignacion) {
             this.Ctacomp = CuentaComprador;

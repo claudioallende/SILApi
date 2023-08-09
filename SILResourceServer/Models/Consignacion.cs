@@ -92,7 +92,15 @@ namespace ResourceServer.Models
         {
             return this.Observacion;
         }
+        public void SetContactoComercial(string ContactoComercial)
+        {
+          this.ContactoComercial = ContactoComercial;
+        }
 
+        public string GetContactoComercial()
+        {
+          return this.ContactoComercial;
+        }
         public override bool Equals(Object obj)
         {
             //Check for null and compare run-time types.

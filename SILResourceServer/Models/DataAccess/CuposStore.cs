@@ -1570,8 +1570,85 @@ namespace ResourceServer.Models.DataAccess
             }
         }
 
+    public string FindLastContactoComercialByConsignacion(long compcta, long vendcta, int grano, long puerto, Consignacion Consignacion)
+    {
+      using (ISession session = HibernateUtil.OpenSession(mapping))
+      {
+        string contactoComercial = session.Query<Cupos>()
+            .Join(session.Query<Cupos>(), encab => encab.Id, cuerpo => cuerpo.Idorigen, (encab, cuerpo) => new { Encabezado = encab, Cuerpo = cuerpo })
+            .Where(x =>
+                (x.Encabezado.Compcta == compcta || x.Cuerpo.Compcta == compcta) &&
+                x.Cuerpo.Vendcta == vendcta &&
+                x.Cuerpo.Grano == grano &&
+                x.Cuerpo.Fecha.Date >= DateTime.Now.Date &&
+                x.Cuerpo.Fecha.Date <= DateTime.Now.Date.AddDays(5) &&
+                x.Cuerpo.Puerto == puerto &&
+                x.Cuerpo.Tipo == 1 &&
+                x.Cuerpo.Status != 3 &&
+                x.Cuerpo.Nomsolicitante.Trim() == (!string.IsNullOrEmpty(Consignacion.Nomsolicitante) ? Consignacion.Nomsolicitante.Trim() : Consignacion.Nomsolicitante) &&
+                x.Cuerpo.Cuitsolicitante == Consignacion.Cuitsolicitante &&
+                x.Cuerpo.Nomintermediario.Trim() == (!string.IsNullOrEmpty(Consignacion.Nomintermediario) ? Consignacion.Nomintermediario.Trim() : Consignacion.Nomintermediario) &&
+                x.Cuerpo.Cuitintermediario == Consignacion.Cuitintermediario &&
+                x.Cuerpo.Nomrtecomercial.Trim() == (!string.IsNullOrEmpty(Consignacion.Nomrtecomercial) ? Consignacion.Nomrtecomercial.Trim() : Consignacion.Nomrtecomercial) &&
+                x.Cuerpo.Cuitrtecomercial == Consignacion.Cuitrtecomercial &&
+                x.Cuerpo.Nomcorrcomp.Trim() == (!string.IsNullOrEmpty(Consignacion.Nomcorrcomp) ? Consignacion.Nomcorrcomp.Trim() : Consignacion.Nomcorrcomp) &&
+                x.Cuerpo.Cuitcorrcomp == Consignacion.Cuitcorrcomp &&
+                x.Cuerpo.Nommat.Trim() == (!string.IsNullOrEmpty(Consignacion.Nommat) ? Consignacion.Nommat.Trim() : Consignacion.Nommat) &&
+                x.Cuerpo.Cuitmat == Consignacion.Cuitmat &&
+                x.Cuerpo.Nomcorrvta.Trim() == (!string.IsNullOrEmpty(Consignacion.Nomcorrvta) ? Consignacion.Nomcorrvta.Trim() : Consignacion.Nomcorrvta) &&
+                x.Cuerpo.Cuitcorrvta == Consignacion.Cuitcorrvta &&
+                x.Cuerpo.Nomrteent.Trim() == (!string.IsNullOrEmpty(Consignacion.Nomrteent) ? Consignacion.Nomrteent.Trim() : Consignacion.Nomrteent) &&
+                x.Cuerpo.Cuitrteent == Consignacion.Cuitrteent &&
+                x.Cuerpo.Nomdestinatario.Trim() == (!string.IsNullOrEmpty(Consignacion.Nomdestinatario) ? Consignacion.Nomdestinatario.Trim() : Consignacion.Nomdestinatario) &&
+                x.Cuerpo.Cuitdestinatario == Consignacion.Cuitdestinatario &&
+                x.Cuerpo.NomRteComercialProductor.Trim() == (!string.IsNullOrEmpty(Consignacion.CuitRteComercialProductor) ? Consignacion.CuitRteComercialProductor.Trim() : Consignacion.CuitRteComercialProductor) &&
+                x.Cuerpo.CuitRteComercialProductor == Consignacion.CuitRteComercialProductor &&
+                x.Cuerpo.NomRteComercialVentaPrimaria.Trim() == (!string.IsNullOrEmpty(Consignacion.NomRteComercialVentaPrimaria) ? Consignacion.NomRteComercialVentaPrimaria.Trim() : Consignacion.NomRteComercialVentaPrimaria) &&
+                x.Cuerpo.CuitRteComercialVentaPrimaria == Consignacion.CuitRteComercialVentaPrimaria &&
+                x.Cuerpo.Caratula == (!string.IsNullOrEmpty(Consignacion.Caratula) ? Consignacion.Caratula.Trim() : Consignacion.Caratula)
+            )
+            .GroupBy(y =>
+                new
+                {
+                  y.Cuerpo.Fecha,
+                  y.Cuerpo.Cuitsolicitante,
+                  y.Cuerpo.Nomsolicitante,
+                  y.Cuerpo.Cuitintermediario,
+                  y.Cuerpo.Nomintermediario,
+                  y.Cuerpo.Cuitrtecomercial,
+                  y.Cuerpo.Nomrtecomercial,
+                  y.Cuerpo.Cuitcorrcomp,
+                  y.Cuerpo.Nomcorrcomp,
+                  y.Cuerpo.Cuitmat,
+                  y.Cuerpo.Nommat,
+                  y.Cuerpo.Cuitcorrvta,
+                  y.Cuerpo.Nomcorrvta,
+                  y.Cuerpo.Cuitrteent,
+                  y.Cuerpo.Nomrteent,
+                  y.Cuerpo.Cuitdestinatario,
+                  y.Cuerpo.Nomdestinatario,
+                  y.Cuerpo.CuitRteComercialProductor,
+                  y.Cuerpo.NomRteComercialProductor,
+                  y.Cuerpo.CuitRteComercialVentaPrimaria,
+                  y.Cuerpo.NomRteComercialVentaPrimaria,
+                  y.Cuerpo.Caratula,
+                  y.Cuerpo.ContactoComercial
+                }
+            )
+            .Select(z => new Cupos
+            {
+              Fecha = z.Key.Fecha,
+              ContactoComercial = z.Key.ContactoComercial
+            })
+            .OrderByDescending(x => x.Fecha)
+            .Select(x => x.ContactoComercial)
+            .FirstOrDefault();
+        HibernateUtil.Dispose();
+        return contactoComercial;
+      }
+    }
 
-        public IList<Cupos> FindByGranoAndCompradorAndVendedorAndPuertoAndVendcyoAndConsignacion(int Grano, long Comprador, long Vendedor, long Puerto, long Vendcyo, Consignacion Consignacion)
+    public IList<Cupos> FindByGranoAndCompradorAndVendedorAndPuertoAndVendcyoAndConsignacion(int Grano, long Comprador, long Vendedor, long Puerto, long Vendcyo, Consignacion Consignacion)
         {
             using (ISession session = HibernateUtil.OpenSession(mapping))
             {
