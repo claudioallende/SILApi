@@ -73,6 +73,7 @@ namespace ResourceServer.Models
             BuscarYMostrarCentros();
             BuscarYMostrarConsignaciones(); /*CA: ver que hacer con caratula y CC. es consigna o no. lo manejamos como observa?*/
             ObtenerUltimaObservacionPorDia();
+            ObtenerUltimoContactoComercialPorDia();
             BuscarYMostrarCuposAgrupadosInforamdos();
         }
         public void BuscarYMostrarDatos()
@@ -117,6 +118,14 @@ namespace ResourceServer.Models
                 Consignacion.SetObservacion(StoreCupos.FindLastObservacionByConsignacion(CuentaComprador, CuentaVendedor, CodigoProducto, CuentaPuerto, Consignacion));
             }
         }
+        public void ObtenerUltimoContactoComercialPorDia()
+        {
+          foreach (var Consignacion in Consignaciones)
+          {
+            Consignacion.SetContactoComercial(StoreCupos.FindLastContactoComercialByConsignacion(CuentaComprador, CuentaVendedor, CodigoProducto, CuentaPuerto, Consignacion));
+          }
+        }
+    
         public void BuscarYMostrarProducto()
         {
             StoreGrano = new GranoStore();

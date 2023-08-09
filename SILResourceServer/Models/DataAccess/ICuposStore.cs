@@ -103,6 +103,7 @@ namespace ResourceServer.Models.DataAccess
         IList<Counter<Cupos>> FindConsignacionesAndObservacionForKey(Int64 compcta, Int64 vendcta, int grano, DateTime? fechaDesde, DateTime? fechaHasta, long puerto);
         Cupos FindCupoLastObservacionByConsignacion(long compcta, long vendcta, int grano, long puerto, Consignacion Consignacion);
         string FindLastObservacionByConsignacion(long compcta, long vendcta, int grano, long puerto, Consignacion Consignacion);
+        string FindLastContactoComercialByConsignacion(long compcta, long vendcta, int grano, long puerto, Consignacion Consignacion);
         /// <summary>
         /// Busca cupos por grano, comprador, vendedor, puerto, vendcyo y consignacion sin tener en cuenta el status del cupo.
         /// </summary>
