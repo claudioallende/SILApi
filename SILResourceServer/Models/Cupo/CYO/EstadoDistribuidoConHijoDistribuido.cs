@@ -16,7 +16,7 @@ namespace ResourceServer.Models.Cupo.CYO
             base.Codigo = CodigoEstado.CuentaYOrdenDistribuidoConHijoDistribuido;
         }
 
-        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, long destino, string centro, DateTime fecha, long uvdist, ISession session)
+        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, string contactoComercial, long destino, string centro, DateTime fecha, long uvdist, ISession session)
         {
             throw new NotImplementedException();
         }

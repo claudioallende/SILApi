@@ -34,7 +34,7 @@ namespace ResourceServer.Models.Cupo
             CuposStore = new CuposStore();
         }
 
-        public abstract void Distribuir(long vendedor, Consignacion consignacion, string observacion, long destino, string centro, DateTime fecha, long Uvdist, ISession session);
+        public abstract void Distribuir(long vendedor, Consignacion consignacion, string observacion, string contactoComercial, long destino, string centro, DateTime fecha, long Uvdist, ISession session);
         public abstract bool PuedeDistribuir();
         public abstract void Informar(Cupos Encabezado, ISession session);
         public abstract bool PuedeInformar();
@@ -172,7 +172,7 @@ namespace ResourceServer.Models.Cupo
         {
             Cupos CupoPadre = GetCupoPadreCyO(4, session);
             //Los parametros no los uso, solo cambia el estado a 5
-            CupoPadre.GetEstado().Distribuir(CupoPadre.Vendcta, CupoPadre.GetConsignacion(), CupoPadre.Observa, 0, null, DateTime.Now, UvDist, session);
+            CupoPadre.GetEstado().Distribuir(CupoPadre.Vendcta, CupoPadre.GetConsignacion(), CupoPadre.Observa, CupoPadre.ContactoComercial, 0, null, DateTime.Now, UvDist, session);
         }
 
         //Si es CUIT de ACA verificar que la cuenta este en la DTabla

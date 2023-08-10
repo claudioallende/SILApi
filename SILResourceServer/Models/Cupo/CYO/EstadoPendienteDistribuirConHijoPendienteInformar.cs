@@ -15,7 +15,7 @@ namespace ResourceServer.Models.Cupo.CYO
             base.Codigo = CodigoEstado.CuentaYOredenPendienteDistribuirHijoPendienteInformar;
         }
 
-        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, long destino, string centro, DateTime fecha, long Uvdist, NHibernate.ISession session)
+        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, string contactoComercial, long destino, string centro, DateTime fecha, long Uvdist, NHibernate.ISession session)
         {
             throw new CupoBloqueadoParaDistribuirException();
         }

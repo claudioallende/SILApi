@@ -226,7 +226,7 @@ namespace ResourceServer.Models
                         {
                             HibernateUtil.RefreshBeforeUpdate<CuposDist>(Distribucion, session);
                             CuposADistribuir = this.ServicioCupo.GetCuposTransformarSiVendedorEsCYO(cuerposDisponibles, vistaCuposDistribViewRow.Vendcta, cupoPedidosDiaCteView, session);
-                            IList<Cupos> CuposDistribuidos = DistribuirCupos(CuposADistribuir, vistaCuposDistribViewRow.Vendcta, retornaDiainDate(dia), cupoConsignacion.GetConsignacion(), vistaCuposDistribViewRow.Ctadestino, vistaCuposDistribViewRow.Centro, cupoConsignacion.Observa, Distribucion.Uvalue, session);
+                            IList<Cupos> CuposDistribuidos = DistribuirCupos(CuposADistribuir, vistaCuposDistribViewRow.Vendcta, retornaDiainDate(dia), cupoConsignacion.GetConsignacion(), vistaCuposDistribViewRow.Ctadestino, vistaCuposDistribViewRow.Centro, cupoConsignacion.Observa, cupoConsignacion.ContactoComercial, Distribucion.Uvalue, session);
                             Distribucion.Cupos += cupoPedidosDiaCteView;
                             Distribucion.Usuario = ResourceServer.Models.Identity.IdentityHelper.GetUsuarioLogueado();
                             this.ServicioDistribucion.ActualizarDistribucion(Distribucion, session);
@@ -457,7 +457,7 @@ namespace ResourceServer.Models
             return ListaCupos.Count >= Cantidad;
         }
 
-        private IList<Cupos> DistribuirCupos(IList<Cupos> ListaCupos, long CuentaVendedor, DateTime Fecha, Consignacion Consignacion, long CuentaDestino, string Centro, string Observacion, long Uvdist, ISession Session)
+        private IList<Cupos> DistribuirCupos(IList<Cupos> ListaCupos, long CuentaVendedor, DateTime Fecha, Consignacion Consignacion, long CuentaDestino, string Centro, string Observacion, string ContactoComercial, long Uvdist, ISession Session)
         {
             IList<Cupos> Lista = new List<Cupos>();
             Cupos CupoSeleccionado = null;
@@ -466,7 +466,7 @@ namespace ResourceServer.Models
                 foreach (Cupos Cupo in ListaCupos)
                 {
                     CupoSeleccionado = Cupo;
-                    Cupo.GetEstado().Distribuir(CuentaVendedor, Consignacion, Observacion, CuentaDestino, Centro, Fecha, Uvdist, Session);
+                    Cupo.GetEstado().Distribuir(CuentaVendedor, Consignacion, Observacion, ContactoComercial, CuentaDestino, Centro, Fecha, Uvdist, Session);
                     Lista.Add(Cupo);
                 }
             }
@@ -492,7 +492,7 @@ namespace ResourceServer.Models
         {
             if (cuerposDisponibles.Count > 0) {
                 Cupos element = cuerposDisponibles.ElementAt(ordenDeDistribucion);
-                element.GetEstado().Distribuir(vendcta, cuposConsignacion.GetConsignacion(), cuposConsignacion.Observa, destino, centro, fecha, uvdist, session);   
+                element.GetEstado().Distribuir(vendcta, cuposConsignacion.GetConsignacion(), cuposConsignacion.Observa, cuposConsignacion.ContactoComercial, destino, centro, fecha, uvdist, session);   
                 cuerposDisponibles.RemoveAt(0);
                 return element;
             }
