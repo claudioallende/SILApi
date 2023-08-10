@@ -15,13 +15,14 @@ namespace ResourceServer.Models.Cupo.CYO
             base.Codigo = CodigoEstado.CuentaYOrdenCreado;
         }
 
-        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, long destino, string centro, DateTime fecha, long uvdist, ISession session)
+        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, string contactoComercial, long destino, string centro, DateTime fecha, long uvdist, ISession session)
         {
             if (PuedeDistribuir())
             {
                 base.Cupo.Vendcta = vendedor;
                 base.Cupo.SetConsignacion(consignacion);
                 base.Cupo.Observa = observacion;
+                base.Cupo.ContactoComercial = contactoComercial;
                 base.Cupo.Status = 4;
                 base.Cupo.Centrodist = centro;
                 base.Cupo.Usuario = ResourceServer.Models.Identity.IdentityHelper.GetUsuarioLogueado();

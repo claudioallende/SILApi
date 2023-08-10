@@ -488,6 +488,14 @@ namespace ResourceServer.Models
             {
                 cupos = cupos.Where(x => this.CuitRteComercialVentaPrimaria == x.CuitRteComercialVentaPrimaria);
             }
+            if (this.Caratula == null || this.Caratula.Trim() == "")
+            {
+              cupos = cupos.Where(x => x.Caratula == null || x.Caratula.Trim() == "");
+            }
+            else
+            {
+              cupos = cupos.Where(x => this.Caratula == x.Caratula);
+            }
             return cupos;
         }
 

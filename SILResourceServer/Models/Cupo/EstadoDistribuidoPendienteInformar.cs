@@ -18,7 +18,7 @@ namespace ResourceServer.Models.Cupo
             base.Codigo = CodigoEstado.DistribuidoPendienteInformar;
         }
 
-        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, long destino, string centro, DateTime fecha, long Uvdist, ISession session)
+        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, string contactoComercial, long destino, string centro, DateTime fecha, long Uvdist, ISession session)
         {
             throw new NotImplementedException();
         }

@@ -19,7 +19,7 @@ namespace ResourceServer.Models.Cupo
             base.Codigo = CodigoEstado.Creado;
         }
 
-        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, long destino, string centro, DateTime fecha, long Uvdist, ISession session)
+        public override void Distribuir(long vendedor, Consignacion consignacion, string observacion, string contactoComercial, long destino, string centro, DateTime fecha, long Uvdist, ISession session)
         {
             //var condicion = false;
             if (PuedeDistribuir())
@@ -27,6 +27,7 @@ namespace ResourceServer.Models.Cupo
                 base.Cupo.Vendcta = vendedor;
                 base.Cupo.SetConsignacion(consignacion);
                 base.Cupo.Observa = observacion;
+                base.Cupo.ContactoComercial = contactoComercial;
                 base.Cupo.Status = 4;
                 base.Cupo.Pdf = 1;
                 base.Cupo.Centrodist = centro;
