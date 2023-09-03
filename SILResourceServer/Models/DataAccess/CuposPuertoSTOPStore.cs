@@ -58,7 +58,12 @@ namespace ResourceServer.Models.DataAccess
             throw new NotImplementedException();
         }
 
-        public CuposPuertoSTOP FindByNroPuerto(long nroPuerto, ISession session)
+    public IList<ICuenta> FindByCuits(IList<string> cuits)
+    {
+      throw new NotImplementedException();
+    }
+
+    public CuposPuertoSTOP FindByNroPuerto(long nroPuerto, ISession session)
     {
       CuposPuertoSTOP puertosSTOP = session.Query<CuposPuertoSTOP>().Where(c => c.NroPuerto == nroPuerto).FirstOrDefault();
       return puertosSTOP;

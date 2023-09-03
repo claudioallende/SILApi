@@ -120,7 +120,7 @@ namespace ResourceServer.Models
                     (Cuitrteent == c.Cuitrteent) && Nomrteent == c.Nomrteent &&
                     (Cuitdestinatario == c.Cuitdestinatario) && Nomdestinatario == c.Nomdestinatario &&
                     (CuitRteComercialProductor == c.CuitRteComercialProductor) && NomRteComercialProductor == c.NomRteComercialProductor &&
-                    (CuitRteComercialVentaPrimaria == c.CuitRteComercialVentaPrimaria) && NomRteComercialVentaPrimaria == c.NomRteComercialVentaPrimaria;
+                    (CuitRteComercialVentaPrimaria == c.CuitRteComercialVentaPrimaria) && NomRteComercialVentaPrimaria == c.NomRteComercialVentaPrimaria && Caratula == c.Caratula;
             }
         }
 

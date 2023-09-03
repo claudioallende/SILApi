@@ -250,5 +250,10 @@ namespace ResourceServer.Models.DataAccess
         {
             throw new NotImplementedException();
         }
+
+    public IList<ICuenta> FindByCuits(IList<string> cuits)
+    {
+      throw new NotImplementedException();
     }
+  }
 }

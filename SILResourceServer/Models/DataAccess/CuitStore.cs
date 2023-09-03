@@ -215,5 +215,17 @@ namespace ResourceServer.Models.DataAccess
         {
             throw new NotImplementedException();
         }
+
+    public IList<ICuenta> FindByCuits(IList<string> cuits)
+    {
+      using (ISession session = HibernateUtil.OpenSession(mapping))
+      {
+        IList<ICuenta> mycuenta = session.Query<CuposCuit>()
+             .Where(c => cuits.Contains(c.Cuit))
+             .ToList<ICuenta>();
+        HibernateUtil.Dispose();
+        return mycuenta;
+      }
     }
+  }
 }

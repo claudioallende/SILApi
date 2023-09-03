@@ -337,5 +337,10 @@ namespace ResourceServer.Models.DataAccess
         {
             return FindAll().ToList<ICuenta>();
         }
+
+    public IList<ICuenta> FindByCuits(IList<string> cuits)
+    {
+      throw new NotImplementedException();
     }
+  }
 }
