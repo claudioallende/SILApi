@@ -18,7 +18,7 @@ namespace ResourceServer.Models
         public string puerto { get; set; }
         [Required]
         [Display(Name="Consignacion")]
-        public string ConsignacionSeleccionada { get; set; }
+        public Consignacion ConsignacionSeleccionada { get; set; }
         //[Required]
         //[RegularExpression("^([0-9]{4})|0$", ErrorMessage = "Formato incorrecto")]
         public string CosechaDesde { get; set; }
