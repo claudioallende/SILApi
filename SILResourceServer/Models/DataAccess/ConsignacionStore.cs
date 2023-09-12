@@ -290,7 +290,7 @@ namespace ResourceServer.Models.DataAccess
     {
       using (ISession session = HibernateUtil.OpenSession(mapping))
       {
-        IList<Consignacion> consignaciones = session.Query<Cupos>()
+        IList<Consignacion> cupo = session.Query<Cupos>()
             .Where(x =>
                 x.Compcta == comp &&
                 x.Vendcta == vend &&
@@ -352,75 +352,37 @@ namespace ResourceServer.Models.DataAccess
                   y.Caratula,
                   y.ContactoComercial
                 }
-            ).Select(x => x.First())
+            )
+            .Select(z => new Consignacion
+            {
+              Cuitsolicitante = z.Key.Cuitsolicitante,
+              Nomsolicitante = z.Key.Nomsolicitante,
+              Cuitintermediario = z.Key.Cuitintermediario,
+              Nomintermediario = z.Key.Nomintermediario,
+              Cuitrtecomercial = z.Key.Cuitrtecomercial,
+              Nomrtecomercial = z.Key.Nomrtecomercial,
+              Cuitcorrcomp = z.Key.Cuitcorrcomp,
+              Nomcorrcomp = z.Key.Nomcorrcomp,
+              Cuitmat = z.Key.Cuitmat,
+              Nommat = z.Key.Nommat,
+              Cuitcorrvta = z.Key.Cuitcorrvta,
+              Nomcorrvta = z.Key.Nomcorrvta,
+              Cuitrteent = z.Key.Cuitrteent,
+              Nomrteent = z.Key.Nomrteent,
+              Cuitdestinatario = z.Key.Cuitdestinatario,
+              Nomdestinatario = z.Key.Nomdestinatario,
+              CuitRteComercialProductor = z.Key.CuitRteComercialProductor,
+              NomRteComercialProductor = z.Key.NomRteComercialProductor,
+              CuitRteComercialVentaPrimaria = z.Key.CuitRteComercialVentaPrimaria,
+              NomRteComercialVentaPrimaria = z.Key.NomRteComercialVentaPrimaria,
+              Caratula = z.Key.Caratula,
+              ContactoComercial = z.Key.ContactoComercial
+            })
             .ToList();
-
-        var groupConsignaciones = consignaciones.GroupBy(y =>
-                new
-                {
-                  y.Cuitsolicitante,
-                  y.Nomsolicitante,
-                  y.Cuitintermediario,
-                  y.Nomintermediario,
-                  y.Cuitrtecomercial,
-                  y.Nomrtecomercial,
-                  y.Cuitcorrcomp,
-                  y.Nomcorrcomp,
-                  y.Cuitmat,
-                  y.Nommat,
-                  y.Cuitcorrvta,
-                  y.Nomcorrvta,
-                  y.Cuitrteent,
-                  y.Nomrteent,
-                  y.Cuitdestinatario,
-                  y.Nomdestinatario,
-                  y.CuitRteComercialProductor,
-                  y.NomRteComercialProductor,
-                  y.CuitRteComercialVentaPrimaria,
-                  y.NomRteComercialVentaPrimaria,
-                  y.Caratula
-                }
-            );
-
-        foreach(var groupConsignacion in groupConsignaciones)
-        {
-          string contactoComercial = groupConsignacion.OrderByDescending(x => x.ContactoComercial).First().ContactoComercial;
-          foreach (Consignacion consignacion in groupConsignacion.OrderByDescending(x => x.ContactoComercial))
-          {
-            consignacion.ContactoComercial = contactoComercial;
-          }
-        }
-
         HibernateUtil.Dispose();
-        return consignaciones.GroupBy(y =>
-                new
-                {
-                  y.Cuitsolicitante,
-                  y.Nomsolicitante,
-                  y.Cuitintermediario,
-                  y.Nomintermediario,
-                  y.Cuitrtecomercial,
-                  y.Nomrtecomercial,
-                  y.Cuitcorrcomp,
-                  y.Nomcorrcomp,
-                  y.Cuitmat,
-                  y.Nommat,
-                  y.Cuitcorrvta,
-                  y.Nomcorrvta,
-                  y.Cuitrteent,
-                  y.Nomrteent,
-                  y.Cuitdestinatario,
-                  y.Nomdestinatario,
-                  y.CuitRteComercialProductor,
-                  y.NomRteComercialProductor,
-                  y.CuitRteComercialVentaPrimaria,
-                  y.NomRteComercialVentaPrimaria,
-                  y.Caratula
-                }
-            ).Select(x => x.First()).ToList();
+        return cupo;
       }
     }
-
 
     public IList<Consignacion> FindByGranoAndCompAndVendAndPuertoAndVendcyo(int grano, long comp, long vend, long puerto, long[] vendcyo)
     {
