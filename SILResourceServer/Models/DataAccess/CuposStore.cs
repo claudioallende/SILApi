@@ -2492,6 +2492,7 @@ namespace ResourceServer.Models.DataAccess
                             y.CuitRteComercialVentaPrimaria,
                             y.NomRteComercialVentaPrimaria,
                             y.Caratula,
+                            y.ContactoComercial,
                             y.Fecha
                         }
                     )
@@ -2521,6 +2522,7 @@ namespace ResourceServer.Models.DataAccess
                                 CuitRteComercialVentaPrimaria = z.Key.CuitRteComercialVentaPrimaria,
                                 NomRteComercialVentaPrimaria = z.Key.NomRteComercialVentaPrimaria,
                                 Caratula= z.Key.Caratula,
+                                ContactoComercial = z.Key.ContactoComercial,
                                 Fecha = z.Key.Fecha
                             },
                             Count = z.Count()

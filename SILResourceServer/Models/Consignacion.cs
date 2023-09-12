@@ -271,7 +271,15 @@ namespace ResourceServer.Models
             {
               cupos = cupos.Where(x => this.Caratula == x.Caratula);
             }
-        return cupos;
+            if (this.ContactoComercial == null || this.ContactoComercial.Trim() == "")
+            {
+              cupos = cupos.Where(x => x.ContactoComercial == null || x.ContactoComercial.Trim() == "");
+            }
+            else
+            {
+              cupos = cupos.Where(x => this.ContactoComercial == x.ContactoComercial);
+            }
+      return cupos;
         }
 
         public IQueryable<Cupos> FiltroConsignacionIgnoreIfIsNull(IQueryable<Cupos> cupos)
