@@ -65,14 +65,7 @@ namespace ResourceServer.Models.Email
 
         GenerarPdfsEInformar(CuentaVendedor, PdfsAEnviarPorMails);
 
-        var ContactosComerciales = this.ListaCuposAInformar.Cast<Cupos>().SelectMany(x => x.ContactoComercial?.Split(';')).GroupBy(x => x).Select(x => x.Key);
-        foreach (string ContactoComercial in ContactosComerciales)
-        {
-          IList<Cupos> ListaCuposContactoComercial = this.ListaCuposAInformar.Cast<Cupos>().Where(x => x.ContactoComercial.Split(';').Any(y => y == ContactoComercial)).ToList();
-          IList<PdfCupos> PdfsAEnviarPorMailsContactoComercial = GenerarPdfsDistribucion(ListaCuposContactoComercial);
-
-          GenerarPdfsEInformar(long.Parse(ContactoComercial), PdfsAEnviarPorMailsContactoComercial);
-        }
+        InformarContactosComerciales(this.ListaCuposAInformar.Cast<Cupos>());
 
         using (ISession session = HibernateUtil.OpenSession())
         using (ITransaction tx = session.BeginTransaction())
@@ -90,6 +83,18 @@ namespace ResourceServer.Models.Email
         }
       }
       return EmailsInformados;
+    }
+
+    private void InformarContactosComerciales(IEnumerable<Cupos> CuposAInformar)
+    {
+      var ContactosComerciales = CuposAInformar.SelectMany(x => x.ContactoComercial?.Split(';')).GroupBy(x => x).Select(x => x.Key);
+      foreach (string ContactoComercial in ContactosComerciales)
+      {
+        IList<Cupos> ListaCuposContactoComercial = CuposAInformar.Where(x => x.ContactoComercial.Split(';').Any(y => y == ContactoComercial)).ToList();
+        IList<PdfCupos> PdfsAEnviarPorMailsContactoComercial = GenerarPdfsDistribucion(ListaCuposContactoComercial);
+
+        GenerarPdfsEInformar(long.Parse(ContactoComercial), PdfsAEnviarPorMailsContactoComercial);
+      }
     }
 
     private IList<EmailInformado> GenerarPdfsEInformar(long Cuenta, IList<PdfCupos> PdfsAEnviarPorMails)
