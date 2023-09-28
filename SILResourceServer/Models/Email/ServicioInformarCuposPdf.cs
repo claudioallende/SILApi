@@ -62,13 +62,31 @@ namespace ResourceServer.Models.Email
       if (this.ListaCuposAInformar.Count > 0)
       {
         IList<PdfCupos> PdfsAEnviarPorMails = GenerarPdfsDistribucion(this.ListaCuposAInformar.Cast<Cupos>().ToList());
+
         GenerarPdfsEInformar(CuentaVendedor, PdfsAEnviarPorMails);
+
         var ContactosComerciales = this.ListaCuposAInformar.Cast<Cupos>().SelectMany(x => x.ContactoComercial?.Split(';')).GroupBy(x => x).Select(x => x.Key);
-        foreach(string ContactoComercial in ContactosComerciales)
+        foreach (string ContactoComercial in ContactosComerciales)
         {
           IList<Cupos> ListaCuposContactoComercial = this.ListaCuposAInformar.Cast<Cupos>().Where(x => x.ContactoComercial.Split(';').Any(y => y == ContactoComercial)).ToList();
           IList<PdfCupos> PdfsAEnviarPorMailsContactoComercial = GenerarPdfsDistribucion(ListaCuposContactoComercial);
+
           GenerarPdfsEInformar(long.Parse(ContactoComercial), PdfsAEnviarPorMailsContactoComercial);
+        }
+
+        using (ISession session = HibernateUtil.OpenSession())
+        using (ITransaction tx = session.BeginTransaction())
+        {
+          try
+          {
+            CambiarEstadoCupos(PdfsAEnviarPorMails, session);
+            tx.Commit();
+          }
+          catch
+          {
+            tx.Rollback();
+            throw;
+          }
         }
       }
       return EmailsInformados;
@@ -77,21 +95,11 @@ namespace ResourceServer.Models.Email
     private IList<EmailInformado> GenerarPdfsEInformar(long Cuenta, IList<PdfCupos> PdfsAEnviarPorMails)
     {
       IList<EmailInformado> EmailsInformados = new List<EmailInformado>();
-      if (this.ListaCuposAInformar.Count > 0)
+      using (ISession session = HibernateUtil.OpenSession())
       {
-        using (ISession session = HibernateUtil.OpenSession())
-        using (ITransaction tx = session.BeginTransaction())
+        if (this.ListaCuposAInformar.Count > 0)
         {
-          try
-          {
-            EmailsInformados = ObtenerServiceEInformar(Cuenta, CuentaPuerto, CodigoGrano, PdfsAEnviarPorMails, session);
-            tx.Commit();
-          }
-          catch
-          {
-            tx.Rollback();
-            throw;
-          }
+          EmailsInformados = ObtenerServiceEInformar(Cuenta, CuentaPuerto, CodigoGrano, PdfsAEnviarPorMails, session);
         }
       }
       return EmailsInformados;
@@ -105,7 +113,7 @@ namespace ResourceServer.Models.Email
       {
         //En caso de que haya solo 1 pdf que informar el dto va null
         ServiceEmail ServicioEmail = GetServiceEmail(CuentaVendedor, session);
-        InformarYGuardarCupos(PdfsAEnviarPorMails, ServicioEmail, CorreosElectronicosDestinatarios, session);
+        EnviarEmail(ServicioEmail, CorreosElectronicosDestinatarios, PdfsAEnviarPorMails);
         EmailsInformados.Add(new EmailInformado { Estado = 0, Mensaje = "OK", CuentaVendedor = CuentaVendedor, TipoEmail = this.TipoServicioInformar });
       }
       catch (NeedEmailException e)
@@ -153,10 +161,10 @@ namespace ResourceServer.Models.Email
 
     private string GetNombrePdf(Cupos cupo)
     {
-      return "LOGISTICA_ACA_" + cupo.Fecha.ToString("ddMMyyyy") + "_" + cupo.Uvcupodist.ToString();
+      return "LOGISTICA_ACA_" + cupo.Fecha.ToString("ddMMyyyy") + "_" + Guid.NewGuid().ToString().Substring(0, 8);
     }
 
-    private void InformarYGuardarCupos(IList<PdfCupos> MailPdf, ServiceEmail ServicioEmail, string CorreosElectronicosDestinatarios, ISession Session)
+    private void CambiarEstadoCupos(IList<PdfCupos> MailPdf, ISession Session)
     {
       ServicioCupo Servicio = new ServicioCupo();
       IList<Cupos> TotalCuposAInformar = MailPdf.SelectMany(x => x.CuposAInformar).ToList();
@@ -165,7 +173,6 @@ namespace ResourceServer.Models.Email
       {
         Cupo.GetEstado().Informar(Servicio.ObtenerEncabezado(Encabezados, Cupo), Session);
       }
-      EnviarEmail(ServicioEmail, CorreosElectronicosDestinatarios, MailPdf);
     }
 
     //private void InformarYGuardarCupos(IList<PdfCupos> MailPdf, string EmailVendedor, ServiceEmail ServicioEmail, ISession Session)
