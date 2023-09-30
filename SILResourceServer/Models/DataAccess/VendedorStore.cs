@@ -306,5 +306,15 @@ namespace ResourceServer.Models.DataAccess
     {
       throw new NotImplementedException();
     }
+
+    public IList<ICuenta> FindStartsWithCuentaLimitCC(long cuenta, int limit)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IList<ICuenta> FindLikeIgnoreCaseNombreLimitCC(string nombre, int limit)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

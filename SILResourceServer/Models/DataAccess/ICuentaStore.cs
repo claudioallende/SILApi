@@ -11,10 +11,12 @@ namespace ResourceServer.Models.DataAccess
   {
     IList<ICuenta> GetAll();
     IList<ICuenta> FindStartsWithCuentaLimit(long cuenta, int limit);
+    IList<ICuenta> FindStartsWithCuentaLimitCC(long cuenta, int limit);
     IList<ICuenta> FindStartsWithCuentaLimit(long cuenta, ISession session, int limit);
     IList<ICuenta> FindStartsWithIgnoreCaseNombreLimit(string nombre, int limit);
     IList<ICuenta> FindLikeCuentaLimit(long cuenta, int limit);
     IList<ICuenta> FindLikeIgnoreCaseNombreLimit(string nombre, int limit);
+    IList<ICuenta> FindLikeIgnoreCaseNombreLimitCC(string nombre, int limit);
     ICuenta FindNombreAndCuitByCuenta(long cuenta);
     IList<string> FindNombreLikeNombre(string value);
     IList<ICuenta> FindLikeNombreLimit(string value, int limit);

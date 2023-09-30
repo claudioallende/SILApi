@@ -87,7 +87,12 @@ namespace ResourceServer.Models.DataAccess
             }
         }
 
-        public IList<ICuenta> FindLikeNombreLimit(string value, int limit)
+    public IList<ICuenta> FindLikeIgnoreCaseNombreLimitCC(string nombre, int limit)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IList<ICuenta> FindLikeNombreLimit(string value, int limit)
         {
             throw new NotImplementedException();
         }
@@ -121,7 +126,12 @@ namespace ResourceServer.Models.DataAccess
             throw new NotImplementedException();
         }
 
-        public IList<ICuenta> FindStartsWithIgnoreCaseNombreLimit(string nombre, int limit)
+    public IList<ICuenta> FindStartsWithCuentaLimitCC(long cuenta, int limit)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IList<ICuenta> FindStartsWithIgnoreCaseNombreLimit(string nombre, int limit)
         {
             throw new NotImplementedException();
         }
