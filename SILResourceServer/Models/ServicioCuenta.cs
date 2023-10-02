@@ -84,5 +84,10 @@ namespace ResourceServer.Models
     {
       return Store.FindByCuits(Cuits);
     }
+
+    public IList<ICuenta> GetCuentasByCuentas(IList<string> Cuentas)
+    {
+      return Store.FindByCuentas(Cuentas);
+    }
   }
 }

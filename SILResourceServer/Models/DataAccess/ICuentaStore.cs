@@ -21,5 +21,6 @@ namespace ResourceServer.Models.DataAccess
     IList<ICuenta> FindByCuitLimit(string cuit, int limit);
     IList<ICuenta> FindByCuit(string cuit);
     IList<ICuenta> FindByCuits(IList<string> cuits);
+    IList<ICuenta> FindByCuentas(IList<string> cuentas);
   }
 }

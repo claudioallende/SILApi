@@ -152,5 +152,13 @@ namespace ResourceServer.Controllers
       var servicio = new ServicioCuenta(new CuitStore());
       return Request.CreateResponse(HttpStatusCode.OK, servicio.GetCuentas(Cuits));
     }
+
+    [HttpPost]
+    [Route("api/Cuenta/GetCuentasByCuentas")]
+    public HttpResponseMessage GetCuentasByCuentas(IList<string> Cuentas)
+    {
+      var servicio = new ServicioCuenta(new CuitStore());
+      return Request.CreateResponse(HttpStatusCode.OK, servicio.GetCuentasByCuentas(Cuentas));
+    }
   }
 }
