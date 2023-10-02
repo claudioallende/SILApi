@@ -87,10 +87,11 @@ namespace ResourceServer.Models.Email
 
     private void InformarContactosComerciales(IEnumerable<Cupos> CuposAInformar)
     {
-      var ContactosComerciales = CuposAInformar.SelectMany(x => x.ContactoComercial?.Split(';')).GroupBy(x => x).Select(x => x.Key);
+      IList<string> ContactosComerciales = CuposAInformar.Where(x => !string.IsNullOrEmpty(x.ContactoComercial)).SelectMany(x => x.ContactoComercial.Split(';')).Distinct().ToList();
+
       foreach (string ContactoComercial in ContactosComerciales)
       {
-        IList<Cupos> ListaCuposContactoComercial = CuposAInformar.Where(x => x.ContactoComercial.Split(';').Any(y => y == ContactoComercial)).ToList();
+        IList<Cupos> ListaCuposContactoComercial = CuposAInformar.Where(x => !string.IsNullOrEmpty(x.ContactoComercial) && x.ContactoComercial.Split(';').Any(y => y == ContactoComercial)).ToList();
         IList<PdfCupos> PdfsAEnviarPorMailsContactoComercial = GenerarPdfsDistribucion(ListaCuposContactoComercial);
 
         GenerarPdfsEInformar(long.Parse(ContactoComercial), PdfsAEnviarPorMailsContactoComercial);

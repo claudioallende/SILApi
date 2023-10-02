@@ -70,13 +70,13 @@ namespace ResourceServer.Models.Email
 
     public void InformarContactosComerciales(IList<Cupos> ListaCuposAInformar, ISession Session)
     {
-      var ContactosComerciales = ListaCuposAInformar.SelectMany(x => x.ContactoComercial?.Split(';')).GroupBy(x => x).Select(x => x.Key);
+      var ContactosComerciales = ListaCuposAInformar.Where(x => !string.IsNullOrEmpty(x.ContactoComercial)).SelectMany(x => x.ContactoComercial.Split(';')).Distinct().ToList();
       foreach (string ContactoComercial in ContactosComerciales)
       {
         if (long.TryParse(ContactoComercial, out long CuentaContactoComercial))
         {
           string CorreosElectronicosDestinatarios = GetEmails(CuentaContactoComercial, Session);
-          IList<Cupos> ListaCuposContactoComercial = ListaCuposAInformar.Cast<Cupos>().Where(x => x.ContactoComercial.Split(';').Any(y => y == ContactoComercial)).ToList();
+          IList<Cupos> ListaCuposContactoComercial = ListaCuposAInformar.Cast<Cupos>().Where(x => !string.IsNullOrEmpty(x.ContactoComercial) && x.ContactoComercial.Split(';').Any(y => y == ContactoComercial)).ToList();
           ServiceEmail serviceEmailContactoComercial = GetServiceEmail(ListaCuposContactoComercial, CuentaContactoComercial, Session);
           EnviarEmail(serviceEmailContactoComercial, CorreosElectronicosDestinatarios);
         }
