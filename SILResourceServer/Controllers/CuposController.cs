@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Net.Http;
 using System.Net;
 using ResourceServer.Models.AtributosValidacion;
+using ResourceServer.Models.DataAccess;
 
 namespace ResourceServer.Controllers
 {
@@ -70,6 +71,24 @@ namespace ResourceServer.Controllers
       {
         model.BuscarYMostrarDatos(centroorigen, centrodistribucion);
       }
+
+      if (model.Consignaciones.Count > 0)
+      {
+        ServicioCuenta sCuenta = new ServicioCuenta(new CuitStore());
+        foreach (Consignacion consignacion in model.Consignaciones)
+        {
+          if (!string.IsNullOrEmpty(consignacion.ContactoComercial))
+          {
+            var contactosComerciales = consignacion.ContactoComercial.Split(';');
+            consignacion.NomContactoComercial = sCuenta.GetCuentasByCuentas(contactosComerciales.ToList()).Select(x => x.Nombre).ToList();
+          }
+          else
+          {
+            consignacion.ContactoComercial = "";
+          }
+        }
+      }
+
       return Request.CreateResponse(HttpStatusCode.OK, model);
     }
 
@@ -143,6 +162,18 @@ namespace ResourceServer.Controllers
         model.Modelo.ObtenerIds(model.Id.Id);
         model.Modelo.Inicializar(model.Id.Cyo);
         model.Modelo.BuscarYMostrarConsignaciones();
+        if (model.Modelo.Consignaciones.Count > 0)
+        {
+          ServicioCuenta sCuenta = new ServicioCuenta(new CuitStore());
+          foreach(Consignacion consignacion in model.Modelo.Consignaciones)
+          {
+            if (!string.IsNullOrEmpty(consignacion.ContactoComercial))
+            {
+              var contactosComerciales = consignacion.ContactoComercial.Split(';');
+              consignacion.NomContactoComercial = sCuenta.GetCuentasByCuentas(contactosComerciales.ToList()).Select(x => x.Nombre).ToList();
+            }
+          }
+        }
         if (model.Modelo.Consignaciones.Count == 1)
         {
           model.Modelo.Id = model.Id.Id;

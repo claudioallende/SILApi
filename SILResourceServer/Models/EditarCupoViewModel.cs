@@ -41,7 +41,7 @@ namespace ResourceServer.Models
     private IList<Cupos> CuerposConsignacion { get; set; }
     public string Consignacion { get; set; }
     public Consignacion ConsignacionSeleccionada { get; set; }
-    public IEnumerable<Consignacion> Consignaciones;
+    public IList<Consignacion> Consignaciones;
     private IList<Cuerpo> CuerposConConsignacionSeleccionada { get; set; }
     public string Producto { get; set; }
     public string Comprador { get; set; }
