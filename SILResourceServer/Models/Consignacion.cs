@@ -183,7 +183,7 @@ namespace ResourceServer.Models
     /// </summary>
     /// <param name="cupos"></param>
     /// <returns></returns>
-    public IQueryable<Cupos> FiltroConsignacion(IQueryable<Cupos> cupos)
+    public IQueryable<Cupos> FiltroConsignacion(IQueryable<Cupos> cupos, bool ignoreContactoComercial = false)
     {
       if (this.Cuitsolicitante == null || this.Cuitsolicitante.Trim() == "")
       {
@@ -274,13 +274,16 @@ namespace ResourceServer.Models
       {
         cupos = cupos.Where(x => this.Caratula == x.Caratula);
       }
-      if (this.ContactoComercial == null || this.ContactoComercial.Trim() == "")
+      if (!ignoreContactoComercial)
       {
-        cupos = cupos.Where(x => x.ContactoComercial == null || x.ContactoComercial.Trim() == "");
-      }
-      else
-      {
-        cupos = cupos.Where(x => this.ContactoComercial == x.ContactoComercial);
+        if (this.ContactoComercial == null || this.ContactoComercial.Trim() == "")
+        {
+          cupos = cupos.Where(x => x.ContactoComercial == null || x.ContactoComercial.Trim() == "");
+        }
+        else
+        {
+          cupos = cupos.Where(x => this.ContactoComercial == x.ContactoComercial);
+        }
       }
       return cupos;
     }
