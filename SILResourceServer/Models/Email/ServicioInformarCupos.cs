@@ -49,7 +49,7 @@ namespace ResourceServer.Models.Email
       try
       {
         //En caso de que haya solo 1 pdf que informar el dto va null
-        ServiceEmail ServicioEmailVendedor = GetServiceEmail(CuposAInformar, CuentaVendedor, session);
+        ServiceEmail ServicioEmailVendedor = GetServiceEmail(CuposAInformar, CuentaVendedor, TipoDestinatario.Vendedor, session);
         EnviarEmail(ServicioEmailVendedor, CorreosElectronicosDestinatarios);
         InformarContactosComerciales(CuposAInformar, session);
         GuardarCupos(CuposAInformar, session);
@@ -77,7 +77,7 @@ namespace ResourceServer.Models.Email
         {
           string CorreosElectronicosDestinatarios = GetEmails(CuentaContactoComercial, Session);
           IList<Cupos> ListaCuposContactoComercial = ListaCuposAInformar.Cast<Cupos>().Where(x => !string.IsNullOrEmpty(x.ContactoComercial) && x.ContactoComercial.Split(';').Any(y => y == ContactoComercial)).ToList();
-          ServiceEmail serviceEmailContactoComercial = GetServiceEmail(ListaCuposContactoComercial, CuentaContactoComercial, Session);
+          ServiceEmail serviceEmailContactoComercial = GetServiceEmail(ListaCuposContactoComercial, CuentaContactoComercial, TipoDestinatario.ContactoComercial, Session);
           EnviarEmail(serviceEmailContactoComercial, CorreosElectronicosDestinatarios);
         }
       }
@@ -87,6 +87,6 @@ namespace ResourceServer.Models.Email
 
     protected abstract void EnviarEmail(ServiceEmail ServicioEmail, string CorreosElectronicosDestinatarios);
 
-    protected abstract ServiceEmail GetServiceEmail(IList<Cupos> CuposAInformar, long CuentaVendedor, NHibernate.ISession Session);
+    protected abstract ServiceEmail GetServiceEmail(IList<Cupos> CuposAInformar, long CuentaVendedor, TipoDestinatario tipoDestinatario, NHibernate.ISession Session);
   }
 }

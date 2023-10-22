@@ -49,7 +49,7 @@ namespace ResourceServer.Models.Email
       }
     }
 
-    protected override ServiceEmail GetServiceEmail(IList<Cupos> CuposAInformar, long CuentaVendedor, ISession Session)
+    protected override ServiceEmail GetServiceEmail(IList<Cupos> CuposAInformar, long CuentaVendedor, TipoDestinatario tipoDestinatario, ISession Session)
     {
       return new EmailAnulacionCupos(CuposAInformar, Session);
     }
