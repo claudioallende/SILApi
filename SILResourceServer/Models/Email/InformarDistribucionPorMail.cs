@@ -45,18 +45,18 @@ namespace ResourceServer.Models.Email
       }
     }
 
-    protected override ServiceEmail GetServiceEmail(long CuentaVendedor, TipoDestinatario tipoDestinatario, ISession Session)
+    protected override ServiceEmail GetServiceEmail(long CuentaVendedor, IList<ICupo> ListaCupos, TipoDestinatario tipoDestinatario, ISession Session)
     {
       if (TipoDestinatario.Vendedor == tipoDestinatario)
       {
         if (CuentaPuerto == 100007 || CuentaPuerto == 100212)
-          return new EmailDistribucionConHorario(base.ListaCuposAInformar, Session);
+          return new EmailDistribucionConHorario(ListaCupos, Session);
         else
-          return new EmailDistribucionMultiplesPdfs(base.ListaCuposAInformar, Session);
+          return new EmailDistribucionMultiplesPdfs(ListaCupos, Session);
       }
       else if (TipoDestinatario.ContactoComercial == tipoDestinatario)
       {
-        return new EmailDistribucionContactoComercial(base.ListaCuposAInformar, Session);
+        return new EmailDistribucionContactoComercial(ListaCupos, Session);
       }
       else
       {

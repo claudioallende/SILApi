@@ -63,7 +63,7 @@ namespace ResourceServer.Models.Email
       {
         IList<PdfCupos> PdfsAEnviarPorMails = GenerarPdfsDistribucion(this.ListaCuposAInformar.Cast<Cupos>().ToList());
 
-        GenerarPdfsEInformar(CuentaVendedor, PdfsAEnviarPorMails, TipoDestinatario.Vendedor);
+        GenerarPdfsEInformar(CuentaVendedor, PdfsAEnviarPorMails, this.ListaCuposAInformar, TipoDestinatario.Vendedor);
 
         InformarContactosComerciales(this.ListaCuposAInformar.Cast<Cupos>());
 
@@ -94,31 +94,30 @@ namespace ResourceServer.Models.Email
         IList<Cupos> ListaCuposContactoComercial = CuposAInformar.Where(x => !string.IsNullOrEmpty(x.ContactoComercial) && x.ContactoComercial.Split(';').Any(y => y == ContactoComercial)).ToList();
         IList<PdfCupos> PdfsAEnviarPorMailsContactoComercial = GenerarPdfsDistribucion(ListaCuposContactoComercial);
 
-        GenerarPdfsEInformar(long.Parse(ContactoComercial), PdfsAEnviarPorMailsContactoComercial, TipoDestinatario.ContactoComercial);
+        GenerarPdfsEInformar(long.Parse(ContactoComercial), PdfsAEnviarPorMailsContactoComercial, ListaCuposContactoComercial.Cast<ICupo>().ToList(), TipoDestinatario.ContactoComercial);
       }
     }
 
-    private IList<EmailInformado> GenerarPdfsEInformar(long Cuenta, IList<PdfCupos> PdfsAEnviarPorMails, TipoDestinatario tipoDestinatario)
+    private IList<EmailInformado> GenerarPdfsEInformar(long Cuenta, IList<PdfCupos> PdfsAEnviarPorMails, IList<ICupo> ListaCupos, TipoDestinatario tipoDestinatario)
     {
       IList<EmailInformado> EmailsInformados = new List<EmailInformado>();
       using (ISession session = HibernateUtil.OpenSession())
       {
         if (this.ListaCuposAInformar.Count > 0)
         {
-          EmailsInformados = ObtenerServiceEInformar(Cuenta, CuentaPuerto, CodigoGrano, PdfsAEnviarPorMails, tipoDestinatario, session);
+          EmailsInformados = ObtenerServiceEInformar(Cuenta, CuentaPuerto, CodigoGrano, PdfsAEnviarPorMails, ListaCupos, tipoDestinatario, session);
         }
       }
       return EmailsInformados;
     }
 
-    public IList<EmailInformado> ObtenerServiceEInformar(long CuentaVendedor, long CuentaPuerto, int CodigoGrano, IList<PdfCupos> PdfsAEnviarPorMails, TipoDestinatario tipoDestinatario, ISession session)
+    public IList<EmailInformado> ObtenerServiceEInformar(long CuentaVendedor, long CuentaPuerto, int CodigoGrano, IList<PdfCupos> PdfsAEnviarPorMails, IList<ICupo> ListaCupos, TipoDestinatario tipoDestinatario, ISession session)
     {
       IList<EmailInformado> EmailsInformados = new List<EmailInformado>();
       string CorreosElectronicosDestinatarios = GetEmails(CuentaVendedor, session);
       try
       {
-        //En caso de que haya solo 1 pdf que informar el dto va null
-        ServiceEmail ServicioEmail = GetServiceEmail(CuentaVendedor, tipoDestinatario, session);
+        ServiceEmail ServicioEmail = GetServiceEmail(CuentaVendedor, ListaCupos, tipoDestinatario, session);
         EnviarEmail(ServicioEmail, CorreosElectronicosDestinatarios, PdfsAEnviarPorMails);
         EmailsInformados.Add(new EmailInformado { Estado = 0, Mensaje = "OK", CuentaVendedor = CuentaVendedor, TipoEmail = this.TipoServicioInformar });
       }
@@ -203,7 +202,7 @@ namespace ResourceServer.Models.Email
     protected abstract IList<ICupo> GetCuposInformar(long CuentaVendedor);
 
     //Sacar los parametros porque para cada ServiceEmail los constructores pueden diferir en los parametros
-    protected abstract ServiceEmail GetServiceEmail(long CuentaVendedor, TipoDestinatario tipoDestinatario, ISession Session);
+    protected abstract ServiceEmail GetServiceEmail(long CuentaVendedor, IList<ICupo> ListaCupos, TipoDestinatario tipoDestinatario, ISession Session);
 
     protected abstract IPdfBuilder GetPdfBuilder(IList<Cupos> Cupos);
   }

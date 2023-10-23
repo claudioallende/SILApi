@@ -49,9 +49,20 @@ namespace ResourceServer.Models.Email
       }
     }
 
-    protected override ServiceEmail GetServiceEmail(IList<Cupos> CuposAInformar, long CuentaVendedor, TipoDestinatario tipoDestinatario, ISession Session)
+    protected override ServiceEmail GetServiceEmail(IList<Cupos> CuposAInformar, long CuentaVendedor, IList<Cupos> ListaCupos, TipoDestinatario tipoDestinatario, ISession Session)
     {
-      return new EmailAnulacionCupos(CuposAInformar, Session);
+      if (tipoDestinatario == TipoDestinatario.Vendedor)
+      {
+        return new EmailAnulacionCupos(CuposAInformar, Session);
+      }
+      else if (tipoDestinatario == TipoDestinatario.ContactoComercial)
+      {
+        return new EmailAnulacionContactoComercial(CuposAInformar, Session);
+      }
+      else
+      {
+        throw new NotImplementedException();
+      }
     }
 
     protected override void GuardarCupos(IList<Cupos> CuposInformar, ISession Session)
