@@ -57,13 +57,13 @@ namespace ResourceServer.Models.Email
     //Enviar a todos en un solo mail (con los mails en un string separados por ;)
     public override IList<EmailInformado> InformarMails(long CuentaVendedor)
     {
-      IList<EmailInformado> EmailsInformados = new List<EmailInformado>();
+      List<EmailInformado> EmailsInformados = new List<EmailInformado>();
       this.ListaCuposAInformar = GetCuposInformar(CuentaVendedor);
       if (this.ListaCuposAInformar.Count > 0)
       {
         IList<PdfCupos> PdfsAEnviarPorMails = GenerarPdfsDistribucion(this.ListaCuposAInformar.Cast<Cupos>().ToList());
 
-        GenerarPdfsEInformar(CuentaVendedor, PdfsAEnviarPorMails, this.ListaCuposAInformar, TipoDestinatario.Vendedor);
+        EmailsInformados.AddRange(GenerarPdfsEInformar(CuentaVendedor, PdfsAEnviarPorMails, this.ListaCuposAInformar, TipoDestinatario.Vendedor));
 
         InformarContactosComerciales(this.ListaCuposAInformar.Cast<Cupos>());
 
