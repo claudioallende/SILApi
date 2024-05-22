@@ -98,7 +98,15 @@ namespace ResourceServer.Controllers
     public HttpResponseMessage GetCuposCuitFromNroCuentaOrNombre([FromBody] string Texto)
     {
       var servicio = new ServicioCuenta(new CuitStore());
-      return Request.CreateResponse(HttpStatusCode.OK, servicio.Get(Texto));
+      return Request.CreateResponse(HttpStatusCode.OK, servicio.Get(Texto, false));
+    }
+
+    [HttpPost]
+    [Route("api/Cuenta/GetCuposCuitFromNroCuentaOrNombreCC")]
+    public HttpResponseMessage GetCuposCuitFromNroCuentaOrNombreCC([FromBody] string Texto)
+    {
+      var servicio = new ServicioCuenta(new CuitStore());
+      return Request.CreateResponse(HttpStatusCode.OK, servicio.Get(Texto, true));
     }
 
     [Route("api/Cuenta/GetVendedorFromNroCuentaOrNombre/{Texto}")]

@@ -121,6 +121,39 @@ namespace ResourceServer.Models.DataAccess
       }
     }
 
+    public IList<ICuenta> FindStartsWithCuentaLimitCC(long cuenta, int limit)
+    {
+      using (ISession session = HibernateUtil.OpenSession(mapping))
+      {
+
+        var Ordenes = new string[] { "CPM03", "CPM04", "CPM05", "CPM06", "CPM07" };
+        var query = session.Query<CuposCuit>().Where(c => c.Cuenta.ToString().StartsWith(cuenta.ToString()));
+        var join = query.Join(session.Query<DTabla>(), cuit => cuit.Cuit, dtabla => dtabla.Clave, (cuit, dtabla) => new { Cuit = cuit, Dtabla = dtabla });
+        join.Where(x => x.Cuit.Cuit.Trim() == x.Dtabla.Clave.Trim() && x.Dtabla.Entidad == "CUPMAIL");
+        var cuentas = join.ToList();
+
+        var cuentasFilter = cuentas
+          .Where(x =>
+                Ordenes.Contains(x.Dtabla.Orden.Trim())
+                && !string.IsNullOrEmpty(x.Dtabla.Valor)
+                )
+          .Select(z =>
+              new CuposCuit
+              {
+                Cuit = z.Cuit.Cuit,
+                Nombre = z.Cuit.Nombre,
+                Domicilio = z.Cuit.Domicilio,
+                Localidad = z.Cuit.Localidad,
+                Provincia = z.Cuit.Provincia,
+                Cuenta = z.Cuit.Cuenta
+              })
+          .Take(limit)
+          .ToList<ICuenta>();
+        HibernateUtil.Dispose();
+        return cuentasFilter;
+      }
+    }
+
     public IList<ICuenta> FindStartsWithIgnoreCaseNombreLimit(string nombre, int limit)
     {
       throw new NotImplementedException();
@@ -131,6 +164,49 @@ namespace ResourceServer.Models.DataAccess
       throw new NotImplementedException();
     }
 
+    public IList<ICuenta> FindLikeIgnoreCaseNombreLimit(string nombre, int limit)
+    {
+      using (ISession session = HibernateUtil.OpenSession(mapping))
+      {
+        IList<ICuenta> cuenta = session.Query<CuposCuit>()
+            .Where(x => x.Nombre.ToUpper().Trim().Contains(nombre.ToUpper().Trim()))
+            .Take(limit)
+            .ToList<ICuenta>();
+        HibernateUtil.Dispose();
+        return cuenta;
+      }
+    }
+    public IList<ICuenta> FindLikeIgnoreCaseNombreLimitCC(string nombre, int limit)
+    {
+      using (ISession session = HibernateUtil.OpenSession(mapping))
+      {
+        var Ordenes = new string[] { "CPM03", "CPM04", "CPM05", "CPM06", "CPM07" };
+        var query = session.Query<CuposCuit>().Where(x => x.Nombre.ToUpper().Trim().Contains(nombre.ToUpper().Trim()));
+        var join = query.Join(session.Query<DTabla>(), cuit => cuit.Cuit, dtabla => dtabla.Clave, (cuit, dtabla) => new { Cuit = cuit, Dtabla = dtabla });
+        join.Where(x => x.Cuit.Cuit.Trim() == x.Dtabla.Clave.Trim() && x.Dtabla.Entidad == "CUPMAIL");
+        var cuentas = join.ToList();
+
+        var cuentasFilter = cuentas
+          .Where(x =>
+                Ordenes.Contains(x.Dtabla.Orden.Trim())
+                && !string.IsNullOrEmpty(x.Dtabla.Valor)
+                )
+          .Select(z =>
+              new CuposCuit
+              {
+                Cuit = z.Cuit.Cuit,
+                Nombre = z.Cuit.Nombre,
+                Domicilio = z.Cuit.Domicilio,
+                Localidad = z.Cuit.Localidad,
+                Provincia = z.Cuit.Provincia,
+                Cuenta = z.Cuit.Cuenta
+              })
+          .Take(limit)
+          .ToList<ICuenta>();
+        HibernateUtil.Dispose();
+        return cuentasFilter;
+      }
+    }
     public IList<ICuenta> FindLikeIgnoreCaseNombreLimit(string nombre, int limit)
     {
       using (ISession session = HibernateUtil.OpenSession(mapping))
