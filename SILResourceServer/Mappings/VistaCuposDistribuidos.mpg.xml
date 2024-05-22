@@ -162,5 +162,7 @@
       <column name ="CUITRTECOMERCIALVTAPRIM"/>
     </property>
     <property name="Vendcyo"/>
+		<property name="Caratula"/>
+		<property name="ContactoComercial"/>
   </class>
 </hibernate-mapping>

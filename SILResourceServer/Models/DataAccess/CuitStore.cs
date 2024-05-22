@@ -207,6 +207,18 @@ namespace ResourceServer.Models.DataAccess
         return cuentasFilter;
       }
     }
+    public IList<ICuenta> FindLikeIgnoreCaseNombreLimit(string nombre, int limit)
+    {
+      using (ISession session = HibernateUtil.OpenSession(mapping))
+      {
+        IList<ICuenta> cuenta = session.Query<CuposCuit>()
+            .Where(x => x.Nombre.ToUpper().Trim().Contains(nombre.ToUpper().Trim()))
+            .Take(limit)
+            .ToList<ICuenta>();
+        HibernateUtil.Dispose();
+        return cuenta;
+      }
+    }
 
     public ICuenta FindNombreAndCuitByCuenta(long cuenta)
     {
@@ -286,6 +298,18 @@ namespace ResourceServer.Models.DataAccess
       {
         IList<ICuenta> mycuenta = session.Query<CuposCuit>()
              .Where(c => cuits.Contains(c.Cuit))
+             .ToList<ICuenta>();
+        HibernateUtil.Dispose();
+        return mycuenta;
+      }
+    }
+
+    public IList<ICuenta> FindByCuentas(IList<string> cuentas)
+    {
+      using (ISession session = HibernateUtil.OpenSession(mapping))
+      {
+        IList<ICuenta> mycuenta = session.Query<CuposCuit>()
+             .Where(c => cuentas.Contains(c.Cuenta.ToString()))
              .ToList<ICuenta>();
         HibernateUtil.Dispose();
         return mycuenta;

@@ -461,7 +461,9 @@
     <Compile Include="Models\DateTimeExtensions.cs" />
     <Compile Include="Models\DetalleCupo.cs" />
     <Compile Include="Models\DTO\RelacionPuertoSILPuertoSTOPDTO.cs" />
+    <Compile Include="Models\Email\EmailAnulacionContactoComercial.cs" />
     <Compile Include="Models\Email\EmailAnulacionCupos.cs" />
+    <Compile Include="Models\Email\EmailDistribucionContactoComercial.cs" />
     <Compile Include="Models\Email\EmailDistribucionMultiplesPdfs.cs" />
     <Compile Include="Models\Email\EstilosEmail.cs" />
     <Compile Include="Models\Email\ServicioInformarAVendedor.cs" />
@@ -469,6 +471,7 @@
     <Compile Include="Models\Email\ServicioInformarCuposPdf.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\Email\TipoDestinatario.cs" />
     <Compile Include="Models\Error\Exceptions\RegistroDuplicadoException.cs" />
     <Compile Include="Models\Identity\IClaimsContext.cs" />
     <Compile Include="Models\RelacionGranoSILGranoSTOPCompleta.cs" />
