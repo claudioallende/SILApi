@@ -239,6 +239,30 @@ namespace ResourceServer.Controllers
     }
 
     [HttpGet]
+    [Route("api/Cupos/ContratosVendedor")]
+    public HttpResponseMessage ContratosVendedor(BusquedaContratosVendedorViewModel model)
+    {
+      ServicioDistribuir servicio = new ServicioDistribuir();
+      return Request.CreateResponse(HttpStatusCode.OK, servicio.ObtenerContratos(model.Comprador, model.Vendedor, model.Destino, model.TipoDestino, model.Grano, model.FechaDesde, model.FechaHasta)
+          .Select(c => new
+          {
+            contrato = c.Contrato,
+            neg = c.Negocio,
+            oper = c.Operacion,
+            prod = c.Producto,
+            cos = c.Cosecha,
+            entrega = c.Entrega.ToString("dd/MM/yyyy"),
+            vtoEnt = c.Vtoent.ToString("dd/MM/yyyy"),
+            pactadas = c.Pactadas,
+            apli = c.Aplicadas,
+            pendEnt = c.Pendientes,
+            liq = c.Liquidadas,
+            destino = c.Destino,
+            precio = c.Precio
+          }));
+    }
+
+    [HttpGet]
     [Route("api/Cupos/GetMotivo/{id}")]
     public HttpResponseMessage GetMotivo(long id)
     {

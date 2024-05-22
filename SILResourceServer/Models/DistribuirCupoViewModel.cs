@@ -230,9 +230,21 @@ namespace ResourceServer.Models
         public string codcentro { get; set; }
         public int grano { get; set; }
         public DateTime? fechaent { get; set; }
-    }
+  }
 
-    public class BusquedaContratosViewModel
+  public class BusquedaContratosVendedorViewModel
+  {
+    public long Comprador { get; set; }
+    public long Vendedor { get; set; }
+    public long Destino { get; set; }
+    public TipoDestino TipoDestino { get; set; }
+    //public string CodigoCentro { get; set; }
+    public int Grano { get; set; }
+    public DateTime FechaDesde { get; set; }
+    public DateTime FechaHasta { get; set; }
+  }
+
+  public class BusquedaContratosViewModel
     {
         private string _cyo ="FALSE";
         public VistaCuposDistribuidos datosContrato { get; set; }

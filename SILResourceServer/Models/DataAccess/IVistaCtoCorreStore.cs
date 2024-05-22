@@ -12,5 +12,7 @@ namespace ResourceServer.Models.DataAccess
         IList<VistaCtoCorre> FindAll();
         IList<VistaCtoCorre> FindByCompctaAndVendctaAndCtadestinoAndCodcentroAndGranoAndFechaent
             (Int64 compcta, Int64 vendcta, Int64 ctadestino, string codcentro, int grano, Int64 fechaent);
-    }
+    IList<VistaCtoCorre> FindContratos
+        (long comprador, long vendedor, IList<long> cuentasDestino, int grano, long fechaDesde, long fechaHasta);
+  }
 }
