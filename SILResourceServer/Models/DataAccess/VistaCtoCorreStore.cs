@@ -56,5 +56,22 @@ namespace ResourceServer.Models.DataAccess
                 return contratos;
             }
         }
+
+    public IList<VistaCtoCorre> FindContratos(long comprador, long vendedor, IList<long> cuentasDestino, int grano, long fechaDesde, long fechaHasta)
+    {
+      using (ISession session = HibernateUtil.OpenSession(mapping))
+      {
+        IList<VistaCtoCorre> contratos = session.Query<VistaCtoCorre>()
+          .Where(c => c.Compcta == comprador &&
+            c.Vendcta == vendedor &&
+            cuentasDestino.Contains(c.Ctadestino) &&
+            c.Grano == grano &&
+            c.Fechaent >= fechaDesde &&
+            c.Fechaent <= fechaHasta)
+          .ToList();
+        HibernateUtil.Dispose();
+        return contratos;
+      }
     }
+  }
 }

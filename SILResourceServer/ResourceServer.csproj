@@ -139,7 +139,7 @@
     </Reference>
     <Reference Include="Oracle.DataAccess, Version=2.112.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\ORACLE\product\11.2.0\client_1\ODP.NET\bin\2.x\Oracle.DataAccess.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\ORACLE\product\11.2.0\client_1\ODP.NET\bin\2.x\Oracle.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -306,6 +306,7 @@
     <Content Include="Mappings\ReporteClienteSil.mpg.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Mappings\SolTurnos.mpg.xml" />
     <Content Include="Mappings\stopnocorre.mpg.xml" />
     <Content Include="Mappings\TbCoper.mpg.xml" />
     <Content Include="Mappings\User.mpg.xml">
@@ -359,6 +360,7 @@
     <Compile Include="Controllers\ProcesoController.cs" />
     <Compile Include="Controllers\ProtectedController.cs" />
     <Compile Include="Controllers\PuertosSTOPController.cs" />
+    <Compile Include="Controllers\SolicitudesTurnosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -457,6 +459,7 @@
     <Compile Include="Models\DataAccess\ProcesoStore.cs" />
     <Compile Include="Models\DataAccess\RelacionGranoSILGranoSTOPStore.cs" />
     <Compile Include="Models\DataAccess\RelacionPuertoSILPuertoSTOPStore.cs" />
+    <Compile Include="Models\DataAccess\SolicitudTurnoStore.cs" />
     <Compile Include="Models\DataAccess\TbCoperStore.cs" />
     <Compile Include="Models\DateTimeExtensions.cs" />
     <Compile Include="Models\DetalleCupo.cs" />
@@ -621,8 +624,14 @@
     <Compile Include="Models\ServicioRelacionPuertoSILPuertoSTOP.cs" />
     <Compile Include="Models\ServicioRelacionGranoSILGranoSTOP.cs" />
     <Compile Include="Models\ServicioVarios.cs" />
+    <Compile Include="Models\SolicitudesTurnos\SolicitudTurnoGrupoVendedorView.cs" />
+    <Compile Include="Models\SolicitudesTurnos\SolicitudTurnoGrupoView.cs" />
+    <Compile Include="Models\SolicitudTurno.cs" />
+    <Compile Include="Models\SolicitudTurnoService.cs" />
+    <Compile Include="Models\SolicitudesTurnos\SolicitudTurnoCreate.cs" />
     <Compile Include="Models\TablaIndexViewModel.cs" />
     <Compile Include="Models\TbCoper.cs" />
+    <Compile Include="Models\Tipos.cs" />
     <Compile Include="Models\TurnoViewModel.cs" />
     <Compile Include="Models\ValidaView.cs" />
     <Compile Include="Models\Vendedor.cs" />
@@ -664,6 +673,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\Pdf\Files\" />
     <Folder Include="Views\PuertosSTOP\" />
+    <Folder Include="Views\Turnos\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

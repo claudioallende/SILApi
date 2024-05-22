@@ -515,9 +515,16 @@ namespace ResourceServer.Models
         {
             IVistaCtoCorreStore store = new VistaCtoCorreStore();
             return store.FindByCompctaAndVendctaAndCtadestinoAndCodcentroAndGranoAndFechaent(compcta, vendcta, ctadestino, codcentro, grano, DateUtils.n_date(fechaent));
-        }
+    }
 
-        public IList<int> ObtenerCantidadTotalCuposPorDiaParaConsignacion(Cupos consignacion)
+    public IList<VistaCtoCorre> ObtenerContratos(long comprador, long vendedor, long destino, TipoDestino tipoDestion, int grano, DateTime fechaDesde, DateTime fechaHasta)
+    {
+      IVistaCtoCorreStore store = new VistaCtoCorreStore();
+      IList<long> cuentasDestino = new List<long>();
+      return store.FindContratos(comprador, vendedor, cuentasDestino, grano, DateUtils.n_date(fechaDesde), DateUtils.n_date(fechaHasta));
+    }
+
+    public IList<int> ObtenerCantidadTotalCuposPorDiaParaConsignacion(Cupos consignacion)
         {
             IList<int> Cantidad = new List<int>();
             IList<Counter<Cupos>> ConsignacionesAgrupadosPorFecha = Cupostore.FindConsignacionesForKeyAndConsignacionGroupByFecha(consignacion);

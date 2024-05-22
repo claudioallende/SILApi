@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" auto-import="true" assembly="ResourceServer" namespace="ResourceServer.Models">
+	<class name="SolicitudTurno" table="SolTurnos">
+		<cache usage="read-write"/>
+		<id name="Id">
+			<column name="SOLTURNOS_ID"/>
+			<generator class="sequence-identity">
+				<param name="sequence">SEQ_SOLTURNOS</param>
+			</generator>
+		</id>
+		<property name="CuentaComprador">
+			<column name="CTACOMP"/>
+		</property>
+		<property name="CuentaVendedor">
+			<column name="CTAVEND"/>
+		</property>
+		<property name="CuentaDestino">
+			<column name="DEST"/>
+		</property>
+		<property name="TipoDestino">
+			<column name="TIPODEST"/>
+		</property>
+		<property name="CodigoEstado">
+			<column name="STATUS"/>
+		</property>
+		<property name="CodigoGrano">
+			<column name="GRANO"/>
+		</property>
+		<property name="FechaCreacion">
+			<column name="FECHACREACION"/>
+		</property>
+		<property name="FechaSolicitado" type="Date">
+			<column name="FECHASOLICITADA"/>
+		</property>
+		<property name="EsFuturo">
+			<column name="FUTURO"/>
+		</property>
+		<property name="CodigoCentro">
+			<column name="CENTRO"/>
+		</property>
+		<property name="Observacion">
+			<column name="OBSERVA"/>
+		</property>
+		<property name="CupoId">
+			<column name="CUPO_ID"/>
+		</property>
+	</class>
+</hibernate-mapping>
