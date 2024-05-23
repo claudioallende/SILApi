@@ -514,7 +514,8 @@ namespace ResourceServer.Models.DataAccess
                   NomRteComercialProductor = x.NomRteComercialProductor.Trim(),
                   CuitRteComercialVentaPrimaria = x.CuitRteComercialVentaPrimaria.Trim(),
                   NomRteComercialVentaPrimaria = x.NomRteComercialVentaPrimaria.Trim(),
-                  Caratula = x.Caratula.Trim()
+                  Caratula = x.Caratula.Trim(),
+                  ContactoComercial = x.ContactoComercial.Trim(),
                 })
             .GroupBy(y =>
                 new
@@ -539,7 +540,8 @@ namespace ResourceServer.Models.DataAccess
                   y.NomRteComercialProductor,
                   y.CuitRteComercialVentaPrimaria,
                   y.NomRteComercialVentaPrimaria,
-                  y.Caratula
+                  y.Caratula,
+                  y.ContactoComercial
                 }
             )
             .Select(z => new Consignacion
@@ -564,7 +566,8 @@ namespace ResourceServer.Models.DataAccess
               NomRteComercialProductor = z.Key.NomRteComercialProductor,
               CuitRteComercialVentaPrimaria = z.Key.CuitRteComercialVentaPrimaria,
               NomRteComercialVentaPrimaria = z.Key.NomRteComercialVentaPrimaria,
-              Caratula = z.Key.Caratula
+              Caratula = z.Key.Caratula,
+              ContactoComercial = z.Key.ContactoComercial
             }
             )
             .ToList();

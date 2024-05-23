@@ -18,32 +18,40 @@ namespace ResourceServer.Models
     {
       return Store.GetAll();
     }
-    public IList<ICuenta> Get(string Text)
+    public IList<ICuenta> Get(string Text, bool CC = false)
     {
       if (EsNumero(Text))
       {
-        return GetFromNumeroCuenta(Text);
+        return GetFromNumeroCuenta(Text, 10, CC);
       }
       else
       {
-        return GetFromNombreCuenta(Text);
+        return GetFromNombreCuenta(Text, 10, CC);
       }
     }
     //Igual a GetNameFromCuenta pero con otro nombre mas representativo
-    public IList<ICuenta> GetFromNumeroCuenta(string Cuenta, int Limit = 10)
+    public IList<ICuenta> GetFromNumeroCuenta(string Cuenta, int Limit = 10, bool CC = false)
     {
-      return Store.FindStartsWithCuentaLimit(Int64.Parse(Cuenta), Limit).ToList();
+      if (CC)
+        return Store.FindStartsWithCuentaLimitCC(Int64.Parse(Cuenta), Limit).ToList();
+      else
+        return Store.FindStartsWithCuentaLimit(Int64.Parse(Cuenta), Limit).ToList();
     }
+
     //Igual a GetNameFromCuenta pero con otro nombre mas representativo
     public IList<ICuenta> GetFromNumeroCuenta(string Cuenta, ISession Session, int Limit = 10)
     {
       return Store.FindStartsWithCuentaLimit(Int64.Parse(Cuenta), Session, Limit).ToList();
     }
     //Igual a GetCuentaFromName pero con otro nombre mas representativo
-    public IList<ICuenta> GetFromNombreCuenta(string Nombre, int Limit = 10)
+    public IList<ICuenta> GetFromNombreCuenta(string Nombre, int Limit = 10, bool CC = false)
     {
-      return Store.FindLikeIgnoreCaseNombreLimit(Nombre, Limit).ToList();
+      if(CC)
+        return Store.FindLikeIgnoreCaseNombreLimitCC(Nombre, Limit).ToList();
+      else
+        return Store.FindLikeIgnoreCaseNombreLimit(Nombre, Limit).ToList();
     }
+
     public IList<ICuenta> GetFromCuit(string Cuit, int Limit = 10)
     {
       return Store.FindByCuitLimit(Cuit, Limit);
@@ -83,6 +91,11 @@ namespace ResourceServer.Models
     public IList<ICuenta> GetCuentas(IList<string> Cuits)
     {
       return Store.FindByCuits(Cuits);
+    }
+
+    public IList<ICuenta> GetCuentasByCuentas(IList<string> Cuentas)
+    {
+      return Store.FindByCuentas(Cuentas);
     }
   }
 }

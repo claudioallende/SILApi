@@ -68,6 +68,9 @@
 	<property name="Caratula">
 		<column name="Caratula"/>
 	</property>
+		<property name="ContactoComercial">
+			<column name="ContactoComercial"/>
+		</property>
     <property name="Usuario" />
   </class>
 </hibernate-mapping>

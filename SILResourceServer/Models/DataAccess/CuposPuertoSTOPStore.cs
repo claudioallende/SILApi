@@ -32,7 +32,7 @@ namespace ResourceServer.Models.DataAccess
     public IList<CuposPuertoSTOP> FindAll(ISession session = null)
     {
       IList<CuposPuertoSTOP> puertos = new List<CuposPuertoSTOP>();
-      if (session != null) 
+      if (session != null)
       {
         puertos = session.Query<CuposPuertoSTOP>().ToList();
       }
@@ -48,15 +48,15 @@ namespace ResourceServer.Models.DataAccess
 
     }
 
-        public IList<ICuenta> FindByCuit(string cuit)
-        {
-            throw new NotImplementedException();
-        }
+    public IList<ICuenta> FindByCuit(string cuit)
+    {
+      throw new NotImplementedException();
+    }
 
-        public IList<ICuenta> FindByCuitLimit(string cuit, int limit)
-        {
-            throw new NotImplementedException();
-        }
+    public IList<ICuenta> FindByCuitLimit(string cuit, int limit)
+    {
+      throw new NotImplementedException();
+    }
 
     public IList<ICuenta> FindByCuits(IList<string> cuits)
     {
@@ -69,69 +69,87 @@ namespace ResourceServer.Models.DataAccess
       return puertosSTOP;
     }
 
-        public IList<ICuenta> FindLikeCuentaLimit(long cuenta, int limit)
+    public IList<ICuenta> FindLikeCuentaLimit(long cuenta, int limit)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IList<ICuenta> FindLikeIgnoreCaseNombreLimit(string nombre, int limit)
+    {
+      using (ISession session = HibernateUtil.OpenSession())
+      {
+        IList<ICuenta> mycuenta = session.Query<CuposPuertoSTOP>()
+             .Where(c => c.NombrePuerto.ToUpper().Contains(nombre.ToUpper()))
+             .Take(limit)
+             .ToList<ICuenta>();
+        HibernateUtil.Dispose();
+        return mycuenta;
+      }
+    }
+
+    public IList<ICuenta> FindLikeIgnoreCaseNombreLimitCC(string nombre, int limit)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IList<ICuenta> FindLikeNombreLimit(string value, int limit)
         {
             throw new NotImplementedException();
         }
+    public IList<ICuenta> FindLikeNombreLimit(string value, int limit)
+    {
+      throw new NotImplementedException();
+    }
 
-        public IList<ICuenta> FindLikeIgnoreCaseNombreLimit(string nombre, int limit)
-        {
-            using (ISession session = HibernateUtil.OpenSession())
-            {
-                IList<ICuenta> mycuenta = session.Query<CuposPuertoSTOP>()
-                     .Where(c => c.NombrePuerto.ToUpper().Contains(nombre.ToUpper()))
-                     .Take(limit)
-                     .ToList<ICuenta>();
-                HibernateUtil.Dispose();
-                return mycuenta;
-            }
-        }
+    public ICuenta FindNombreAndCuitByCuenta(long cuenta)
+    {
+      throw new NotImplementedException();
+    }
 
-        public IList<ICuenta> FindLikeNombreLimit(string value, int limit)
-        {
-            throw new NotImplementedException();
-        }
+    public IList<string> FindNombreLikeNombre(string value)
+    {
+      throw new NotImplementedException();
+    }
 
-        public ICuenta FindNombreAndCuitByCuenta(long cuenta)
-        {
-            throw new NotImplementedException();
-        }
+    public IList<ICuenta> FindStartsWithCuentaLimit(long cuenta, int limit)
+    {
+      using (ISession session = HibernateUtil.OpenSession())
+      {
+        IList<ICuenta> mycuenta = session.Query<CuposPuertoSTOP>()
+             .Where(c =>
+                    c.NroPuerto.ToString().StartsWith(cuenta.ToString()))
+             .Take(limit)
+             .ToList<ICuenta>();
+        HibernateUtil.Dispose();
+        return mycuenta;
+      }
+    }
 
-        public IList<string> FindNombreLikeNombre(string value)
-        {
-            throw new NotImplementedException();
-        }
+    public IList<ICuenta> FindStartsWithCuentaLimit(long cuenta, ISession session, int limit)
+    {
+      throw new NotImplementedException();
+    }
 
-        public IList<ICuenta> FindStartsWithCuentaLimit(long cuenta, int limit)
-        {
-            using (ISession session = HibernateUtil.OpenSession())
-            {
-                IList<ICuenta> mycuenta = session.Query<CuposPuertoSTOP>()
-                     .Where(c =>
-                            c.NroPuerto.ToString().StartsWith(cuenta.ToString()))
-                     .Take(limit)
-                     .ToList<ICuenta>();
-                HibernateUtil.Dispose();
-                return mycuenta;
-            }
-        }
+    public IList<ICuenta> FindStartsWithCuentaLimitCC(long cuenta, int limit)
+    {
+      throw new NotImplementedException();
+    }
 
-        public IList<ICuenta> FindStartsWithCuentaLimit(long cuenta, ISession session, int limit)
+    public IList<ICuenta> FindStartsWithIgnoreCaseNombreLimit(string nombre, int limit)
         {
             throw new NotImplementedException();
         }
+    public IList<ICuenta> FindStartsWithIgnoreCaseNombreLimit(string nombre, int limit)
+    {
+      throw new NotImplementedException();
+    }
 
-        public IList<ICuenta> FindStartsWithIgnoreCaseNombreLimit(string nombre, int limit)
-        {
-            throw new NotImplementedException();
-        }
+    public IList<ICuenta> GetAll()
+    {
+      throw new NotImplementedException();
+    }
 
-        public IList<ICuenta> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public CuposPuertoSTOP Save(CuposPuertoSTOP c, ISession session)
+    public CuposPuertoSTOP Save(CuposPuertoSTOP c, ISession session)
     {
       if (c != null)
       {
@@ -205,6 +223,11 @@ namespace ResourceServer.Models.DataAccess
         }
       }
       return null;
+    }
+
+    public IList<ICuenta> FindByCuentas(IList<string> cuentas)
+    {
+      throw new NotImplementedException();
     }
   }
 }
