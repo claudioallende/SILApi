@@ -96,10 +96,6 @@ namespace ResourceServer.Models.DataAccess
         {
             throw new NotImplementedException();
         }
-    public IList<ICuenta> FindLikeNombreLimit(string value, int limit)
-    {
-      throw new NotImplementedException();
-    }
 
     public ICuenta FindNombreAndCuitByCuenta(long cuenta)
     {
@@ -139,10 +135,6 @@ namespace ResourceServer.Models.DataAccess
         {
             throw new NotImplementedException();
         }
-    public IList<ICuenta> FindStartsWithIgnoreCaseNombreLimit(string nombre, int limit)
-    {
-      throw new NotImplementedException();
-    }
 
     public IList<ICuenta> GetAll()
     {

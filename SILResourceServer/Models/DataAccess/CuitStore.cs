@@ -207,18 +207,6 @@ namespace ResourceServer.Models.DataAccess
         return cuentasFilter;
       }
     }
-    public IList<ICuenta> FindLikeIgnoreCaseNombreLimit(string nombre, int limit)
-    {
-      using (ISession session = HibernateUtil.OpenSession(mapping))
-      {
-        IList<ICuenta> cuenta = session.Query<CuposCuit>()
-            .Where(x => x.Nombre.ToUpper().Trim().Contains(nombre.ToUpper().Trim()))
-            .Take(limit)
-            .ToList<ICuenta>();
-        HibernateUtil.Dispose();
-        return cuenta;
-      }
-    }
 
     public ICuenta FindNombreAndCuitByCuenta(long cuenta)
     {
