@@ -17,7 +17,10 @@ namespace ResourceServer.Models.Email
 
     protected override IPdfBuilder GetPdfBuilder(IList<Cupos> Cupos)
     {
-      return new PdfDistribucionBuilder(Cupos);
+      if (Cupos != null && Cupos.Any(x => x.Puerto == 100007))
+        return new PdfDistribucionSanLorenzoBuilder(Cupos);
+      else
+        return new PdfDistribucionBuilder(Cupos);
     }
 
     protected override string TipoServicioInformar
@@ -49,7 +52,9 @@ namespace ResourceServer.Models.Email
     {
       if (TipoDestinatario.Vendedor == tipoDestinatario)
       {
-        if (CuentaPuerto == 100007 || CuentaPuerto == 100212)
+        if(CuentaPuerto == 100007)
+          return new EmailDistribucionPuertoSanLorenzo(ListaCupos, Session);
+        else if (CuentaPuerto == 100212)
           return new EmailDistribucionConHorario(ListaCupos, Session);
         else
           return new EmailDistribucionMultiplesPdfs(ListaCupos, Session);

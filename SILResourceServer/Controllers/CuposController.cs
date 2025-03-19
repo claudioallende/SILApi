@@ -277,8 +277,10 @@ namespace ResourceServer.Controllers
       InformarPorLoteViewModel PrimerElemento = Lote.ElementAt(0);
       ServicioInformarAVendedor servicioDistribucion = new InformarDistribucionPorMail(PrimerElemento.CuentaComprador, PrimerElemento.CuentaPuerto,
           PrimerElemento.CodigoGrano, PrimerElemento.CodigoCentro, PrimerElemento.CodigoCentroDistribucion, PrimerElemento.Cyo);
+
       ServicioInformarAVendedor servicioAnulacion = new InformarAnulacionPorMail(PrimerElemento.CuentaComprador, PrimerElemento.CuentaPuerto,
           PrimerElemento.CodigoGrano, PrimerElemento.CodigoCentro, PrimerElemento.CodigoCentroDistribucion, PrimerElemento.Cyo);
+
       List<EmailInformado> EmailsInformados = new List<EmailInformado>();
       foreach (var Informa in Lote)
       {

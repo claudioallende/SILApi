@@ -1,26 +1,23 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
-
 namespace ResourceServer.Models.Pdf
 {
-  public class PdfDistribucionBuilder : IPdfBuilder
+  public class PdfDistribucionSanLorenzoBuilder : IPdfBuilder
   {
-
     protected Document ArchivoPdf { get; set; }
     protected PlantillaPdf Plantilla { get; set; }
     protected Cupos DatosDelCupo { get; set; }
     private PdfWriter Writer { get; set; }
-    //protected FileStream fs { get; set; }
     protected ServicioPdfDistribucion ServicioDistribucion { get; set; }
     private string UbicacionPdf { get; set; }
 
-    public PdfDistribucionBuilder(IList<Cupos> cupos)
+    public PdfDistribucionSanLorenzoBuilder(IList<Cupos> cupos)
     {
       ServicioDistribucion = new ServicioPdfDistribucion(cupos);
       DatosDelCupo = ServicioDistribucion.GetCupo();
@@ -50,6 +47,7 @@ namespace ResourceServer.Models.Pdf
     public void ConstruirContenido()
     {
       ConstruirDatos(DatosDelCupo);
+      AgregarEnlace();
       ConstruirTablaAlfanumericos(DatosDelCupo.Fecha, ServicioDistribucion.GetAlfanumericosAInformar());
     }
 
@@ -73,6 +71,24 @@ namespace ResourceServer.Models.Pdf
       NuevaLinea("OBSERVACIONES: " + cupo.Observa);
       NuevaLinea("DIRECCIÓN: " + puerto.Domicilio + " - " + puerto.Cpostal + " " + puerto.Nombre);
       NuevaLinea("Nº DE PLANTA: " + ServicioDistribucion.GetNroPlanta(DatosDelCupo.Puerto));
+      Plantilla.AgregarEspacioEnBlanco();
+    }
+
+    private void AgregarEnlace()
+    {
+      var paragraph = new Paragraph("Para agilizar tu operatoria en el puerto, bajate nuestra app ");
+      paragraph.Font = FontFactory.GetFont(FontFactory.HELVETICA, 12);
+      var boldText = new Chunk("AL2", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12));
+      paragraph.Add(boldText);
+
+      var text = new Chunk(" y pagá la tasa de sobrecarga de una manera fácil y segura.", FontFactory.GetFont(FontFactory.HELVETICA, 12));
+      paragraph.Add(text);
+
+      var linkText = new Chunk(" Descargá AL2 desde tu celular aquí", FontFactory.GetFont(FontFactory.HELVETICA_OBLIQUE, 12, BaseColor.DARK_GRAY));
+      linkText.SetAnchor("https://onelink.al2.com.ar/wZrT/srlpzqf4?af_qr=true");
+      paragraph.Add(linkText);
+
+      ArchivoPdf.Add(paragraph);
       Plantilla.AgregarEspacioEnBlanco();
     }
 

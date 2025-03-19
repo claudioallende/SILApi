@@ -468,6 +468,7 @@
     <Compile Include="Models\Email\EmailAnulacionCupos.cs" />
     <Compile Include="Models\Email\EmailDistribucionContactoComercial.cs" />
     <Compile Include="Models\Email\EmailDistribucionMultiplesPdfs.cs" />
+    <Compile Include="Models\Email\EmailDistribucionPuertoSanLorenzo.cs" />
     <Compile Include="Models\Email\EstilosEmail.cs" />
     <Compile Include="Models\Email\ServicioInformarAVendedor.cs" />
     <Compile Include="Models\Email\ServicioInformarCupos.cs" />
@@ -477,6 +478,7 @@
     <Compile Include="Models\Email\TipoDestinatario.cs" />
     <Compile Include="Models\Error\Exceptions\RegistroDuplicadoException.cs" />
     <Compile Include="Models\Identity\IClaimsContext.cs" />
+    <Compile Include="Models\Pdf\PdfDistribucionSanLorenzoBuilder.cs" />
     <Compile Include="Models\RelacionGranoSILGranoSTOPCompleta.cs" />
     <Compile Include="Models\DetalleDeIncumplimientoCupo.cs" />
     <Compile Include="Models\DTO\CentroPorPuertoDTO.cs" />
