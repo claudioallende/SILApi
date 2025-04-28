@@ -1,5 +1,6 @@
 ﻿using NHibernate;
 using ResourceServer.Models.DataAccess;
+using ResourceServer.Models.Email.IntegracionTerceros;
 using ResourceServer.Models.Error.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ namespace ResourceServer.Models.Email
     {
       IList<EmailInformado> EmailsInformados = new List<EmailInformado>();
       IList<Cupos> CuposAInformar = GetCuposInformar(CuentaVendedor);
+      long vendcta = (CuposAInformar != null && CuposAInformar.Any()) ? CuposAInformar.First().Vendcta : 0;
+      ServicioInformarPdf MUVINService = new ServicioInformarPdf(TipoDeEmail.Anulacion, vendcta);
       if (CuposAInformar.Count > 0)
       {
         using (ISession session = HibernateUtil.OpenSession())
@@ -38,6 +41,7 @@ namespace ResourceServer.Models.Email
             throw;
           }
         }
+        MUVINService.InformarMails(CuposAInformar.Cast<ICupo>().ToList());
       }
       return EmailsInformados;
     }

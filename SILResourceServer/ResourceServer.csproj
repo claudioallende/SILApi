@@ -470,6 +470,11 @@
     <Compile Include="Models\Email\EmailDistribucionMultiplesPdfs.cs" />
     <Compile Include="Models\Email\EmailDistribucionPuertoSanLorenzo.cs" />
     <Compile Include="Models\Email\EstilosEmail.cs" />
+    <Compile Include="Models\Email\IntegracionTerceros\EmailAnulacionMUVIN.cs" />
+    <Compile Include="Models\Email\IntegracionTerceros\EmailDistribucionMUVIN.cs" />
+    <Compile Include="Models\Email\IntegracionTerceros\ServicioInformarPdf.cs" />
+    <Compile Include="Models\Email\IntegracionTerceros\ServicioInformarTerceros.cs" />
+    <Compile Include="Models\Email\IntegracionTerceros\TipoDeEmail.cs" />
     <Compile Include="Models\Email\ServicioInformarAVendedor.cs" />
     <Compile Include="Models\Email\ServicioInformarCupos.cs" />
     <Compile Include="Models\Email\ServicioInformarCuposPdf.cs">
@@ -478,6 +483,7 @@
     <Compile Include="Models\Email\TipoDestinatario.cs" />
     <Compile Include="Models\Error\Exceptions\RegistroDuplicadoException.cs" />
     <Compile Include="Models\Identity\IClaimsContext.cs" />
+    <Compile Include="Models\Pdf\IntegracionTerceros\PdfInformeMUVINBuilder.cs" />
     <Compile Include="Models\Pdf\PdfDistribucionSanLorenzoBuilder.cs" />
     <Compile Include="Models\RelacionGranoSILGranoSTOPCompleta.cs" />
     <Compile Include="Models\DetalleDeIncumplimientoCupo.cs" />

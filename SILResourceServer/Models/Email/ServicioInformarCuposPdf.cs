@@ -1,5 +1,6 @@
 ﻿using NHibernate;
 using ResourceServer.Models.DataAccess;
+using ResourceServer.Models.Email.IntegracionTerceros;
 using ResourceServer.Models.Error.Exceptions;
 using ResourceServer.Models.Pdf;
 using System;
@@ -57,16 +58,16 @@ namespace ResourceServer.Models.Email
     //Enviar a todos en un solo mail (con los mails en un string separados por ;)
     public override IList<EmailInformado> InformarMails(long CuentaVendedor)
     {
+      
       List<EmailInformado> EmailsInformados = new List<EmailInformado>();
       this.ListaCuposAInformar = GetCuposInformar(CuentaVendedor);
+      long vendcta = (this.ListaCuposAInformar != null && this.ListaCuposAInformar.Any()) ? this.ListaCuposAInformar.First().Vendcta : 0;
+      ServicioInformarPdf MUVINService = new ServicioInformarPdf(TipoDeEmail.Distribucion, vendcta);
       if (this.ListaCuposAInformar.Count > 0)
       {
         IList<PdfCupos> PdfsAEnviarPorMails = GenerarPdfsDistribucion(this.ListaCuposAInformar.Cast<Cupos>().ToList());
-
         EmailsInformados.AddRange(GenerarPdfsEInformar(CuentaVendedor, PdfsAEnviarPorMails, this.ListaCuposAInformar, TipoDestinatario.Vendedor));
-
         InformarContactosComerciales(this.ListaCuposAInformar.Cast<Cupos>());
-
         using (ISession session = HibernateUtil.OpenSession())
         using (ITransaction tx = session.BeginTransaction())
         {
@@ -81,6 +82,7 @@ namespace ResourceServer.Models.Email
             throw;
           }
         }
+        MUVINService.InformarMails(this.ListaCuposAInformar);
       }
       return EmailsInformados;
     }
