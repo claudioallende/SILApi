@@ -386,6 +386,7 @@
     <Compile Include="Models\Cliente\ServicioReporteCliente.cs" />
     <Compile Include="Models\CodigosAlfanumericos.cs" />
     <Compile Include="Models\Comprador.cs" />
+    <Compile Include="Models\CondicionGrano.cs" />
     <Compile Include="Models\Configuracion\AppSettingConfig.cs" />
     <Compile Include="Models\Configuracion\CuentaCYOViewModel.cs" />
     <Compile Include="Models\Configuracion\EmailViewModel.cs" />
@@ -432,6 +433,7 @@
     <Compile Include="Models\DataAccess\CentroPorPuertoStore.cs" />
     <Compile Include="Models\DataAccess\CentroStore.cs" />
     <Compile Include="Models\DataAccess\CompradorStore.cs" />
+    <Compile Include="Models\DataAccess\CondicionGranoStore.cs" />
     <Compile Include="Models\DataAccess\ConsignacionStore.cs" />
     <Compile Include="Models\DataAccess\CuitStore.cs" />
     <Compile Include="Models\DataAccess\CupAuditHijoStore.cs" />
@@ -443,6 +445,7 @@
     <Compile Include="Models\DataAccess\CuposDistStore.cs" />
     <Compile Include="Models\DataAccess\CuposGranoSTOPStore.cs" />
     <Compile Include="Models\DataAccess\CuposPuertoSTOPStore.cs" />
+    <Compile Include="Models\DataAccess\ICondicionGranoStore.cs" />
     <Compile Include="Models\DataAccess\ICuposPuertoSTOPStore.cs" />
     <Compile Include="Models\DataAccess\ICuposGranoSTOPStore.cs" />
     <Compile Include="Models\DataAccess\CuposStore.cs" />

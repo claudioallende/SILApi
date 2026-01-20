@@ -18,6 +18,7 @@ namespace ResourceServer.Models
     public int PuertoSeleccionado { get; set; }
     public int CompctaSeleccionada { get; set; }
     public int VendctaSeleccionada { get; set; }
+    public int CondicionGranoSeleccionado { get; set; }
     public readonly int CantidadDias = 20;
     private ServicioCupo servicioCupo;
     //private CodigosAlfanumericos Codigos { get; set; }
@@ -115,6 +116,24 @@ namespace ResourceServer.Models
     public virtual string Caratula { get; set; }
     [Display(Name = "Contacto Comercial")]
     public virtual string ContactoComercial { get; set; }
+    [Display(Name = "Condición Grano")]
+    public virtual IEnumerable<SelectListItem> CondicionGrano
+    {
+      get
+      {
+        ICondicionGranoStore store = new CondicionGranoStore();
+        var condicionesGrano = store.FindAll()
+                    .Select(x =>
+                            new SelectListItem
+                            {
+                              Value = x.Id.ToString(),
+                              Text = x.Nombre
+                            });
+
+        return new SelectList(condicionesGrano, "Value", "Text");
+      }
+      private set { }
+    }
 
     public NuevoCupoViewModel()
     {
