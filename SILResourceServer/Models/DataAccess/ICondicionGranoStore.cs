@@ -10,10 +10,10 @@ namespace ResourceServer.Models.DataAccess
   public interface ICondicionGranoStore
   {
     void Save(CondicionGrano c);
-    void Update(string Id, CondicionGrano c);
-    void Delete(string Id);
-    CondicionGrano FindById(string Id);
-    CondicionGrano FindById(string Id, ISession Session);
+    void Update(long Id, CondicionGrano c);
+    void Delete(long Id);
+    CondicionGrano FindById(long Id);
+    CondicionGrano FindById(long Id, ISession Session);
     IList<CondicionGrano> FindAll();
     IList<CondicionGrano> FindAll(ISession Session);
     IList<CondicionGrano> FindByNombre(string nombre);

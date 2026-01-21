@@ -7,7 +7,7 @@ namespace ResourceServer.Models
 {
   public class CondicionGrano
   {
-    public virtual string Id { get; set; }
+    public virtual long Id { get; set; }
     public virtual string Nombre { get; set; }
   }
 }

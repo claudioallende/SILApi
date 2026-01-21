@@ -9,7 +9,8 @@ namespace ResourceServer.Models.DataAccess
   public class CondicionGranoStore : ICondicionGranoStore
   {
     private string mapping = "CondicionGrano.mpg.xml";
-    public void Delete(string Id)
+
+    public void Delete(long Id)
     {
       throw new NotImplementedException();
     }
@@ -32,7 +33,7 @@ namespace ResourceServer.Models.DataAccess
       return condicionesGrano;
     }
 
-    public CondicionGrano FindById(string Id)
+    public CondicionGrano FindById(long Id)
     {
       CondicionGrano condicionGrano = HibernateUtil.OpenSession(mapping).Query<CondicionGrano>()
           .Where(c => c.Id == Id)
@@ -41,7 +42,7 @@ namespace ResourceServer.Models.DataAccess
         return condicionGrano;
     }
 
-    public CondicionGrano FindById(string Id, ISession Session)
+    public CondicionGrano FindById(long Id, ISession Session)
     {
       CondicionGrano condicionGrano = Session.Query<CondicionGrano>()
         .Where(c => c.Id == Id)
@@ -63,7 +64,7 @@ namespace ResourceServer.Models.DataAccess
       throw new NotImplementedException();
     }
 
-    public void Update(string Id, CondicionGrano c)
+    public void Update(long Id, CondicionGrano c)
     {
       throw new NotImplementedException();
     }
