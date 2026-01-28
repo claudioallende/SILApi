@@ -19,9 +19,11 @@ namespace ResourceServer.Models.DataAccess
     {
       using (ISession session = HibernateUtil.OpenSession(mapping))
       {
+        var count = session.CreateQuery("select count(*) from CondicionGrano")
+                   .UniqueResult<long>();
+
         IList<CondicionGrano> condicionesGrano = session.Query<CondicionGrano>()
             .ToList();
-        HibernateUtil.Dispose();
         return condicionesGrano;
       }
     }

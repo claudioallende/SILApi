@@ -54,6 +54,9 @@ namespace ResourceServer.Models
     public virtual string Caratula { get; set; }
     [Display(Name = "Contacto Comercial")]
     public virtual string ContactoComercial { get; set; }
+    [Display(Name = "Condicion Grano")]
+    public virtual string CondicionGrano { get; set; }
+
     // Estos nombres no estan en la tabla de cupos, hay que ir a buscarlos por separado
     [Display(Name = "Nombres")]
     public IList<string> NomContactoComercial { get; set; }
@@ -84,6 +87,7 @@ namespace ResourceServer.Models
       NomRteComercialProductor = cupo.NomRteComercialProductor.Trim();
       CuitRteComercialVentaPrimaria = cupo.NomRteComercialVentaPrimaria.Trim();
       NomRteComercialVentaPrimaria = cupo.NomRteComercialVentaPrimaria.Trim();
+      CondicionGrano = cupo.CondicionGrano.Trim();
     }
 
     public void SetObservacion(string Observacion)
@@ -284,6 +288,14 @@ namespace ResourceServer.Models
         {
           cupos = cupos.Where(x => this.ContactoComercial == x.ContactoComercial);
         }
+      }
+      if (this.CondicionGrano == null || this.CondicionGrano.Trim() == "")
+      {
+        cupos = cupos.Where(x => x.CondicionGrano == null || x.CondicionGrano.Trim() == "");
+      }
+      else
+      {
+        cupos = cupos.Where(x => this.CondicionGrano == x.CondicionGrano);
       }
       return cupos;
     }
@@ -509,6 +521,14 @@ namespace ResourceServer.Models
       else
       {
         cupos = cupos.Where(x => this.Caratula == x.Caratula);
+      }
+      if (this.CondicionGrano == null || this.CondicionGrano.Trim() == "")
+      {
+        cupos = cupos.Where(x => x.CondicionGrano == null || x.CondicionGrano.Trim() == "");
+      }
+      else
+      {
+        cupos = cupos.Where(x => this.CondicionGrano == x.CondicionGrano);
       }
       return cupos;
     }

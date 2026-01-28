@@ -88,6 +88,7 @@ namespace ResourceServer.Models
     public virtual string CuitRteComercialVentaPrimaria { get; set; }
     public virtual string Caratula { get; set; }
     public virtual string ContactoComercial { get; set; }
+    public virtual string CondicionGrano { get; set; }
 
     public virtual int Vendcyo { get; set; }
 
@@ -106,7 +107,8 @@ namespace ResourceServer.Models
         CuitRteComercialProductor = this.CuitRteComercialProductor,
         CuitRteComercialVentaPrimaria = this.CuitRteComercialVentaPrimaria,
         Caratula = this.Caratula,
-        ContactoComercial = this.ContactoComercial
+        ContactoComercial = this.ContactoComercial,
+        CondicionGrano = this.CondicionGrano
       };
     }
 
@@ -124,6 +126,7 @@ namespace ResourceServer.Models
       this.CuitRteComercialVentaPrimaria = consignacion.CuitRteComercialVentaPrimaria;
       this.Caratula = consignacion.Caratula;
       this.ContactoComercial = consignacion.ContactoComercial;
+      this.CondicionGrano = consignacion.CondicionGrano;
     }
 
     public override bool Equals(object obj)

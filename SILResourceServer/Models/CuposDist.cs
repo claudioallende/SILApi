@@ -30,6 +30,7 @@ namespace ResourceServer.Models
     public virtual string Usuario { get; set; }
     public virtual string Caratula { get; set; }
     public virtual string ContactoComercial { get; set; }
+    public virtual string CondicionGrano { get; set; }
 
     public CuposDist() { }
 
@@ -53,6 +54,7 @@ namespace ResourceServer.Models
       this.CuitRteComercialVentaPrimaria = Consignacion.CuitRteComercialVentaPrimaria;
       this.Caratula = Consignacion.Caratula;
       this.ContactoComercial = Consignacion.ContactoComercial;
+      this.CondicionGrano = Consignacion.CondicionGrano;
     }
 
     public virtual Consignacion GetConsignacion()
@@ -71,6 +73,7 @@ namespace ResourceServer.Models
         CuitRteComercialVentaPrimaria = this.CuitRteComercialVentaPrimaria,
         Caratula = this.Caratula,
         ContactoComercial = this.ContactoComercial,
+        CondicionGrano = this.CondicionGrano
       };
     }
 
@@ -87,6 +90,7 @@ namespace ResourceServer.Models
       this.CuitRteComercialVentaPrimaria = consignacion.CuitRteComercialVentaPrimaria;
       this.Caratula = consignacion.Caratula;
       this.ContactoComercial = consignacion.ContactoComercial;
+      this.CondicionGrano = consignacion.CondicionGrano;
     }
   }
 }

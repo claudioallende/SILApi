@@ -124,6 +124,7 @@ namespace ResourceServer.Models
     public virtual DateTime? FechaYHoraInformado { get; set; }
     public virtual string Caratula { get; set; }
     public virtual string ContactoComercial { get; set; }
+    public virtual string CondicionGrano { get; set; }
     public virtual bool VendcyoBoolValue
     {
       get { return Vendcyo != 0; }
@@ -170,6 +171,7 @@ namespace ResourceServer.Models
         NomRteComercialVentaPrimaria = this.NomRteComercialVentaPrimaria,
         Caratula = this.Caratula,
         ContactoComercial = this.ContactoComercial,
+        CondicionGrano = this.CondicionGrano
       };
     }
 
@@ -198,7 +200,8 @@ namespace ResourceServer.Models
         CuitRteComercialVentaPrimaria = string.IsNullOrEmpty(this.CuitRteComercialVentaPrimaria) ? null : this.CuitRteComercialVentaPrimaria.Trim(),
         NomRteComercialVentaPrimaria = string.IsNullOrEmpty(this.NomRteComercialVentaPrimaria) ? null : this.NomRteComercialVentaPrimaria.Trim(),
         Caratula = string.IsNullOrEmpty(this.Caratula) ? null : this.Caratula.Trim(),
-        ContactoComercial = string.IsNullOrEmpty(this.ContactoComercial) ? null : this.ContactoComercial.Trim()
+        ContactoComercial = string.IsNullOrEmpty(this.ContactoComercial) ? null : this.ContactoComercial.Trim(),
+        CondicionGrano = string.IsNullOrEmpty(this.CondicionGrano) ? null : this.CondicionGrano.Trim()
       };
     }
 
@@ -267,6 +270,7 @@ namespace ResourceServer.Models
       this.NomRteComercialVentaPrimaria = consignacion.NomRteComercialVentaPrimaria;
       this.Caratula = consignacion.Caratula;
       this.ContactoComercial = consignacion.ContactoComercial;
+      this.CondicionGrano = consignacion.CondicionGrano;
     }
 
     /// <summary>Evalua que la fecha del cupo sea mayor o igual que ahora y si es igual que sea menor a la hora configurada en Web.config

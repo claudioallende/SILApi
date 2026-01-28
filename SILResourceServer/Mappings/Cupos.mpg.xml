@@ -185,6 +185,9 @@
 	<property name="ContactoComercial">
 		<column name="ContactoComercial"/>
 	</property>
+		<property name="CondicionGrano">
+			<column name="CondicionGrano"/>
+		</property>
     <property name="FechaYHoraInformado"/>
   </class>
 </hibernate-mapping>

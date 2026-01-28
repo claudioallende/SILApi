@@ -238,7 +238,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Mappings\CondicionGrano.mpg.xml" />
+    <EmbeddedResource Include="Mappings\CondicionGrano.mpg.xml" />
     <Content Include="Mappings\CuposPuertoSTOP.mpg.xml">
       <SubType>Designer</SubType>
     </Content>
