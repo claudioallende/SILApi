@@ -187,7 +187,7 @@
 	</property>
 		<property name="CondicionGrano">
 			<column name="CondicionGrano"/>
-		</property>
+	</property>
     <property name="FechaYHoraInformado"/>
   </class>
 </hibernate-mapping>

@@ -1527,7 +1527,8 @@ namespace ResourceServer.Models.DataAccess
                 x.Cuerpo.CuitRteComercialProductor == Consignacion.CuitRteComercialProductor &&
                 x.Cuerpo.NomRteComercialVentaPrimaria.Trim() == (!string.IsNullOrEmpty(Consignacion.NomRteComercialVentaPrimaria) ? Consignacion.NomRteComercialVentaPrimaria.Trim() : Consignacion.NomRteComercialVentaPrimaria) &&
                 x.Cuerpo.CuitRteComercialVentaPrimaria == Consignacion.CuitRteComercialVentaPrimaria &&
-                x.Cuerpo.Caratula == (!string.IsNullOrEmpty(Consignacion.Caratula) ? Consignacion.Caratula.Trim() : Consignacion.Caratula)
+                x.Cuerpo.Caratula == (!string.IsNullOrEmpty(Consignacion.Caratula) ? Consignacion.Caratula.Trim() : Consignacion.Caratula) &&
+                x.Cuerpo.CondicionGrano == (!string.IsNullOrEmpty(Consignacion.CondicionGrano) ? Consignacion.CondicionGrano.Trim() : Consignacion.CondicionGrano)
             )
             .GroupBy(y =>
                 new
@@ -1554,6 +1555,7 @@ namespace ResourceServer.Models.DataAccess
                   y.Cuerpo.CuitRteComercialVentaPrimaria,
                   y.Cuerpo.NomRteComercialVentaPrimaria,
                   y.Cuerpo.Caratula,
+                  y.Cuerpo.CondicionGrano,
                   y.Cuerpo.Observa
                 }
             )
@@ -1605,7 +1607,8 @@ namespace ResourceServer.Models.DataAccess
                 x.Cuerpo.CuitRteComercialProductor == Consignacion.CuitRteComercialProductor &&
                 x.Cuerpo.NomRteComercialVentaPrimaria.Trim() == (!string.IsNullOrEmpty(Consignacion.NomRteComercialVentaPrimaria) ? Consignacion.NomRteComercialVentaPrimaria.Trim() : Consignacion.NomRteComercialVentaPrimaria) &&
                 x.Cuerpo.CuitRteComercialVentaPrimaria == Consignacion.CuitRteComercialVentaPrimaria &&
-                x.Cuerpo.Caratula == (!string.IsNullOrEmpty(Consignacion.Caratula) ? Consignacion.Caratula.Trim() : Consignacion.Caratula)
+                x.Cuerpo.Caratula == (!string.IsNullOrEmpty(Consignacion.Caratula) ? Consignacion.Caratula.Trim() : Consignacion.Caratula) &&
+                x.Cuerpo.CondicionGrano == (!string.IsNullOrEmpty(Consignacion.CondicionGrano) ? Consignacion.CondicionGrano.Trim() : Consignacion.CondicionGrano)
             )
             .GroupBy(y =>
                 new
@@ -1632,7 +1635,8 @@ namespace ResourceServer.Models.DataAccess
                   y.Cuerpo.CuitRteComercialVentaPrimaria,
                   y.Cuerpo.NomRteComercialVentaPrimaria,
                   y.Cuerpo.Caratula,
-                  y.Cuerpo.ContactoComercial
+                  y.Cuerpo.ContactoComercial,
+                  y.Cuerpo.CondicionGrano
                 }
             )
             .Select(z => new Cupos
