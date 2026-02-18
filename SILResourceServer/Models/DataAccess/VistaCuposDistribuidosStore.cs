@@ -64,7 +64,8 @@ namespace ResourceServer.Models.DataAccess
                     (CompVendDestProdCenConsignacion.CuitRteComercialProductor != null ? c.CuitRteComercialProductor == CompVendDestProdCenConsignacion.CuitRteComercialProductor : (c.CuitRteComercialProductor == null) || (c.CuitRteComercialProductor == "")) &&
                     (CompVendDestProdCenConsignacion.CuitRteComercialVentaPrimaria != null ? c.CuitRteComercialVentaPrimaria == CompVendDestProdCenConsignacion.CuitRteComercialVentaPrimaria : (c.CuitRteComercialVentaPrimaria == null) || (c.CuitRteComercialVentaPrimaria == "")) &&
                     (CompVendDestProdCenConsignacion.Caratula != null ? c.Caratula == CompVendDestProdCenConsignacion.Caratula : (c.Caratula == null) || (c.Caratula == "")) &&
-                    (CompVendDestProdCenConsignacion.ContactoComercial != null ? c.ContactoComercial == CompVendDestProdCenConsignacion.ContactoComercial : (c.ContactoComercial == null) || (c.ContactoComercial == ""))
+                    (CompVendDestProdCenConsignacion.ContactoComercial != null ? c.ContactoComercial == CompVendDestProdCenConsignacion.ContactoComercial : (c.ContactoComercial == null) || (c.ContactoComercial == "")) &&
+                    (CompVendDestProdCenConsignacion.CondicionGrano != null ? c.CondicionGrano == CompVendDestProdCenConsignacion.CondicionGrano : (c.CondicionGrano == null) || (c.CondicionGrano == ""))
                 )
                 .GroupBy(y =>
                             new
@@ -117,7 +118,8 @@ namespace ResourceServer.Models.DataAccess
                               y.CuitRteComercialVentaPrimaria,
                               y.Vendcyo,
                               y.Caratula,
-                              y.ContactoComercial
+                              y.ContactoComercial,
+                              y.CondicionGrano
                             }
                         ).OrderBy(z => z.Key.Vendedor)
                         .Select(
@@ -177,6 +179,7 @@ namespace ResourceServer.Models.DataAccess
                               Vendcyo = x.Key.Vendcyo,
                               Caratula = x.Key.Caratula,
                               ContactoComercial = x.Key.ContactoComercial,
+                              CondicionGrano = x.Key.CondicionGrano
                             }
                         )
                         .Where(x => x.Cupostotalesadist > 0)
@@ -242,7 +245,8 @@ namespace ResourceServer.Models.DataAccess
                       (CompVendProdCentroDestFechaConsignacion.CuitRteComercialProductor != null ? c.CuitRteComercialProductor == CompVendProdCentroDestFechaConsignacion.CuitRteComercialProductor : (c.CuitRteComercialProductor == null) || (c.CuitRteComercialProductor == "")) &&
                       (CompVendProdCentroDestFechaConsignacion.CuitRteComercialVentaPrimaria != null ? c.CuitRteComercialVentaPrimaria == CompVendProdCentroDestFechaConsignacion.CuitRteComercialVentaPrimaria : (c.CuitRteComercialVentaPrimaria == null) || (c.CuitRteComercialVentaPrimaria == "")) &&
                       (CompVendProdCentroDestFechaConsignacion.Caratula != null ? c.Caratula == CompVendProdCentroDestFechaConsignacion.Caratula : (c.Caratula == null) || (c.Caratula == "")) &&
-                      (CompVendProdCentroDestFechaConsignacion.ContactoComercial != null ? c.ContactoComercial == CompVendProdCentroDestFechaConsignacion.ContactoComercial : (c.ContactoComercial == null) || (c.ContactoComercial == ""))
+                      (CompVendProdCentroDestFechaConsignacion.ContactoComercial != null ? c.ContactoComercial == CompVendProdCentroDestFechaConsignacion.ContactoComercial : (c.ContactoComercial == null) || (c.ContactoComercial == "")) &&
+                      (CompVendProdCentroDestFechaConsignacion.CondicionGrano!= null ? c.CondicionGrano == CompVendProdCentroDestFechaConsignacion.CondicionGrano : (c.CondicionGrano == null) || (c.CondicionGrano == ""))
                   )
                   .GroupBy(y =>
                          new
@@ -292,7 +296,8 @@ namespace ResourceServer.Models.DataAccess
                            y.CuitRteComercialProductor,
                            y.CuitRteComercialVentaPrimaria,
                            y.Caratula,
-                           y.ContactoComercial
+                           y.ContactoComercial,
+                           y.CondicionGrano
                          }
                       ).OrderBy(z => z.Key.Vendedor)
                       .Select(
@@ -348,7 +353,8 @@ namespace ResourceServer.Models.DataAccess
                             CuitRteComercialProductor = x.Key.CuitRteComercialProductor,
                             CuitRteComercialVentaPrimaria = x.Key.CuitRteComercialVentaPrimaria,
                             Caratula = x.Key.Caratula,
-                            ContactoComercial = x.Key.ContactoComercial
+                            ContactoComercial = x.Key.ContactoComercial,
+                            CondicionGrano = x.Key.CondicionGrano
                           }
                       )
               .FirstOrDefault();
@@ -425,7 +431,8 @@ namespace ResourceServer.Models.DataAccess
                 y.CuitRteComercialVentaPrimaria,
                 y.Vendcyo,
                 y.Caratula,
-                y.ContactoComercial
+                y.ContactoComercial,
+                y.CondicionGrano
               }
           )
           .Select(
@@ -484,7 +491,8 @@ namespace ResourceServer.Models.DataAccess
                 CuitRteComercialVentaPrimaria = x.Key.CuitRteComercialVentaPrimaria,
                 Vendcyo = x.Key.Vendcyo,
                 Caratula = x.Key.Caratula,
-                ContactoComercial = x.Key.ContactoComercial
+                ContactoComercial = x.Key.ContactoComercial,
+                CondicionGrano= x.Key.CondicionGrano 
               }
           )
           .Where(x => x.Cupostotalesadist > 0)

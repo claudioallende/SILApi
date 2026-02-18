@@ -164,5 +164,6 @@
     <property name="Vendcyo"/>
 		<property name="Caratula"/>
 		<property name="ContactoComercial"/>
+	    <property name="CondicionGrano"/>
   </class>
 </hibernate-mapping>
