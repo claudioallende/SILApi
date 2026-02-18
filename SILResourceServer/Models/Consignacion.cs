@@ -178,7 +178,8 @@ namespace ResourceServer.Models
         CuitRteComercialProductor = this.CuitRteComercialProductor,
         NomRteComercialProductor = this.NomRteComercialProductor,
         CuitRteComercialVentaPrimaria = this.CuitRteComercialVentaPrimaria,
-        NomRteComercialVentaPrimaria = this.NomRteComercialVentaPrimaria
+        NomRteComercialVentaPrimaria = this.NomRteComercialVentaPrimaria,
+        CondicionGrano = this.CondicionGrano
       };
     }
 
