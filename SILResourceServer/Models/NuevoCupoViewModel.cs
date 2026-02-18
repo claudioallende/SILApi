@@ -18,7 +18,8 @@ namespace ResourceServer.Models
     public int PuertoSeleccionado { get; set; }
     public int CompctaSeleccionada { get; set; }
     public int VendctaSeleccionada { get; set; }
-    public int CondicionGranoSeleccionado { get; set; }
+    [Display(Name = "Condición Grano")]
+    public virtual string CondicionGranoSeleccionado { get; set; }
     public readonly int CantidadDias = 20;
     private ServicioCupo servicioCupo;
     //private CodigosAlfanumericos Codigos { get; set; }
@@ -126,7 +127,7 @@ namespace ResourceServer.Models
                     .Select(x =>
                             new SelectListItem
                             {
-                              Value = x.Id.ToString(),
+                              Value = x.Nombre,
                               Text = x.Nombre
                             });
 
@@ -343,6 +344,7 @@ namespace ResourceServer.Models
       cupo.Usuario = ClaimsUtil.GetClaim("Usuario");
       cupo.Caratula = this.Caratula;
       cupo.ContactoComercial = this.ContactoComercial;
+      cupo.CondicionGrano = this.CondicionGranoSeleccionado;
       return cupo;
     }
 
@@ -375,6 +377,7 @@ namespace ResourceServer.Models
       cupoCuerpoNuevo.DetalleCupoCNRT = Encabezado.DetalleCupoCNRT;
       cupoCuerpoNuevo.Caratula = Encabezado.Caratula;
       cupoCuerpoNuevo.ContactoComercial = Encabezado.ContactoComercial;
+      cupoCuerpoNuevo.CondicionGrano = Encabezado.CondicionGrano;
       return cupoCuerpoNuevo;
     }
     /// <summary>
