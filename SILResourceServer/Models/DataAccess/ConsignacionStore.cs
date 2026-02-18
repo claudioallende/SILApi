@@ -288,7 +288,6 @@ namespace ResourceServer.Models.DataAccess
       }
     }
 
-
     public IList<Consignacion> FindByGranoAndCompAndVendAndPuertoAndVendcyoNotInStatus(int grano, long comp, long vend, long puerto, long[] vendcyo, int[] notstatus)
     {
       using (ISession session = HibernateUtil.OpenSession(mapping))
@@ -522,6 +521,7 @@ namespace ResourceServer.Models.DataAccess
                   NomRteComercialVentaPrimaria = x.NomRteComercialVentaPrimaria.Trim(),
                   Caratula = x.Caratula.Trim(),
                   ContactoComercial = x.ContactoComercial.Trim(),
+                  CondicionGrano = x.CondicionGrano.Trim()
                 })
             .GroupBy(y =>
                 new
@@ -547,7 +547,8 @@ namespace ResourceServer.Models.DataAccess
                   y.CuitRteComercialVentaPrimaria,
                   y.NomRteComercialVentaPrimaria,
                   y.Caratula,
-                  y.ContactoComercial
+                  y.ContactoComercial,
+                  y.CondicionGrano
                 }
             )
             .Select(z => new Consignacion
@@ -573,7 +574,8 @@ namespace ResourceServer.Models.DataAccess
               CuitRteComercialVentaPrimaria = z.Key.CuitRteComercialVentaPrimaria,
               NomRteComercialVentaPrimaria = z.Key.NomRteComercialVentaPrimaria,
               Caratula = z.Key.Caratula,
-              ContactoComercial = z.Key.ContactoComercial
+              ContactoComercial = z.Key.ContactoComercial,
+              CondicionGrano = z.Key.CondicionGrano
             }
             )
             .ToList();

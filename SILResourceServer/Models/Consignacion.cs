@@ -429,6 +429,15 @@ namespace ResourceServer.Models
       {
         cupos = cupos.Where(x => this.CuitRteComercialVentaPrimaria == x.CuitRteComercialVentaPrimaria);
       }
+      /*CA: 2026  ver si es necesario inorporar las siguientes lineas*/
+      if (this.CondicionGrano == null || this.CondicionGrano.Trim() == "")
+      {
+        cupos = cupos.Where(x => x.CondicionGrano == null || x.CondicionGrano.Trim() == "");
+      }
+      else
+      {
+        cupos = cupos.Where(x => this.CondicionGrano == x.CondicionGrano);
+      }
       return cupos;
     }
 

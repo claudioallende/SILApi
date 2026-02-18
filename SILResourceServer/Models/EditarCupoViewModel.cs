@@ -254,6 +254,7 @@ namespace ResourceServer.Models
           NomRteComercialVentaPrimaria = array[19],
           Caratula = array[20],
           ContactoComercial = array[21],
+          CondicionGrano = array[22],
         };
       }
     }
