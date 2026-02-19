@@ -608,7 +608,8 @@ namespace ResourceServer.Models
                         Nomrteent = x.Nomrteent,
                         Cuitdestinatario = x.Cuitdestinatario,
                         Nomdestinatario = x.Nomdestinatario,
-                        Fecha = x.Fecha
+                        Fecha = x.Fecha,
+                        CondicionGrano = x.CondicionGrano
                     }
                 );
 
@@ -630,7 +631,8 @@ namespace ResourceServer.Models
                     Cuitrteent = x.Key.Cuitrteent,
                     Nomrteent = x.Key.Nomrteent,
                     Cuitdestinatario = x.Key.Cuitdestinatario,
-                    Nomdestinatario = x.Key.Nomdestinatario
+                    Nomdestinatario = x.Key.Nomdestinatario,
+                    CondicionGrano = x.Key.CondicionGrano
                 },
                 Fecha = x.Key.Fecha,
                 Cupos = x.Where(y =>
@@ -650,7 +652,8 @@ namespace ResourceServer.Models
                         y.Nomrteent == x.Key.Nomrteent &&
                         y.Cuitdestinatario == x.Key.Cuitdestinatario &&
                         y.Nomdestinatario == x.Key.Nomdestinatario &&
-                        y.Fecha == x.Key.Fecha
+                        y.Fecha == x.Key.Fecha &&
+                        y.CondicionGrano == x.Key.CondicionGrano
                     ).ToList()
             })
             .ToList();
