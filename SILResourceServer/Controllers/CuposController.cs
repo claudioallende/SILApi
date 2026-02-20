@@ -161,7 +161,7 @@ namespace ResourceServer.Controllers
         //model.ObtenerFiltro();
         model.Modelo.ObtenerIds(model.Id.Id);
         model.Modelo.Inicializar(model.Id.Cyo);
-        model.Modelo.BuscarYMostrarConsignaciones();
+        //model.Modelo.BuscarYMostrarConsignaciones();
         if (model.Modelo.Consignaciones.Count > 0)
         {
           ServicioCuenta sCuenta = new ServicioCuenta(new CuitStore());
