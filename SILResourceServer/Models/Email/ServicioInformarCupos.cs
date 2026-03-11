@@ -48,12 +48,19 @@ namespace ResourceServer.Models.Email
       string CorreosElectronicosDestinatarios = GetEmails(CuentaVendedor, session);
       try
       {
-        //En caso de que haya solo 1 pdf que informar el dto va null
-        ServiceEmail ServicioEmailVendedor = GetServiceEmail(CuposAInformar, CuentaVendedor, CuposAInformar, TipoDestinatario.Vendedor, session);
-        EnviarEmail(ServicioEmailVendedor, CorreosElectronicosDestinatarios);
-        InformarContactosComerciales(CuposAInformar, session);
-        GuardarCupos(CuposAInformar, session);
-        EmailsInformados.Add(new EmailInformado { Estado = 0, Mensaje = "OK", CuentaVendedor = CuentaVendedor, TipoEmail = this.TipoServicioInformar });
+        List<string> marcas = CuposAInformar
+        .GroupBy(x => x.CondicionGrano)
+        .Select(x => x.Key)
+        .ToList();
+        foreach (var marca in marcas)
+        {
+          List<Cupos> CuposAInf = CuposAInformar.Where(x => x.CondicionGrano == marca).ToList();
+          ServiceEmail ServicioEmailVendedor = GetServiceEmail(CuposAInf, CuentaVendedor, CuposAInformar, TipoDestinatario.Vendedor, session);
+          EnviarEmail(ServicioEmailVendedor, CorreosElectronicosDestinatarios);
+          InformarContactosComerciales(CuposAInf, session);
+          GuardarCupos(CuposAInf, session);
+          EmailsInformados.Add(new EmailInformado { Estado = 0, Mensaje = "OK", CuentaVendedor = CuentaVendedor, TipoEmail = this.TipoServicioInformar });
+        }
       }
       catch (NeedEmailException e)
       {

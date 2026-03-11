@@ -97,5 +97,6 @@ namespace ResourceServer.Models
          bool PuedeOperar();
          Cupos NuevoCupoHijo();
          ClaveCupo GetClave();
-    }
+         string CondicionGrano { get; set; }
+  }
 }

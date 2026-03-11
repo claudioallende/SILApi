@@ -117,9 +117,25 @@ namespace ResourceServer.Models.Email
       string CorreosElectronicosDestinatarios = GetEmails(CuentaVendedor, session);
       try
       {
-        ServiceEmail ServicioEmail = GetServiceEmail(CuentaVendedor, ListaCupos, tipoDestinatario, session);
-        EnviarEmail(ServicioEmail, CorreosElectronicosDestinatarios, PdfsAEnviarPorMails);
-        EmailsInformados.Add(new EmailInformado { Estado = 0, Mensaje = "OK", CuentaVendedor = CuentaVendedor, TipoEmail = this.TipoServicioInformar });
+        List<string> marcas = PdfsAEnviarPorMails
+          .GroupBy(x => x.Consignacion.CondicionGrano)
+          .Select(x =>  x.Key)
+          .ToList();
+
+        List<Cupos> ListaCuposCasteados = ListaCupos
+        .OfType<Cupos>()
+        .ToList();
+
+        foreach (var marca in marcas) 
+        {
+          List<PdfCupos> cuposAgrupadosAInf = PdfsAEnviarPorMails.Where(x => x.Consignacion.CondicionGrano == marca).ToList();
+          List<long> IdsDeCuposAInf = ListaCuposCasteados.Where(x => x.CondicionGrano == marca).Select(y => y.Id).ToList();
+          List<ICupo> CuposAInf = ListaCupos.Where(x => IdsDeCuposAInf.Contains(x.Id)).ToList();
+          ServiceEmail ServicioEmail = GetServiceEmail(CuentaVendedor, CuposAInf, tipoDestinatario, session);
+          EnviarEmail(ServicioEmail, CorreosElectronicosDestinatarios, cuposAgrupadosAInf);
+          EmailsInformados.Add(new EmailInformado { Estado = 0, Mensaje = "OK", CuentaVendedor = CuentaVendedor, TipoEmail = this.TipoServicioInformar });
+        }
+        
       }
       catch (NeedEmailException e)
       {

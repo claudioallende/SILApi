@@ -22,7 +22,7 @@ namespace ResourceServer.Models
         public int Perdidos { get; set; }
         [Display(Name = "Porcentaje De Perdida")]
         public decimal PorcentajeDePerdida { get; set; }
-
+        public virtual string CondicionGrano { get; set; }
         public long Id
         {
             get
