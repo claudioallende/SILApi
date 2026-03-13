@@ -270,7 +270,7 @@ namespace ResourceServer.Models
       this.NomRteComercialVentaPrimaria = consignacion.NomRteComercialVentaPrimaria;
       this.Caratula = consignacion.Caratula;
       this.ContactoComercial = consignacion.ContactoComercial;
-      this.CondicionGrano = consignacion.CondicionGrano;
+      this.CondicionGrano = this.CondicionGrano != consignacion.CondicionGrano ? this.CondicionGrano : consignacion.CondicionGrano;
     }
 
     /// <summary>Evalua que la fecha del cupo sea mayor o igual que ahora y si es igual que sea menor a la hora configurada en Web.config
