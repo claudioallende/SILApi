@@ -126,7 +126,8 @@ namespace ResourceServer.Models.Email
       if (string.IsNullOrEmpty(Grano))
       {
         IGranoStore GranoStore = new GranoStore();
-        Grano = GranoStore.FindById(CodigoGrano.ToString(), Session).Nombre;
+        string condicionGrano = this.Consignacion != null && !string.IsNullOrEmpty(this.Consignacion.CondicionGrano) ? "(" + this.Consignacion.CondicionGrano + ")" : string.Empty;
+        Grano = GranoStore.FindById(CodigoGrano.ToString(), Session).Nombre + condicionGrano;
       }
       return Grano;
     }
