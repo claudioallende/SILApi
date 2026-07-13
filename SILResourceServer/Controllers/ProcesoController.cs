@@ -9,7 +9,6 @@ using System.Web.Http;
 
 namespace ResourceServer.Controllers
 {
-    [Authorize]
     public class ProcesoController : ApiController
     {
         [HttpGet]

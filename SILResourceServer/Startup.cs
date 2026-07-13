@@ -26,13 +26,13 @@ namespace ResourceServer
     public void Configuration(IAppBuilder app)
     {
       // token validation
-      app.UseIdentityServerBearerTokenAuthentication(new IdentityServerBearerTokenAuthenticationOptions
-      {
-        Authority = ConfigurationManager.AppSettings["AUTH_SERVER"] + "/identity",         //"https://localhost:44319/identity",
-        RequiredScopes = new[] { "CuposCorrRSRCServ" }
-        //clientId="322717dee8f24a8b965f78ec0d99c66a"
-        //secrets="mDRtSMykxP4qEIrXGFsH9kHitdiTlCxYzbI0FseTSB8"
-      });
+      //app.UseIdentityServerBearerTokenAuthentication(new IdentityServerBearerTokenAuthenticationOptions
+      //{
+      //  Authority = ConfigurationManager.AppSettings["AUTH_SERVER"] + "/identity",         //"https://localhost:44319/identity",
+      //  RequiredScopes = new[] { "CuposCorrRSRCServ" }
+      //  //clientId="322717dee8f24a8b965f78ec0d99c66a"
+      //  //secrets="mDRtSMykxP4qEIrXGFsH9kHitdiTlCxYzbI0FseTSB8"
+      //});
 
       // add app local claims per request
       app.UseClaimsTransformation(incoming =>

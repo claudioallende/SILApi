@@ -11,7 +11,6 @@ using CuposCorretaje.Models.Identity;
 
 namespace CuposCorretaje.Controllers
 {
-    [Authorize]
     public class ManageController : Controller
     {
         private SignInManager _signInManager;
