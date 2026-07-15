@@ -11,6 +11,7 @@ using System.Web.Http;
 
 namespace ResourceServer.Controllers
 {
+    [Authorize]
     [ExceptionHandling]
     public class MediadorSTOPandSILController : ApiController
     {

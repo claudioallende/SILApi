@@ -9,7 +9,9 @@ using System.Web.Http;
 
 namespace ResourceServer.Controllers
 {
+    [Authorize]
     [RoutePrefix("api/protected")]
+    [Authorize(Roles = "Usuario_Supervisor")]
     public class ProtectedController : ApiController
     {
         // GET: api/Protected
