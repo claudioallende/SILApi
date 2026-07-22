@@ -34,15 +34,6 @@ namespace ResourceServer.Models
 
         private bool Confirmacion;
 
-        // ── Integración solicitud-cupo (modelo "Detalle Acumulativo") ──────────
-        private readonly SolicitudTurnoStore _solicitudTurnoStore = new SolicitudTurnoStore();
-        // Asociaciones solicitud-cupo del request (null ⇒ distribución tradicional).
-        private IList<AsignacionSolicitudCupoDto> _asignaciones;
-        // Clave fila/día → cola (FIFO) de CUPOSCORRE.Id efectivamente distribuidos en esa celda.
-        private Dictionary<string, Queue<long>> _cuposDistribuidosPorClave;
-        // Relaciones efectivamente persistidas en SOLTURNOS_DETALLE.
-        private List<AsignacionRealizadaDto> _relacionesRealizadas;
-
         public ServicioDistribuir(bool Confirmacion = false)
         {
             CuposDistribuir = new VistaCuposDistribuidosStore();
@@ -54,215 +45,13 @@ namespace ResourceServer.Models
             this.Confirmacion = Confirmacion;
         }
 
-        public ActualizarDistribucionResult ValidarYGuardar(RegistroDistribucionViewModel model)
+        public int ValidarYGuardar(RegistroDistribucionViewModel model)
         {
             if (model.CosechaDesde == "0" || model.CosechaDesde == null) model.CosechaDesde = FiltroPorDefecto.GetFiltroPorDefectoCosechaDesde();
             if (model.CosechaHasta == "0" || model.CosechaHasta == null) model.CosechaHasta = FiltroPorDefecto.GetFiltroPorDefectoCosechaHasta();
             if (model.fecha == null) model.fecha = FiltroPorDefecto.GetFiltroPorDefectoFechaHasta();
             if (model.fechaDesde == null) model.fechaDesde = FiltroPorDefecto.GetFiltroPorDefectoFechaDesde();
-
-            // Extensión opcional: sólo se activa la lógica de solicitudes cuando el
-            // request trae asociaciones. Sin ellas, el flujo es idéntico al actual.
-            _asignaciones = model.TieneAsignaciones() ? model.AsignacionesSolicitudCupo : null;
-
-            int codigo = VerificoDisponiblesYregistroDitrubucion(model.cupos, model.CosechaDesde, model.CosechaHasta, model.fechaDesde, model.fecha, Int64.Parse(model.puerto), model.anterior, model.nuevo, model.tieneVendedor);
-
-            var result = ActualizarDistribucionResult.DesdeCodigo(codigo);
-            if (_asignaciones != null)
-            {
-                result.Solicitados = _asignaciones.Sum(a => a.Cantidad);
-                result.Asignados = _relacionesRealizadas.Count;
-                result.Pendientes = Math.Max(0, result.Solicitados - result.Asignados);
-                result.Relaciones = _relacionesRealizadas;
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Modo SolicitudMatch (AltaSolicitud): acepta un conjunto de pares
-        /// (SolicitudId, CupoSeleccionadoId) y, dentro de UNA transacción NHibernate,
-        /// distribuye exactamente esos cupos y los relaciona con sus solicitudes.
-        ///
-        /// Pasos (§8 del plan):
-        ///   1) Carga todas las solicitudes por SolicitudId.
-        ///   2) Carga los cupos por CupoSeleccionadoId.
-        ///   3) Valida que existan y estén disponibles (B1).
-        ///   4) Por cada par (solicitud, cupo): upserta CUPOSDIST con la
-        ///      consignación del propio cupo (A1), marca el cupo como distribuido,
-        ///      e incrementa CUPOSDIST.Cupos.
-        ///   5) Por cada solicitud: IncrementarAceptada + InsertarDetalle.
-        ///   6) Commit único ⇒ CUPOSDIST, CUPOSCORRE, SOLTURNOS y SOLTURNOS_DETALLE
-        ///      quedan atómicamente consistentes. Cualquier inconsistencia lanza
-        ///      RelacionSolicitudCupoException ⇒ rollback completo.
-        /// </summary>
-        public ActualizarDistribucionResult ValidarYGuardarSolicitudMatch(RegistroDistribucionViewModel model)
-        {
-            if (model == null) throw new ArgumentNullException(nameof(model));
-            IList<AsignacionSolicitudCupoDto> asignaciones = model.AsignacionesSolicitudCupo;
-            if (asignaciones == null || asignaciones.Count == 0)
-                throw new RelacionSolicitudCupoException("No se recibieron asociaciones solicitud-cupo.");
-
-            _relacionesRealizadas = new List<AsignacionRealizadaDto>();
-            _asignaciones = asignaciones;
-
-            using (ISession session = HibernateUtil.OpenSession())
-            using (ITransaction tx = session.BeginTransaction())
-            {
-                try
-                {
-                    // 1) Cargar solicitudes.
-                    var solicitudIds = asignaciones.Select(a => a.SolicitudId).Distinct().ToList();
-                    IList<SolicitudTurno> solicitudes = _solicitudTurnoStore.GetByIds(solicitudIds, session, out IList<long> solicitudesFaltantes);
-                    if (solicitudesFaltantes != null && solicitudesFaltantes.Count > 0)
-                        throw new RelacionSolicitudCupoException(
-                            $"No existen las solicitudes: {string.Join(", ", solicitudesFaltantes)}.");
-                    var solicitudesPorId = solicitudes.ToDictionary(s => s.Id);
-
-                    // 2) Cargar cupos por CupoSeleccionadoId.
-                    var cupoIds = asignaciones.Select(a => a.CupoSeleccionadoId ?? 0).Where(id => id > 0).Distinct().ToList();
-                    if (cupoIds.Count != asignaciones.Count)
-                        throw new RelacionSolicitudCupoException("Cada asociación debe tener un CupoSeleccionadoId válido.");
-                    IList<Cupos> cupos = Cupostore.FindByIds(cupoIds, session);
-                    var cuposPorId = cupos.ToDictionary(c => c.Id);
-                    var cuposFaltantes = cupoIds.Where(id => !cuposPorId.ContainsKey(id)).ToList();
-                    if (cuposFaltantes.Count > 0)
-                        throw new RelacionSolicitudCupoException(
-                            $"No existen los cupos: {string.Join(", ", cuposFaltantes)}.");
-
-                    // Detectar cupo duplicado: la misma asignación no debe
-                    // seleccionar el mismo CUPOSCORRE.Id más de una vez.
-                    if (cupoIds.Count != cupoIds.Distinct().Count())
-                        throw new RelacionSolicitudCupoException("CupoSeleccionadoId repetido en la solicitud.");
-
-                    // 3) Validación B1 por par (solicitud, cupo).
-                    var cuposAsignadosPorSolicitud = new Dictionary<long, List<long>>();
-                    foreach (AsignacionSolicitudCupoDto asignacion in asignaciones)
-                    {
-                        SolicitudTurno solicitud = solicitudesPorId[asignacion.SolicitudId];
-                        Cupos cupo = cuposPorId[asignacion.CupoSeleccionadoId.Value];
-
-                        ValidarCompatibilidadSolicitudCupo(solicitud, cupo);
-
-                        // 4) Upsert CUPOSDIST con la consignación del propio cupo (A1) +
-                        //    marcar el cupo como distribuido. Una sola unidad por par.
-                        CuposDist distribucion = this.ServicioDistribucion.ObtenerOCrearDistribucion(
-                            cupo.Compcta,
-                            cupo.Vendcta,
-                            cupo.Grano,
-                            cupo.Puerto,
-                            cupo.Centro,
-                            cupo.Fecha,
-                            cupo.GetConsignacion(),
-                            session);
-
-                        cupo.GetEstado().Distribuir(
-                            cupo.Vendcta,
-                            cupo.GetConsignacion(),
-                            cupo.Observa,
-                            cupo.ContactoComercial,
-                            cupo.Puerto,
-                            cupo.Centro,
-                            cupo.Fecha,
-                            distribucion.Uvalue,
-                            session);
-
-                        distribucion.Cupos += 1;
-                        distribucion.Usuario = ResourceServer.Models.Identity.IdentityHelper.GetUsuarioLogueado();
-                        this.ServicioDistribucion.ActualizarDistribucion(distribucion, session);
-
-                        // Acumular para el paso 5 (agrupando por solicitud).
-                        if (!cuposAsignadosPorSolicitud.TryGetValue(asignacion.SolicitudId, out List<long> listaCupos))
-                        {
-                            listaCupos = new List<long>();
-                            cuposAsignadosPorSolicitud[asignacion.SolicitudId] = listaCupos;
-                        }
-                        listaCupos.Add(cupo.Id);
-                        _relacionesRealizadas.Add(new AsignacionRealizadaDto
-                        {
-                            SolicitudId = asignacion.SolicitudId,
-                            CupoId = cupo.Id
-                        });
-                    }
-
-                    // 5) Actualizar acumuladores de SOLTURNOS + insertar SOLTURNOS_DETALLE.
-                    foreach (KeyValuePair<long, List<long>> par in cuposAsignadosPorSolicitud)
-                    {
-                        bool ok = _solicitudTurnoStore.IncrementarAceptada(par.Key, par.Value.Count, session);
-                        if (!ok)
-                            throw new RelacionSolicitudCupoException(
-                                $"La solicitud {par.Key} ya no está en estado Pendiente o ya tiene un cupo asignado (conflicto de concurrencia).");
-                        _solicitudTurnoStore.InsertarDetalle(par.Key, par.Value, session);
-                    }
-
-                    tx.Commit();
-                    HibernateUtil.Dispose();
-                }
-                catch (RelacionSolicitudCupoException)
-                {
-                    tx.Rollback();
-                    HibernateUtil.Dispose();
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    tx.Rollback();
-                    HibernateUtil.Dispose();
-                    throw new RelacionSolicitudCupoException("Error al procesar SolicitudMatch: " + e.Message);
-                }
-            }
-
-            // 6) Resultado estructurado.
-            var result = ActualizarDistribucionResult.DesdeCodigo(1);
-            result.Solicitados = asignaciones.Count;
-            result.Asignados = _relacionesRealizadas.Count;
-            result.Pendientes = Math.Max(0, result.Solicitados - result.Asignados);
-            result.Relaciones = _relacionesRealizadas;
-            return result;
-        }
-
-        /// <summary>
-        /// Validación B1: el par (solicitud, cupo) debe ser compatible.
-        /// STATUS = 0, claves del cupo deben coincidir con la solicitud, fecha
-        /// debe coincidir con FechaSolicitado, y la solicitud debe estar Pendiente
-        /// (STATUS = 0 AND CUPO_ID IS NULL en SOLTURNOS).
-        /// Lanza RelacionSolicitudCupoException si falla ⇒ rollback completo.
-        /// </summary>
-        private void ValidarCompatibilidadSolicitudCupo(SolicitudTurno solicitud, Cupos cupo)
-        {
-            if (solicitud == null) throw new RelacionSolicitudCupoException("Solicitud nula.");
-            if (cupo == null) throw new RelacionSolicitudCupoException("Cupo nulo.");
-
-            if (solicitud.CodigoEstado != 0 || solicitud.CupoId.HasValue)
-                throw new RelacionSolicitudCupoException(
-                    $"La solicitud {solicitud.Id} no está pendiente (STATUS={solicitud.CodigoEstado}, CUPO_ID={solicitud.CupoId}).");
-
-            if (cupo.Status != 0)
-                throw new RelacionSolicitudCupoException(
-                    $"El cupo {cupo.Id} no está disponible (STATUS={cupo.Status}).");
-
-            if (cupo.Compcta != solicitud.CuentaComprador)
-                throw new RelacionSolicitudCupoException(
-                    $"El cupo {cupo.Id} no es compatible con la solicitud {solicitud.Id}: Compcta {cupo.Compcta} ≠ {solicitud.CuentaComprador}.");
-
-            if (cupo.Vendcta != solicitud.CuentaVendedor)
-                throw new RelacionSolicitudCupoException(
-                    $"El cupo {cupo.Id} no es compatible con la solicitud {solicitud.Id}: Vendcta {cupo.Vendcta} ≠ {solicitud.CuentaVendedor}.");
-
-            if (cupo.Grano != solicitud.CodigoGrano)
-                throw new RelacionSolicitudCupoException(
-                    $"El cupo {cupo.Id} no es compatible con la solicitud {solicitud.Id}: Grano {cupo.Grano} ≠ {solicitud.CodigoGrano}.");
-
-            if (solicitud.CuentaDestino.HasValue && cupo.Puerto != solicitud.CuentaDestino.Value)
-                throw new RelacionSolicitudCupoException(
-                    $"El cupo {cupo.Id} no es compatible con la solicitud {solicitud.Id}: Puerto {cupo.Puerto} ≠ {solicitud.CuentaDestino}.");
-
-            if (!string.Equals(cupo.Centro, solicitud.CodigoCentro, StringComparison.Ordinal))
-                throw new RelacionSolicitudCupoException(
-                    $"El cupo {cupo.Id} no es compatible con la solicitud {solicitud.Id}: Centro '{cupo.Centro}' ≠ '{solicitud.CodigoCentro}'.");
-
-            if (cupo.Fecha.Date != solicitud.FechaSolicitado.Date)
-                throw new RelacionSolicitudCupoException(
-                    $"El cupo {cupo.Id} no es compatible con la solicitud {solicitud.Id}: Fecha {cupo.Fecha:yyyy-MM-dd} ≠ {solicitud.FechaSolicitado:yyyy-MM-dd}.");
+            return VerificoDisponiblesYregistroDitrubucion(model.cupos, model.CosechaDesde, model.CosechaHasta, model.fechaDesde, model.fecha, Int64.Parse(model.puerto), model.anterior, model.nuevo, model.tieneVendedor);
         }
 
         public void BuscarYAnularDistribuciones(IList<Cupos> Cupos, string MotivoBaja, bool Cyo, ISession Session)
@@ -313,8 +102,6 @@ namespace ResourceServer.Models
             int totalDia19 = listaCuposDistribuir.Sum(x => x.Dia19);
             int totalDia20 = listaCuposDistribuir.Sum(x => x.Dia20);
             Cupos = new List<Cupos>();
-            _cuposDistribuidosPorClave = new Dictionary<string, Queue<long>>();
-            _relacionesRealizadas = new List<AsignacionRealizadaDto>();
             IList<string> mapping = new List<string>();
             mapping.Add("Cupos.mpg.xml");
             mapping.Add("CuposDist.mpg.xml");
@@ -382,13 +169,6 @@ namespace ResourceServer.Models
                             totalDia20 -= vistaElement.Dia20;
                         }
                     }
-                    // Conciliación solicitud-cupo: se ejecuta DENTRO de la misma
-                    // transacción, después de distribuir todas las filas/días y ANTES
-                    // del commit, para que el conjunto sea "todo o nada".
-                    if (_asignaciones != null)
-                    {
-                        RelacionarSolicitudesConCuposDistribuidos(session);
-                    }
                     tx.Commit();
                     HibernateUtil.Dispose();
                 }
@@ -447,11 +227,6 @@ namespace ResourceServer.Models
                             HibernateUtil.RefreshBeforeUpdate<CuposDist>(Distribucion, session);
                             CuposADistribuir = this.ServicioCupo.GetCuposTransformarSiVendedorEsCYO(cuerposDisponibles, vistaCuposDistribViewRow.Vendcta, cupoPedidosDiaCteView, session);
                             IList<Cupos> CuposDistribuidos = DistribuirCupos(CuposADistribuir, vistaCuposDistribViewRow.Vendcta, retornaDiainDate(dia), cupoConsignacion.GetConsignacion(), vistaCuposDistribViewRow.Ctadestino, vistaCuposDistribViewRow.Centro, cupoConsignacion.Observa, cupoConsignacion.ContactoComercial, Distribucion.Uvalue, session);
-                            // Registrar (sin tocar la lógica legacy) los cupos realmente
-                            // distribuidos en esta celda para conciliarlos luego con las
-                            // asociaciones solicitud-cupo. Se usa una colección propia,
-                            // NO el campo global Cupos ni el retorno de modificarXDia.
-                            RegistrarCuposDistribuidos(vistaCuposDistribViewRow, dia, CuposDistribuidos);
                             Distribucion.Cupos += cupoPedidosDiaCteView;
                             Distribucion.Usuario = ResourceServer.Models.Identity.IdentityHelper.GetUsuarioLogueado();
                             this.ServicioDistribucion.ActualizarDistribucion(Distribucion, session);
@@ -891,109 +666,6 @@ namespace ResourceServer.Models
                 if (Int32.Parse(TablaModificaciones.GetType().GetProperty("Dia" + Dia).GetValue(TablaModificaciones, null).ToString()) != 0) Fechas.Add(DateTime.Now.Date.AddDays(Dia));
             }
             return Fechas;
-        }
-
-        // ── Integración solicitud-cupo ─────────────────────────────────────────
-
-        /// <summary>
-        /// Encola los CUPOSCORRE.Id realmente distribuidos en una celda (fila/día),
-        /// para conciliarlos luego con las asociaciones solicitud-cupo. No-op si el
-        /// request no trae asociaciones.
-        /// </summary>
-        private void RegistrarCuposDistribuidos(VistaCuposDistribuidos fila, int dia, IList<Cupos> cuposDistribuidos)
-        {
-            if (_asignaciones == null || _cuposDistribuidosPorClave == null) return;
-            if (cuposDistribuidos == null || cuposDistribuidos.Count == 0) return;
-
-            string clave = AsignacionSolicitudCupoDto.ClaveFilaDia(
-                fila.Compcta, fila.Vendcta, fila.Codproducto, fila.Ctadestino, fila.Cosecha, fila.Centro, dia);
-
-            if (!_cuposDistribuidosPorClave.TryGetValue(clave, out Queue<long> cola))
-            {
-                cola = new Queue<long>();
-                _cuposDistribuidosPorClave[clave] = cola;
-            }
-            foreach (Cupos cupo in cuposDistribuidos)
-            {
-                if (cupo != null && cupo.Id > 0) cola.Enqueue(cupo.Id);
-            }
-        }
-
-        /// <summary>
-        /// Concilia cada asociación solicitud-cupo con los cupos efectivamente
-        /// distribuidos en su misma celda (fila/día): expande la Cantidad a unidades,
-        /// consume en orden determinista un CUPOSCORRE.Id distinto por unidad, y
-        /// persiste los acumuladores de SOLTURNOS + las filas de SOLTURNOS_DETALLE.
-        /// Todo dentro de la sesión/transacción del caller. Cualquier inconsistencia
-        /// lanza RelacionSolicitudCupoException ⇒ rollback completo.
-        /// </summary>
-        private void RelacionarSolicitudesConCuposDistribuidos(ISession session)
-        {
-            var idsConsumidos = new HashSet<long>();
-            var idsPorSolicitud = new Dictionary<long, List<long>>();
-
-            foreach (AsignacionSolicitudCupoDto asignacion in _asignaciones)
-            {
-                if (asignacion == null) continue;
-                if (asignacion.SolicitudId <= 0)
-                    throw new RelacionSolicitudCupoException("SolicitudId inválido en una asociación solicitud-cupo.");
-                if (asignacion.Cantidad <= 0)
-                    throw new RelacionSolicitudCupoException($"Cantidad inválida ({asignacion.Cantidad}) para la solicitud {asignacion.SolicitudId}.");
-                if (asignacion.Dia < 0 || asignacion.Dia > CantidadDias)
-                    throw new RelacionSolicitudCupoException($"Día fuera de rango ({asignacion.Dia}) para la solicitud {asignacion.SolicitudId}.");
-
-                string clave = asignacion.ClaveFilaDia();
-                if (!_cuposDistribuidosPorClave.TryGetValue(clave, out Queue<long> cola))
-                    throw new RelacionSolicitudCupoException(
-                        $"No hay cupos distribuidos para la celda de la solicitud {asignacion.SolicitudId} (clave {clave}).");
-
-                for (int unidad = 0; unidad < asignacion.Cantidad; unidad++)
-                {
-                    long idReal = TomarSiguienteCupoDisponible(cola, idsConsumidos);
-                    if (idReal <= 0)
-                        throw new RelacionSolicitudCupoException(
-                            $"Faltan cupos realmente distribuidos para la solicitud {asignacion.SolicitudId} en la celda {clave}. " +
-                            "La cantidad de matching supera lo distribuido en esa fila/día.");
-
-                    if (!idsPorSolicitud.TryGetValue(asignacion.SolicitudId, out List<long> lista))
-                    {
-                        lista = new List<long>();
-                        idsPorSolicitud[asignacion.SolicitudId] = lista;
-                    }
-                    lista.Add(idReal);
-                }
-            }
-
-            // Se actualiza cada solicitud UNA sola vez, agrupando todos sus cupos reales.
-            foreach (KeyValuePair<long, List<long>> par in idsPorSolicitud)
-            {
-                bool ok = _solicitudTurnoStore.IncrementarAceptada(par.Key, par.Value.Count, session);
-                if (!ok)
-                    throw new RelacionSolicitudCupoException(
-                        $"La solicitud {par.Key} ya no está en estado Pendiente o ya tiene un cupo asignado (conflicto de concurrencia).");
-
-                _solicitudTurnoStore.InsertarDetalle(par.Key, par.Value, session);
-
-                foreach (long idReal in par.Value)
-                {
-                    _relacionesRealizadas.Add(new AsignacionRealizadaDto { SolicitudId = par.Key, CupoId = idReal });
-                }
-            }
-        }
-
-        /// <summary>
-        /// Devuelve el siguiente CUPOSCORRE.Id de la cola que no haya sido consumido
-        /// aún en este request (garantiza que cada id se use una sola vez). Devuelve 0
-        /// si la cola se agotó.
-        /// </summary>
-        private long TomarSiguienteCupoDisponible(Queue<long> cola, HashSet<long> idsConsumidos)
-        {
-            while (cola.Count > 0)
-            {
-                long candidato = cola.Dequeue();
-                if (idsConsumidos.Add(candidato)) return candidato;
-            }
-            return 0;
         }
     }
 }

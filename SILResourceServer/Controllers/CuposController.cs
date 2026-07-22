@@ -200,22 +200,9 @@ namespace ResourceServer.Controllers
       if (model == null) return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Campos requeridos no ingresados");
       if (ModelState.IsValid)
       {
-        if (model.ModoEfectivo() == ModoActualizacionDistribucion.SolicitudMatch)
-        {
-          // Modo SolicitudMatch (AltaSolicitud): cada asociación trae un
-          // CupoSeleccionadoId explícito. ServicioDistribuir distribuye exactamente
-          // esos cupos, upserta CUPOSDIST con la consignación del propio cupo (A1),
-          // valida compatibilidad servidor (B1), y persiste SOLTURNOS + SOLTURNOS_DETALLE
-          // en la misma transacción NHibernate.
-          ServicioDistribuir servicioMatch = new ServicioDistribuir(model.Confirmacion);
-          ActualizarDistribucionResult responseMatch = servicioMatch.ValidarYGuardarSolicitudMatch(model);
-          return Request.CreateResponse(HttpStatusCode.OK, responseMatch);
-        }
-
-        // Modo DistribucionManual (o request sin Modo ⇒ compatibilidad).
         ServicioDistribuir servicio = new ServicioDistribuir(model.Confirmacion);
-        ActualizarDistribucionResult response = servicio.ValidarYGuardar(model);
-        // GuardarFiltro se mantiene FUERA de la transacción de distribución.
+        int response = 0;
+        response = servicio.ValidarYGuardar(model);
         ServicioFiltro filtro = new ServicioFiltro(model.anterior.Grano, model.anterior.Puerto, model.anterior.Compcta);
         filtro.GuardarFiltro(model.cupos, model.fechaDesde, model.fecha, model.CosechaDesde, model.CosechaHasta, model.CentroSeleccionado);
         return Request.CreateResponse(HttpStatusCode.OK, response);
