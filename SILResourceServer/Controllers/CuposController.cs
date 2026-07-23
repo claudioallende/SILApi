@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Net;
 using ResourceServer.Models.AtributosValidacion;
 using ResourceServer.Models.DataAccess;
+using ResourceServer.Models.DTO;
 
 namespace ResourceServer.Controllers
 {
@@ -198,6 +199,63 @@ namespace ResourceServer.Controllers
     public HttpResponseMessage ActualizarDistribucion(RegistroDistribucionViewModel model)//, bool Confirmacion
     {
       if (model == null) return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Campos requeridos no ingresados");
+
+      // Compatibilidad con callers legacy: si Modo no viene, asumir DistribucionManual.
+      if (model.Modo == null) model.Modo = ModoActualizacionDistribucion.DistribucionManual;
+
+      // ------------------------------------------------------------------
+      // Branch por modo
+      // ------------------------------------------------------------------
+
+      if (model.Modo == ModoActualizacionDistribucion.SolicitudMatch)
+      {
+        // Validación específica del modo SolicitudMatch (AltaSolicitud.cshtml):
+        // exige asociaciones con SolicitudId + CupoSeleccionadoId + Cantidad=1.
+        var asoc = model.AsignacionesSolicitudCupo;
+        if (asoc == null || asoc.Count == 0)
+        {
+          return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "SolicitudMatch requiere AsignacionesSolicitudCupo");
+        }
+        foreach (var a in asoc)
+        {
+          if (a.SolicitudId <= 0 || a.CupoSeleccionadoId == null || a.CupoSeleccionadoId <= 0)
+          {
+            return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+              "Cada asociación requiere SolicitudId > 0 y CupoSeleccionadoId > 0");
+          }
+          if (a.Cantidad != 1)
+          {
+            return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+              "SolicitudMatch sólo admite Cantidad = 1 por asociación (sin subdivisión intra-cupo)");
+          }
+        }
+
+        // Delegar a ServicioDistribuir el flujo transaccional SolicitudMatch.
+        var servicio = new ServicioDistribuir(model.Confirmacion);
+        var resultado = servicio.ValidarYGuardarSolicitudMatch(model);
+        return Request.CreateResponse(HttpStatusCode.OK, resultado);
+      }
+
+      // ------------------------------------------------------------------
+      // DistribucionManual (legacy path)
+      // ------------------------------------------------------------------
+
+      // Validación legacy ahora es runtime: DistribucionManual exige estos
+      // campos. Antes estaban como [Required] en el ViewModel; se quitaron
+      // para no romper el payload mínimo de SolicitudMatch.
+      if (model.cupos == null || model.cupos.Count == 0)
+        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "cupos es obligatorio en DistribucionManual");
+      if (model.nuevo == null)
+        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "nuevo es obligatorio en DistribucionManual");
+      if (model.anterior == null)
+        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "anterior es obligatorio en DistribucionManual");
+      if (string.IsNullOrEmpty(model.puerto))
+        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "puerto es obligatorio en DistribucionManual");
+      if (model.ConsignacionSeleccionada == null)
+        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "ConsignacionSeleccionada es obligatoria en DistribucionManual");
+      if (string.IsNullOrEmpty(model.CentroSeleccionado))
+        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "CentroSeleccionado es obligatorio en DistribucionManual");
+
       if (ModelState.IsValid)
       {
         ServicioDistribuir servicio = new ServicioDistribuir(model.Confirmacion);

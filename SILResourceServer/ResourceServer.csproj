@@ -485,6 +485,7 @@
     <Compile Include="Models\Pdf\PdfDistribucionSanLorenzoBuilder.cs" />
     <Compile Include="Models\RelacionGranoSILGranoSTOPCompleta.cs" />
     <Compile Include="Models\DetalleDeIncumplimientoCupo.cs" />
+    <Compile Include="Models\DTO\AsignacionSolicitudCupo.cs" />
     <Compile Include="Models\DTO\CentroPorPuertoDTO.cs" />
     <Compile Include="Models\DTO\CuposPorDiaDTO.cs" />
     <Compile Include="Models\DTO\NuevoCupoViewModelDTO.cs" />
