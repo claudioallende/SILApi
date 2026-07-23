@@ -121,8 +121,7 @@ namespace ResourceServer.Models
             if (asoc == null || asoc.Count == 0)
                 return resultado;
 
-            // Aplanar asociaciones en una lista de pares (solicitudId, cupoId, n=1).
-            // El plan §7 garantiza Cantidad=1 por asociación en SolicitudMatch.
+            // SolicitudMatch trabaja con un cupo físico por asociación.
             var pares = new List<Tuple<long, long, int>>();
             int solicitados = 0;
             foreach (var a in asoc)
@@ -131,13 +130,15 @@ namespace ResourceServer.Models
                     throw new ArgumentException("Asociación inválida: SolicitudId/CupoSeleccionadoId deben ser > 0");
                 if (a.Cantidad != 1)
                     throw new ArgumentException("SolicitudMatch sólo admite Cantidad = 1 por asociación");
+
                 pares.Add(Tuple.Create(a.SolicitudId, a.CupoSeleccionadoId.Value, a.Cantidad));
                 solicitados += a.Cantidad;
             }
             resultado.Solicitados = solicitados;
 
-            // Cache de Uvdist por cupos (uno por cupo distribuido).
-            // Mapeo NHibernate para SOLTURNOS_DETALLE no existe (es SQL nativo).
+            if (pares.Select(x => x.Item2).Distinct().Count() != pares.Count)
+                throw new InvalidOperationException("Un cupo no puede asignarse más de una vez en el mismo lote");
+
             IList<string> mapping = new List<string>();
             mapping.Add("Cupos.mpg.xml");
             mapping.Add("CuposDist.mpg.xml");
@@ -148,71 +149,124 @@ namespace ResourceServer.Models
             {
                 try
                 {
-                    // 1. Cargar todas las solicitudes involucradas.
-                    var solicitudIds = pares.Select(p => p.Item1).Distinct().ToList();
                     var store = new SolicitudTurnoStore();
+                    var solicitudIds = pares.Select(p => p.Item1).Distinct().ToList();
                     var solicitudes = store.GetByIds(solicitudIds, session);
                     var solicitudById = solicitudes.ToDictionary(s => s.Id, s => s);
 
-                    // 2. Cargar todos los cupos seleccionados.
                     var cupoIds = pares.Select(p => p.Item2).Distinct().ToList();
                     var cupos = Cupostore.FindByIds(cupoIds, session);
                     var cupoById = cupos.ToDictionary(c => c.Id, c => c);
 
-                    // 3. Para cada par (solicitudId, cupoId): validar y persistir.
-                    int asignados = 0;
+                    // Validar todo antes de modificar cualquier entidad.
+                    var asociaciones = new List<Tuple<long, SolicitudTurno, Cupos>>();
                     foreach (var par in pares)
                     {
-                        long solicitudId = par.Item1;
-                        long cupoId = par.Item2;
+                        SolicitudTurno solicitud;
+                        Cupos cupo;
+                        if (!solicitudById.TryGetValue(par.Item1, out solicitud))
+                            throw new InvalidOperationException(string.Format("Solicitud {0} no existe", par.Item1));
+                        if (!cupoById.TryGetValue(par.Item2, out cupo))
+                            throw new InvalidOperationException(string.Format("Cupo {0} no existe", par.Item2));
 
-                        if (!solicitudById.ContainsKey(solicitudId))
-                            throw new InvalidOperationException(string.Format("Solicitud {0} no existe", solicitudId));
-                        if (!cupoById.ContainsKey(cupoId))
-                            throw new InvalidOperationException(string.Format("Cupo {0} no existe", cupoId));
-
-                        var solicitud = solicitudById[solicitudId];
-                        var cupo = cupoById[cupoId];
-
-                        // Validar estado del cupo: debe estar disponible (Status 0 o 1).
                         if (cupo.Status != 0 && cupo.Status != 1)
-                            throw new InvalidOperationException(string.Format("Cupo {0} no disponible (Status={1})", cupoId, cupo.Status));
+                            throw new InvalidOperationException(string.Format("Cupo {0} no disponible (Status={1})", cupo.Id, cupo.Status));
 
-                        // Validar que no esté ya relacionado (chequeo previo al INSERT).
-                        if (store.ExisteDetalle(solicitudId, cupoId, session))
-                            throw new InvalidOperationException(string.Format("Cupo {0} ya está relacionado a solicitud {1}", cupoId, solicitudId));
+                        EstadoCupo estado = cupo.GetEstado();
+                        if (estado == null || !estado.PuedeDistribuir())
+                            throw new InvalidOperationException(string.Format("Cupo {0} no puede distribuirse", cupo.Id));
 
-                        // Marcar el cupo como distribuido usando el flujo estándar.
-                        // Construimos una lista con un solo cupo para reutilizar DistribuirCupos.
-                        var cuposLista = new List<Cupos> { cupo };
-                        DistribuirCupos(
-                            cuposLista,
-                            solicitud.CuentaVendedor,
-                            DateTime.Now.Date,
-                            cupo.GetConsignacion(),
-                            solicitud.CuentaDestino ?? 0,
-                            solicitud.CodigoCentro,
-                            cupo.GetConsignacion().Observacion,
-                            cupo.GetConsignacion().ContactoComercial,
-                            cupo.Uvcupodist, // Conserva Uvdist existente (Distribución preexistente); si era 0, se setea en Distribuir.
+                        if (store.ExisteDetalle(par.Item1, par.Item2, session))
+                            throw new InvalidOperationException(string.Format("Cupo {0} ya está relacionado a solicitud {1}", par.Item2, par.Item1));
+
+                        asociaciones.Add(Tuple.Create(par.Item1, solicitud, cupo));
+                    }
+
+                    int asignados = 0;
+                    var grupos = asociaciones.GroupBy(x => new
+                    {
+                        Comprador = x.Item2.CuentaComprador ?? x.Item3.Compcta,
+                        Vendedor = x.Item2.CuentaVendedor,
+                        Grano = x.Item2.CodigoGrano != 0 ? x.Item2.CodigoGrano : x.Item3.Grano,
+                        Destino = x.Item2.CuentaDestino ?? 0,
+                        Centro = string.IsNullOrEmpty(x.Item2.CodigoCentro) ? (x.Item3.Centrodist ?? x.Item3.Centro) : x.Item2.CodigoCentro,
+                        Fecha = x.Item3.Fecha.Date,
+                        Consignacion = x.Item3.GetConsignacion()
+                    });
+
+                    foreach (var grupo in grupos)
+                    {
+                        var primeraAsociacion = grupo.First();
+                        var cupoReferencia = primeraAsociacion.Item3;
+                        Consignacion consignacion = grupo.Key.Consignacion;
+                        int cantidadGrupo = grupo.Count();
+
+                        CuposDist distribucion = ServicioDistribucion.ObtenerOCrearDistribucion(
+                            grupo.Key.Comprador,
+                            grupo.Key.Vendedor,
+                            grupo.Key.Grano,
+                            grupo.Key.Destino,
+                            grupo.Key.Centro,
+                            grupo.Key.Fecha,
+                            consignacion,
                             session);
 
-                        // Incrementar acumuladores en SOLTURNOS (SQL nativo).
-                        int rows = store.IncrementarAceptada(solicitudId, /*n=*/1, solicitud.EsFuturo, cupoId, session);
-                        if (rows == 0)
-                            throw new InvalidOperationException(string.Format("Conflicto al actualizar solicitud {0} (probablemente ya estaba asignada)", solicitudId));
+                        // En SolicitudMatch el front garantiza que cada
+                        // CupoSeleccionadoId está disponible, así que no
+                        // recalculamos el límite de la consignación por puerto:
+                        // evita una consulta extra y un falso positivo si los
+                        // cupos disponibles cambian entre el alta y la
+                        // aceptación. La disponibilidad del cupo físico ya se
+                        // validó arriba con Status y PuedeDistribuir().
 
-                        // Insertar fila en SOLTURNOS_DETALLE (SQL nativo).
-                        int inserted = store.InsertarDetalle(solicitudId, cupoId, session);
-                        if (inserted != 1)
-                            throw new InvalidOperationException(string.Format("Fallo al insertar detalle para ({0}, {1})", solicitudId, cupoId));
+                        IList<Cupos> cuposSeleccionados = grupo.Select(x => x.Item3).ToList();
+                        IList<Cupos> cuposADistribuir = ServicioCupo.GetCuposTransformarSiVendedorEsCYO(
+                            cuposSeleccionados,
+                            grupo.Key.Vendedor,
+                            cantidadGrupo,
+                            session);
 
-                        resultado.Relaciones.Add(new ResourceServer.Models.DTO.AsignacionRealizadaDto
+                        if (cuposADistribuir == null || cuposADistribuir.Count != cantidadGrupo ||
+                            !new HashSet<long>(cuposADistribuir.Select(x => x.Id)).SetEquals(cuposSeleccionados.Select(x => x.Id)))
+                            throw new InvalidOperationException("No se pudieron preparar todos los cupos seleccionados para distribuir");
+
+                        IList<Cupos> cuposDistribuidos = DistribuirYActualizarDistribucion(
+                            cuposADistribuir,
+                            grupo.Key.Vendedor,
+                            grupo.Key.Fecha,
+                            consignacion,
+                            grupo.Key.Destino,
+                            grupo.Key.Centro,
+                            cupoReferencia.Observa,
+                            cupoReferencia.ContactoComercial,
+                            distribucion,
+                            session);
+
+                        if (cuposDistribuidos == null || cuposDistribuidos.Count != cantidadGrupo)
+                            throw new InvalidOperationException("La cantidad de cupos distribuidos no coincide con el conjunto solicitado");
+
+                        foreach (var asociacion in grupo)
                         {
-                            SolicitudId = solicitudId,
-                            CupoId = cupoId
-                        });
-                        asignados++;
+                            int rows = store.IncrementarAceptada(
+                                asociacion.Item1,
+                                1,
+                                asociacion.Item2.EsFuturo,
+                                asociacion.Item3.Id,
+                                session);
+                            if (rows != 1)
+                                throw new InvalidOperationException(string.Format("Conflicto al actualizar solicitud {0} (probablemente ya estaba asignada)", asociacion.Item1));
+
+                            int inserted = store.InsertarDetalle(asociacion.Item1, asociacion.Item3.Id, session);
+                            if (inserted != 1)
+                                throw new InvalidOperationException(string.Format("Fallo al insertar detalle para ({0}, {1})", asociacion.Item1, asociacion.Item3.Id));
+
+                            resultado.Relaciones.Add(new ResourceServer.Models.DTO.AsignacionRealizadaDto
+                            {
+                                SolicitudId = asociacion.Item1,
+                                CupoId = asociacion.Item3.Id
+                            });
+                            asignados++;
+                        }
                     }
 
                     tx.Commit();
@@ -225,13 +279,47 @@ namespace ResourceServer.Models
                     resultado.Message = "OK";
                     return resultado;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     tx.Rollback();
                     HibernateUtil.Dispose();
-                    throw e;
+                    throw;
                 }
             }
+        }
+
+        private IList<Cupos> DistribuirYActualizarDistribucion(
+            IList<Cupos> cuposADistribuir,
+            long cuentaVendedor,
+            DateTime fecha,
+            Consignacion consignacion,
+            long cuentaDestino,
+            string centro,
+            string observacion,
+            string contactoComercial,
+            CuposDist distribucion,
+            ISession session)
+        {
+            HibernateUtil.RefreshBeforeUpdate<CuposDist>(distribucion, session);
+            IList<Cupos> cuposDistribuidos = DistribuirCupos(
+                cuposADistribuir,
+                cuentaVendedor,
+                fecha,
+                consignacion,
+                cuentaDestino,
+                centro,
+                observacion,
+                contactoComercial,
+                distribucion.Uvalue,
+                session);
+
+            if (cuposDistribuidos == null || cuposDistribuidos.Count == 0)
+                return cuposDistribuidos;
+
+            distribucion.Cupos += cuposDistribuidos.Count;
+            distribucion.Usuario = ResourceServer.Models.Identity.IdentityHelper.GetUsuarioLogueado();
+            ServicioDistribucion.ActualizarDistribucion(distribucion, session);
+            return cuposDistribuidos;
         }
 
         public void BuscarYAnularDistribuciones(IList<Cupos> Cupos, string MotivoBaja, bool Cyo, ISession Session)
@@ -630,16 +718,17 @@ namespace ResourceServer.Models
          *  si mayor que cero -> menos de los que tengo disponibles*/
         private int CheckCuposForConsignation(int nroCuposIngresados, Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Cupos cupoViejo, bool tieneVendedor, int cuposYaOtorgados, ISession Session)
         {
+            Consignacion consignacion = cupoViejo.GetConsignacion();
             IList<Counter<Cupos>> cantConsig;
             if (tieneVendedor)
             {
-                cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, vendcta, grano, fecha, puerto, cupoViejo, Session);
-                cuerposDisponibles = Cupostore.FindForKey(compcta, vendcta, puerto, grano, fecha, cupoViejo.GetConsignacion(), Session);
+                cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, vendcta, grano, fecha, puerto, consignacion, Session);
+                cuerposDisponibles = Cupostore.FindForKey(compcta, vendcta, puerto, grano, fecha, consignacion, Session);
             }
             else
             {
-                cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, 0, grano, fecha, puerto, cupoViejo, Session);
-                cuerposDisponibles = Cupostore.FindForKey(compcta, 0, puerto, grano, fecha, cupoViejo.GetConsignacion(), Session);
+                cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, 0, grano, fecha, puerto, consignacion, Session);
+                cuerposDisponibles = Cupostore.FindForKey(compcta, 0, puerto, grano, fecha, consignacion, Session);
             }
             if (cantConsig != null && cantConsig.Count > 0)
             {

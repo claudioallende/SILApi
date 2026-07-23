@@ -61,8 +61,10 @@ namespace ResourceServer.Models.DataAccess
         /// <returns></returns>
         IList<Counter<Cupos>> FindConsignacionesForKeyAndConsignacionGroupByFecha(Cupos consignacion);
         IList<Counter<Cupos>> FindNumberOfConsignacionesForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Cupos DatosCupoBuscar);
+        IList<Counter<Cupos>> FindNumberOfConsignacionesForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Consignacion Consignacion, ISession Session);
         [Obsolete("Reemplazo por FindByConsignacion. Uso la clase Consignacion en vez de DatosBuscar")]
         IList<Cupos> FindForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Cupos DatosCupoBuscar);
+        IList<Cupos> FindForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Consignacion Consignacion, ISession Session);
         IList<Cupos> FindForKeyStatusAndType(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Cupos DatosCupoBuscar, int status, int tipo);
         /// <summary>
         /// Además filtra por centro a los que tiene permiso de acceso

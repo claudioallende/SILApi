@@ -717,6 +717,74 @@ namespace ResourceServer.Models.DataAccess
       }
     }
 
+    /*Lista de cuerpos por comp-vend-grano-fecha-puerto-CUITS-status, usando una sesión NHibernate ya abierta*/
+    public IList<Cupos> FindForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Consignacion Consignacion, ISession Session)
+    {
+      var query = Session.Query<Cupos>()
+          .Where(x =>
+              ((compcta != 0) ? (Int64)x.Compcta == compcta : true) &&
+              ((vendcta != 0) ? (Int64)x.Vendcta == vendcta : true) &&
+              ((grano != 0) ? x.Grano == grano : true) &&
+              x.Fecha.Date == fecha.Date &&
+              ((puerto != 0) ? x.Puerto == puerto : true) &&
+              x.Tipo == 1 &&
+              x.Status != 3 &&
+              x.Status != 4 &&
+              x.Status != 5
+          );
+      return Consignacion.FiltroConsignacionIgnoreIfIsNull(query).ToList();
+    }
+
+    /*Contador de consignaciones por clave usando una sesión NHibernate ya abierta*/
+    public IList<Counter<Cupos>> FindNumberOfConsignacionesForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Consignacion Consignacion, ISession Session)
+    {
+      var query = Session.Query<Cupos>()
+          .Where(x =>
+              ((compcta != 0) ? (Int64)x.Compcta == compcta : true) &&
+              x.Vendcta == vendcta &&
+              ((grano != 0) ? x.Grano == grano : true) &&
+              x.Fecha.Date == fecha.Date &&
+              ((puerto != 0) ? x.Puerto == puerto : true) &&
+              x.Tipo == 1 &&
+              x.Status != 3 &&
+              x.Status != 4 &&
+              x.Status != 5
+          );
+      return Consignacion.FiltroConsignacionIgnoreIfIsNull(query)
+          .GroupBy(y =>
+              new
+              {
+                y.Cuitsolicitante,
+                y.Nomsolicitante,
+                y.Cuitintermediario,
+                y.Nomintermediario,
+                y.Cuitrtecomercial,
+                y.Nomrtecomercial,
+                y.Cuitcorrcomp,
+                y.Nomcorrcomp,
+                y.Cuitmat,
+                y.Nommat,
+                y.Cuitcorrvta,
+                y.Nomcorrvta,
+                y.Cuitrteent,
+                y.Nomrteent,
+                y.Cuitdestinatario,
+                y.Nomdestinatario,
+                y.CuitRteComercialProductor,
+                y.NomRteComercialProductor,
+                y.CuitRteComercialVentaPrimaria,
+                y.NomRteComercialVentaPrimaria
+              }
+          )
+          .Select(z =>
+              new Counter<Cupos>
+              {
+                Count = z.Count()
+              }
+          )
+          .ToList();
+    }
+
     /*Lista de cuerpos por comp-vend-grano-fecha-puerto-CUITS-status, agrupados por los clave y consignacion*/
     public IList<Cupos> FindIdorigenForConsignacionDistinct(Cupos cupoPadreNuevo)
     {
