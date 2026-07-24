@@ -113,22 +113,19 @@ namespace ResourceServer.Models.DataAccess
     /// Devuelve la cantidad de filas afectadas. Si es 0, hay conflicto y el
     /// caller debe hacer rollback completo.
     /// </summary>
-    public int IncrementarAceptada(long solicitudId, int n, bool esFuturo, long cupoId, ISession session)
+    public int IncrementarAceptada(long solicitudId, int n, bool esFuturo, ISession session)
     {
       const string sql = @"
         UPDATE SOLTURNOS
            SET cantidad_aceptada = cantidad_aceptada + :n,
                cantidad_futuro_aceptada = cantidad_futuro_aceptada + CASE WHEN :esfuturo = 1 THEN :n ELSE 0 END,
-               status = CASE WHEN cantidad_aceptada + :n = cantidad THEN 2 ELSE status END,
-               cupo_id = CASE WHEN status = 0 AND cupo_id IS NULL THEN :cupoid ELSE cupo_id END
+               status = CASE WHEN cantidad_aceptada + :n = cantidad THEN 2 ELSE status END
          WHERE solturnos_id = :solicitudid
-           AND status = 0
-           AND cupo_id IS NULL";
+           AND status = 0";
 
       var query = session.CreateSQLQuery(sql);
       query.SetParameter("n", n);
       query.SetParameter("esfuturo", esFuturo ? 1 : 0);
-      query.SetParameter("cupoid", cupoId);
       query.SetParameter("solicitudid", solicitudId);
       return query.ExecuteUpdate();
     }

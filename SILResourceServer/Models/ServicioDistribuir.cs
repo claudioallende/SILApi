@@ -251,7 +251,6 @@ namespace ResourceServer.Models
                                 asociacion.Item1,
                                 1,
                                 asociacion.Item2.EsFuturo,
-                                asociacion.Item3.Id,
                                 session);
                             if (rows != 1)
                                 throw new InvalidOperationException(string.Format("Conflicto al actualizar solicitud {0} (probablemente ya estaba asignada)", asociacion.Item1));
