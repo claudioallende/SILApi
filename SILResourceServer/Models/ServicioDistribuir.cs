@@ -247,16 +247,11 @@ namespace ResourceServer.Models
 
                         foreach (var asociacion in grupo)
                         {
-                            // IncrementarAceptada ya NO toca la columna cupo_id de SOLTURNOS.
-                            // La lista de cupos aceptados vive en SOLTURNOS_DETALLE
-                            // (lo persistimos abajo con InsertarDetalle). Si quedara
-                            // cupo_id IS NOT NULL en SOLTURNOS, el motor de matching
-                            // de SILData excluía la solicitud de futuros matches
-                            // (filtro WHERE cupo_id IS NULL).
                             int rows = store.IncrementarAceptada(
                                 asociacion.Item1,
                                 1,
                                 asociacion.Item2.EsFuturo,
+                                asociacion.Item3.Id,
                                 session);
                             if (rows != 1)
                                 throw new InvalidOperationException(string.Format("Conflicto al actualizar solicitud {0} (probablemente ya estaba asignada)", asociacion.Item1));
