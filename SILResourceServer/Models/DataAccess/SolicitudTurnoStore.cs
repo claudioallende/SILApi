@@ -107,28 +107,31 @@ namespace ResourceServer.Models.DataAccess
     /// <summary>
     /// Actualiza los acumuladores cantidad_aceptada y cantidad_futuro_aceptada
     /// de SOLTURNOS por SQL nativo de Oracle. Promueve STATUS a Otorgada (2)
-    /// cuando cantidad_aceptada alcanza cantidad. Sólo asigna cupo_id si la fila
-    /// aún no tiene uno (la lista completa de cupos vive en SOLTURNOS_DETALLE).
+    /// cuando cantidad_aceptada alcanza cantidad.
+    ///
+    /// IMPORTANTE: NO toca la columna cupo_id de SOLTURNOS. La lista de cupos
+    /// efectivamente aceptados vive en SOLTURNOS_DETALLE (una fila por par
+    /// solicitud-cupo). Si acá setáramos cupo_id, el motor de matching de
+    /// SILData filtra la solicitud de futuros matches (WHERE cupo_id IS NULL)
+    /// y el operador pierde la capacidad de aceptar cupos adicionales para
+    /// solicitudes multi-cupo o multi-día.
     ///
     /// Devuelve la cantidad de filas afectadas. Si es 0, hay conflicto y el
     /// caller debe hacer rollback completo.
     /// </summary>
-    public int IncrementarAceptada(long solicitudId, int n, bool esFuturo, long cupoId, ISession session)
+    public int IncrementarAceptada(long solicitudId, int n, bool esFuturo, ISession session)
     {
       const string sql = @"
         UPDATE SOLTURNOS
            SET cantidad_aceptada = cantidad_aceptada + :n,
                cantidad_futuro_aceptada = cantidad_futuro_aceptada + CASE WHEN :esfuturo = 1 THEN :n ELSE 0 END,
-               status = CASE WHEN cantidad_aceptada + :n = cantidad THEN 2 ELSE status END,
-               cupo_id = CASE WHEN status = 0 AND cupo_id IS NULL THEN :cupoid ELSE cupo_id END
+               status = CASE WHEN cantidad_aceptada + :n = cantidad THEN 2 ELSE status END
          WHERE solturnos_id = :solicitudid
-           AND status = 0
-           AND cupo_id IS NULL";
+           AND status = 0";
 
       var query = session.CreateSQLQuery(sql);
       query.SetParameter("n", n);
       query.SetParameter("esfuturo", esFuturo ? 1 : 0);
-      query.SetParameter("cupoid", cupoId);
       query.SetParameter("solicitudid", solicitudId);
       return query.ExecuteUpdate();
     }
