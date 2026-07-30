@@ -55,7 +55,6 @@ namespace ResourceServer.Models
                   FechaSolicitado = solicitudTurnoDia.FechaSolicitado,
                   EsFuturo = solicitudTurnoCreate.EsFuturo,
                   CodigoCentro = solicitudTurnoCreate.Centro,
-                  CodigoEstado = 0,
                   Observacion = solicitudTurnoCreate.Observacion,
                   TipoDestino = TipoDestino.ZonaPortuaria,
                   CupoId = null
