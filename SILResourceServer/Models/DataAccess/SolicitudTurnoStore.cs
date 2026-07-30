@@ -105,11 +105,18 @@ namespace ResourceServer.Models.DataAccess
     }
 
     /// <summary>
-    /// Actualiza los acumuladores cantidad_aceptada y cantidad_futuro_aceptada
-    /// de SOLTURNOS por SQL nativo de Oracle. Promueve STATUS a Otorgada (2)
-    /// cuando cantidad_aceptada alcanza cantidad. Sólo asigna cupo_id si la fila
-    /// aún no tiene uno (la lista completa de cupos vive en SOLTURNOS_DETALLE).
-    ///
+    /// Actualiza los acumuladores <c>cantidad_aceptada</c> y
+    /// <c>cantidad_futuro_aceptada</c> de SOLTURNOS por SQL nativo de Oracle.
+    /// Tras la refactor que elimina <c>SOLTURNOS.STATUS</c>, el estado de la
+    /// solicitud se deriva de los acumuladores en lectura; aquí sólo
+    /// incrementamos contadores. La guardia de idempotencia es por
+    /// acumuladores:
+    /// <list type="bullet">
+    ///   <item><c>NVL(cantidad_aceptada,0) + :n &lt;= NVL(cantidad,1)</c>: la solicitud
+    ///         aún no cubrió la cantidad pedida.</item>
+    ///   <item><c>NVL(cantidad_rechazada,0) = 0</c>: la solicitud no fue rechazada
+    ///         (rechazo cierra el remanente).</item>
+    /// </list>
     /// Devuelve la cantidad de filas afectadas. Si es 0, hay conflicto y el
     /// caller debe hacer rollback completo.
     /// </summary>
@@ -118,10 +125,10 @@ namespace ResourceServer.Models.DataAccess
       const string sql = @"
         UPDATE SOLTURNOS
            SET cantidad_aceptada = cantidad_aceptada + :n,
-               cantidad_futuro_aceptada = cantidad_futuro_aceptada + CASE WHEN :esfuturo = 1 THEN :n ELSE 0 END,
-               status = CASE WHEN cantidad_aceptada + :n = cantidad THEN 2 ELSE status END
+               cantidad_futuro_aceptada = cantidad_futuro_aceptada + CASE WHEN :esfuturo = 1 THEN :n ELSE 0 END
          WHERE solturnos_id = :solicitudid
-           AND status = 0";
+           AND NVL(cantidad_aceptada, 0) + :n <= NVL(cantidad, 1)
+           AND NVL(cantidad_rechazada, 0) = 0";
 
       var query = session.CreateSQLQuery(sql);
       query.SetParameter("n", n);
@@ -131,16 +138,20 @@ namespace ResourceServer.Models.DataAccess
     }
 
     /// <summary>
-    /// Inserta una fila en SOLTURNOS_DETALLE (solicitud_id, cupo_id, estado=1,
-    /// fecha_creacion=SYSDATE). El trigger trg_soldet_bi autoincrementa
-    /// detalle_id desde SOLTURNOS_DETALLE_SEQ.
+    /// Inserta una fila en SOLTURNOS_DETALLE (solicitud_id, cupo_id,
+    /// fecha_creacion=SYSDATE). Tras la refactor que elimina
+    /// <c>SOLTURNOS_DETALLE.ESTADO</c>, el detalle es puramente histórico: la
+    /// mera existencia de la fila significa que el cupo fue aceptado para esa
+    /// solicitud (no hay columna de estado a setear).
+    /// El trigger trg_soldet_bi autoincrementa detalle_id desde
+    /// SOLTURNOS_DETALLE_SEQ.
     /// Devuelve la cantidad de filas insertadas (1 OK, 0 error).
     /// </summary>
     public int InsertarDetalle(long solicitudId, long cupoId, ISession session)
     {
       const string sql = @"
-        INSERT INTO SOLTURNOS_DETALLE (solicitud_id, cupo_id, estado, fecha_creacion)
-        VALUES (:solicitudid, :cupoid, 1, SYSDATE)";
+        INSERT INTO SOLTURNOS_DETALLE (solicitud_id, cupo_id, fecha_creacion)
+        VALUES (:solicitudid, :cupoid, SYSDATE)";
 
       var query = session.CreateSQLQuery(sql);
       query.SetParameter("solicitudid", solicitudId);
