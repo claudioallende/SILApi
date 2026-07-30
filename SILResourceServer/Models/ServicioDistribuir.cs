@@ -194,6 +194,16 @@ namespace ResourceServer.Models
                         Consignacion = x.Item3.GetConsignacion()
                     });
 
+                    // Nota: NO se valida contra VistaCuposDistribuidos.Cupostotalesadist
+                    // porque esa vista agrega cupos ya distribuidos; los cupos
+                    // que Pantalla 2 (AltaSolicitud) acepta con SolicitudMatch
+                    // están aún con status=0 y no aparecen ahí. El motor ya filtra
+                    // por status=0 en FindAvailableCuposByPeriodAsync, así que
+                    // confiar en el front y en el estado del cupo es suficiente.
+                    // El frontend de Distribución (Pantalla 3) además aplica su
+                    // propio gate contra VistaCuposDistribuidosV4 vía
+                    // MatchingDistribucion.js#procesarRespuestaSearch.
+
                     foreach (var grupo in grupos)
                     {
                         var primeraAsociacion = grupo.First();
