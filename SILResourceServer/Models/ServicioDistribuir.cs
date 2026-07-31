@@ -188,7 +188,15 @@ namespace ResourceServer.Models
                         Comprador = x.Item2.CuentaComprador ?? x.Item3.Compcta,
                         Vendedor = x.Item2.CuentaVendedor,
                         Grano = x.Item2.CodigoGrano != 0 ? x.Item2.CodigoGrano : x.Item3.Grano,
-                        Destino = x.Item2.CuentaDestino ?? 0,
+                        // El destino de la distribución es el PUERTO del cupo físico
+                        // (Cupos.Puerto / columna PUERTOCTA). NO usar
+                        // SolicitudTurno.CuentaDestino (SOLTURNOS.DEST): esa columna
+                        // representa una zona geográfica, no el destino de la
+                        // distribución, y en muchos casos viene NULL — el fallback
+                        // ?? 0 generaba una fila de CUPOSDIST con Destino=0 que
+                        // quedaba huérfana respecto de la fila de Cotagro que la
+                        // grilla de Distribución muestra.
+                        Destino = x.Item3.Puerto,
                         Centro = string.IsNullOrEmpty(x.Item2.CodigoCentro) ? (x.Item3.Centrodist ?? x.Item3.Centro) : x.Item2.CodigoCentro,
                         Fecha = x.Item3.Fecha.Date,
                         Consignacion = x.Item3.GetConsignacion()
