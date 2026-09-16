@@ -735,20 +735,23 @@ namespace ResourceServer.Models
         private int CheckCuposForConsignation(int nroCuposIngresados, Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Cupos cupoViejo, bool tieneVendedor, int cuposYaOtorgados, ISession Session)
         {
             Consignacion consignacion = cupoViejo.GetConsignacion();
-            IList<Counter<Cupos>> cantConsig;
+            //IList<Counter<Cupos>> cantConsig;
+            int count;
             if (tieneVendedor)
             {
-                cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, vendcta, grano, fecha, puerto, consignacion, Session);
+                //cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, vendcta, grano, fecha, puerto, consignacion, Session);
+                count = Cupostore.CountCuposForConsignacion(compcta, vendcta, grano, fecha, puerto, consignacion, Session);
                 cuerposDisponibles = Cupostore.FindForKey(compcta, vendcta, puerto, grano, fecha, consignacion, Session);
             }
             else
             {
-                cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, 0, grano, fecha, puerto, consignacion, Session);
+                //cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, 0, grano, fecha, puerto, consignacion, Session);
+                count = Cupostore.CountCuposForConsignacion(compcta, 0, grano, fecha, puerto, consignacion, Session);
                 cuerposDisponibles = Cupostore.FindForKey(compcta, 0, puerto, grano, fecha, consignacion, Session);
             }
-            if (cantConsig != null && cantConsig.Count > 0)
+            if (count > 0)
             {
-                return cantConsig.ElementAt(0).Count - (nroCuposIngresados - cuposYaOtorgados);
+                return count - (nroCuposIngresados - cuposYaOtorgados);
             }
             else
             {
@@ -756,7 +759,9 @@ namespace ResourceServer.Models
             }
         }
 
-        public IList<Cupos> CuposPuertoSeleccionado(IList<Cupos> ListaCupos, long CuentaPuerto)
+        
+
+    public IList<Cupos> CuposPuertoSeleccionado(IList<Cupos> ListaCupos, long CuentaPuerto)
         {
             return ListaCupos.Where(Cupo => Cupo.Puerto == CuentaPuerto).ToList();
         }

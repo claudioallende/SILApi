@@ -62,6 +62,7 @@ namespace ResourceServer.Models.DataAccess
         IList<Counter<Cupos>> FindConsignacionesForKeyAndConsignacionGroupByFecha(Cupos consignacion);
         IList<Counter<Cupos>> FindNumberOfConsignacionesForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Cupos DatosCupoBuscar);
         IList<Counter<Cupos>> FindNumberOfConsignacionesForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Consignacion Consignacion, ISession Session);
+        int CountCuposForConsignacion(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Consignacion consignacion, ISession Session);
         [Obsolete("Reemplazo por FindByConsignacion. Uso la clase Consignacion en vez de DatosBuscar")]
         IList<Cupos> FindForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Cupos DatosCupoBuscar);
         IList<Cupos> FindForKey(Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Consignacion Consignacion, ISession Session);
