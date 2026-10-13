@@ -54,9 +54,23 @@ namespace ResourceServer.Controllers
       }
 
       model.Error = "";
-      model.Save();
-      return Request.CreateResponse(HttpStatusCode.OK);
+      try
+      {
+        model.Save();
+        return Request.CreateResponse(HttpStatusCode.OK);
+      }
+      catch (ResourceServer.Models.Error.Exceptions.CodigosAlfanumericoDuplicadosException ex)
+      {
+        // 409 Conflict: el cliente (CuposCorretajeWeb) ya lo contempla en Util.cs:81
+        // y lo convierte en ApiException con el body del response como Message.
+        return Request.CreateErrorResponse(HttpStatusCode.Conflict, ex.Message);
+      }
+      catch (Exception ex)
+      {
+        return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+      }
     }
+
 
     // GET: Cupos/Editar/5
     [HttpGet]
