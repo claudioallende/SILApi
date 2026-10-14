@@ -40,6 +40,11 @@ namespace ResourceServer.Models
             return Distribucion;
         }
 
+        public void ActualizarDistribucion(CuposDist Distribucion, ISession Session, ITransaction Transaccion)
+        {
+            CuposDistStore.Update(Distribucion, Session);
+        }
+
         public IList<CuposDist> ObtenerOCrearDistribuciones(long CuentaComprador, long CuentaVendedor, int CodigoGrano, long Destino, string Centro, IList<DateTime> Fechas, Consignacion Consignacion, ISession Session)
         {
             IList<CuposDist> Distribuciones = ObtenerDistribuciones(CuentaComprador, CuentaVendedor, CodigoGrano, Destino, Centro, Fechas, Consignacion, Session);

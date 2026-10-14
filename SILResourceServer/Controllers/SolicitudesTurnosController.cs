@@ -76,7 +76,6 @@ namespace ResourceServer.Controllers
           CodigoGrano = solPorGrano.Key.CodigoGrano,
           NombreGrano = solPorGrano.Key.NombreGrano,
           DetallePendientesDia = solPorGrano
-            .Where(sol => sol.CodigoEstado != 3)
             .GroupBy(sol => sol.FechaSolicitado)
             .Select(sol => new SolicitudTurnoGrupoDetallePendienteDiaView
             {

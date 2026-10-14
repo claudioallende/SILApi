@@ -32,6 +32,17 @@ namespace ResourceServer.Models
         private int INFO_NO_HUBO_CAMBIOS = 300 ;
         private int INFO_NO_ENCUENTRO_REGISTRO = 310;
 
+        /// <summary>
+        /// Captura de los CUPOSCORRE.Id realmente distribuidos durante la
+        /// última ejecución de VerificoDisponiblesYregistroDitrubucion,
+        /// indexados por una clave compuesta (compcta|vendcta|producto|destino|centro|dia).
+        /// Permite conciliar las AsignacionesSolicitudCupo (con CupoReferenciaId)
+        /// con los IDs físicos seleccionados por el selector legacy.
+        /// Se inicializa por cada VerificoDisponiblesYregistroDitrubucion.
+        /// </summary>
+        private Dictionary<long, IList<long>> CuposEfectivamenteDistribuidosPorFilaDia
+            = new Dictionary<long, IList<long>>();
+
         private bool Confirmacion;
 
         public ServicioDistribuir(bool Confirmacion = false)
@@ -45,6 +56,38 @@ namespace ResourceServer.Models
             this.Confirmacion = Confirmacion;
         }
 
+        /// <summary>
+        /// Construye la clave compuesta (compcta|vendcta|producto|destino|centro|dia)
+        /// que indexa <see cref="CuposEfectivamenteDistribuidosPorFilaDia"/>.
+        /// Se usa para conciliar AsignacionesSolicitudCupo (con clave de fila/día
+        /// y CupoReferenciaId) con los CUPOSCORRE.Id efectivamente distribuidos.
+        /// </summary>
+        public static long ClaveFilaDia(long compcta, long vendcta, int codproducto, long ctadestino, string centro, int dia)
+        {
+            unchecked
+            {
+                long hash = 17;
+                hash = hash * 31 + compcta;
+                hash = hash * 31 + vendcta;
+                hash = hash * 31 + codproducto;
+                hash = hash * 31 + ctadestino;
+                hash = hash * 31 + (centro ?? string.Empty).GetHashCode();
+                hash = hash * 31 + dia;
+                return hash;
+            }
+        }
+
+        /// <summary>
+        /// Expone la captura de CUPOSCORRE.Id distribuidos por fila/día durante
+        /// la última ejecución de <see cref="VerificoDisponiblesYregistroDitrubucion"/>.
+        /// Lo consume <see cref="ValidarYGuardarSolicitudMatch"/> cuando corre en
+        /// modo DistribucionManual + asociaciones con CupoReferenciaId.
+        /// </summary>
+        public IReadOnlyDictionary<long, IList<long>> ObtenerCuposEfectivamenteDistribuidos()
+        {
+            return CuposEfectivamenteDistribuidosPorFilaDia;
+        }
+
         public int ValidarYGuardar(RegistroDistribucionViewModel model)
         {
             if (model.CosechaDesde == "0" || model.CosechaDesde == null) model.CosechaDesde = FiltroPorDefecto.GetFiltroPorDefectoCosechaDesde();
@@ -52,6 +95,247 @@ namespace ResourceServer.Models
             if (model.fecha == null) model.fecha = FiltroPorDefecto.GetFiltroPorDefectoFechaHasta();
             if (model.fechaDesde == null) model.fechaDesde = FiltroPorDefecto.GetFiltroPorDefectoFechaDesde();
             return VerificoDisponiblesYregistroDitrubucion(model.cupos, model.CosechaDesde, model.CosechaHasta, model.fechaDesde, model.fecha, Int64.Parse(model.puerto), model.anterior, model.nuevo, model.tieneVendedor);
+        }
+
+        /// <summary>
+        /// Implementa el flujo SolicitudMatch (AltaSolicitud.cshtml):
+        /// recibe pares explícitos SolicitudId / CupoSeleccionadoId, los valida,
+        /// los persiste en SOLTURNOS_DETALLE y actualiza los acumuladores de
+        /// SOLTURNOS en una transacción NHibernate única. Atomicidad "todo o
+        /// nada" sobre CUPOSCORRE, SOLTURNOS y SOLTURNOS_DETALLE.
+        ///
+        /// Devuelve un ActualizarDistribucionResult con Codigo=1 si éxito,
+        /// Codigo=300 si no hubo asociaciones, o un Message con detalle del
+        /// fallo. El catch ya está en CuposController vía [ExceptionHandling].
+        /// </summary>
+        public ResourceServer.Models.DTO.ActualizarDistribucionResult ValidarYGuardarSolicitudMatch(RegistroDistribucionViewModel model)
+        {
+            var resultado = new ResourceServer.Models.DTO.ActualizarDistribucionResult
+            {
+                Codigo = 300,
+                Success = false,
+                Message = "Sin asociaciones para procesar"
+            };
+
+            var asoc = model.AsignacionesSolicitudCupo;
+            if (asoc == null || asoc.Count == 0)
+                return resultado;
+
+            // SolicitudMatch trabaja con un cupo físico por asociación.
+            var pares = new List<Tuple<long, long, int>>();
+            int solicitados = 0;
+            foreach (var a in asoc)
+            {
+                if (a.SolicitudId <= 0 || a.CupoSeleccionadoId == null || a.CupoSeleccionadoId <= 0)
+                    throw new ArgumentException("Asociación inválida: SolicitudId/CupoSeleccionadoId deben ser > 0");
+                if (a.Cantidad != 1)
+                    throw new ArgumentException("SolicitudMatch sólo admite Cantidad = 1 por asociación");
+
+                pares.Add(Tuple.Create(a.SolicitudId, a.CupoSeleccionadoId.Value, a.Cantidad));
+                solicitados += a.Cantidad;
+            }
+            resultado.Solicitados = solicitados;
+
+            if (pares.Select(x => x.Item2).Distinct().Count() != pares.Count)
+                throw new InvalidOperationException("Un cupo no puede asignarse más de una vez en el mismo lote");
+
+            IList<string> mapping = new List<string>();
+            mapping.Add("Cupos.mpg.xml");
+            mapping.Add("CuposDist.mpg.xml");
+            mapping.Add("SolTurnos.mpg.xml");
+
+            using (ISession session = HibernateUtil.OpenSession(mapping))
+            using (ITransaction tx = session.BeginTransaction())
+            {
+                try
+                {
+                    var store = new SolicitudTurnoStore();
+                    var solicitudIds = pares.Select(p => p.Item1).Distinct().ToList();
+                    var solicitudes = store.GetByIds(solicitudIds, session);
+                    var solicitudById = solicitudes.ToDictionary(s => s.Id, s => s);
+
+                    var cupoIds = pares.Select(p => p.Item2).Distinct().ToList();
+                    var cupos = Cupostore.FindByIds(cupoIds, session);
+                    var cupoById = cupos.ToDictionary(c => c.Id, c => c);
+
+                    // Validar todo antes de modificar cualquier entidad.
+                    var asociaciones = new List<Tuple<long, SolicitudTurno, Cupos>>();
+                    foreach (var par in pares)
+                    {
+                        SolicitudTurno solicitud;
+                        Cupos cupo;
+                        if (!solicitudById.TryGetValue(par.Item1, out solicitud))
+                            throw new InvalidOperationException(string.Format("Solicitud {0} no existe", par.Item1));
+                        if (!cupoById.TryGetValue(par.Item2, out cupo))
+                            throw new InvalidOperationException(string.Format("Cupo {0} no existe", par.Item2));
+
+                        if (cupo.Status != 0 && cupo.Status != 1)
+                            throw new InvalidOperationException(string.Format("Cupo {0} no disponible (Status={1})", cupo.Id, cupo.Status));
+
+                        EstadoCupo estado = cupo.GetEstado();
+                        if (estado == null || !estado.PuedeDistribuir())
+                            throw new InvalidOperationException(string.Format("Cupo {0} no puede distribuirse", cupo.Id));
+
+                        if (store.ExisteDetalle(par.Item1, par.Item2, session))
+                            throw new InvalidOperationException(string.Format("Cupo {0} ya está relacionado a solicitud {1}", par.Item2, par.Item1));
+
+                        asociaciones.Add(Tuple.Create(par.Item1, solicitud, cupo));
+                    }
+
+                    int asignados = 0;
+                    var grupos = asociaciones.GroupBy(x => new
+                    {
+                        Comprador = x.Item2.CuentaComprador ?? x.Item3.Compcta,
+                        Vendedor = x.Item2.CuentaVendedor,
+                        Grano = x.Item2.CodigoGrano != 0 ? x.Item2.CodigoGrano : x.Item3.Grano,
+                        // CUPOSDIST.Destino debe ser 1 (constante sentinela de la
+                        // aplicación) en este flujo. El ?? 0 anterior creaba una
+                        // fila con Destino=0 que la vista VISTA_CUPOSDISTRIBUIDOV4
+                        // no sumaba a la fila de Cotagro de la grilla de
+                        // Distribución — los cupos quedaban distribuídos pero
+                        // invisibles. Tampoco usar Cupos.Puerto: la convención de
+                        // CUPOSDIST para SolicitudMatch es Destino=1.
+                        Destino = 1,
+                        Centro = string.IsNullOrEmpty(x.Item2.CodigoCentro) ? (x.Item3.Centrodist ?? x.Item3.Centro) : x.Item2.CodigoCentro,
+                        Fecha = x.Item3.Fecha.Date,
+                        Consignacion = x.Item3.GetConsignacion()
+                    });
+
+                    // Nota: NO se valida contra VistaCuposDistribuidos.Cupostotalesadist
+                    // porque esa vista agrega cupos ya distribuidos; los cupos
+                    // que Pantalla 2 (AltaSolicitud) acepta con SolicitudMatch
+                    // están aún con status=0 y no aparecen ahí. El motor ya filtra
+                    // por status=0 en FindAvailableCuposByPeriodAsync, así que
+                    // confiar en el front y en el estado del cupo es suficiente.
+                    // El frontend de Distribución (Pantalla 3) además aplica su
+                    // propio gate contra VistaCuposDistribuidosV4 vía
+                    // MatchingDistribucion.js#procesarRespuestaSearch.
+
+                    foreach (var grupo in grupos)
+                    {
+                        var primeraAsociacion = grupo.First();
+                        var cupoReferencia = primeraAsociacion.Item3;
+                        Consignacion consignacion = grupo.Key.Consignacion;
+                        int cantidadGrupo = grupo.Count();
+
+                        CuposDist distribucion = ServicioDistribucion.ObtenerOCrearDistribucion(
+                            grupo.Key.Comprador,
+                            grupo.Key.Vendedor,
+                            grupo.Key.Grano,
+                            grupo.Key.Destino,
+                            grupo.Key.Centro,
+                            grupo.Key.Fecha,
+                            consignacion,
+                            session);
+
+                        // En SolicitudMatch el front garantiza que cada
+                        // CupoSeleccionadoId está disponible, así que no
+                        // recalculamos el límite de la consignación por puerto:
+                        // evita una consulta extra y un falso positivo si los
+                        // cupos disponibles cambian entre el alta y la
+                        // aceptación. La disponibilidad del cupo físico ya se
+                        // validó arriba con Status y PuedeDistribuir().
+
+                        IList<Cupos> cuposSeleccionados = grupo.Select(x => x.Item3).ToList();
+                        IList<Cupos> cuposADistribuir = ServicioCupo.GetCuposTransformarSiVendedorEsCYO(
+                            cuposSeleccionados,
+                            grupo.Key.Vendedor,
+                            cantidadGrupo,
+                            session);
+
+                        if (cuposADistribuir == null || cuposADistribuir.Count != cantidadGrupo ||
+                            !new HashSet<long>(cuposADistribuir.Select(x => x.Id)).SetEquals(cuposSeleccionados.Select(x => x.Id)))
+                            throw new InvalidOperationException("No se pudieron preparar todos los cupos seleccionados para distribuir");
+
+                        IList<Cupos> cuposDistribuidos = DistribuirYActualizarDistribucion(
+                            cuposADistribuir,
+                            grupo.Key.Vendedor,
+                            grupo.Key.Fecha,
+                            consignacion,
+                            grupo.Key.Destino,
+                            grupo.Key.Centro,
+                            cupoReferencia.Observa,
+                            cupoReferencia.ContactoComercial,
+                            distribucion,
+                            session);
+
+                        if (cuposDistribuidos == null || cuposDistribuidos.Count != cantidadGrupo)
+                            throw new InvalidOperationException("La cantidad de cupos distribuidos no coincide con el conjunto solicitado");
+
+                        foreach (var asociacion in grupo)
+                        {
+                            int rows = store.IncrementarAceptada(
+                                asociacion.Item1,
+                                1,
+                                asociacion.Item2.EsFuturo,
+                                session);
+                            if (rows != 1)
+                                throw new InvalidOperationException(string.Format("Conflicto al actualizar solicitud {0} (probablemente ya estaba asignada)", asociacion.Item1));
+
+                            int inserted = store.InsertarDetalle(asociacion.Item1, asociacion.Item3.Id, session);
+                            if (inserted != 1)
+                                throw new InvalidOperationException(string.Format("Fallo al insertar detalle para ({0}, {1})", asociacion.Item1, asociacion.Item3.Id));
+
+                            resultado.Relaciones.Add(new ResourceServer.Models.DTO.AsignacionRealizadaDto
+                            {
+                                SolicitudId = asociacion.Item1,
+                                CupoId = asociacion.Item3.Id
+                            });
+                            asignados++;
+                        }
+                    }
+
+                    tx.Commit();
+                    HibernateUtil.Dispose();
+
+                    resultado.Codigo = 1;
+                    resultado.Success = true;
+                    resultado.Asignados = asignados;
+                    resultado.Pendientes = solicitados - asignados;
+                    resultado.Message = "OK";
+                    return resultado;
+                }
+                catch (Exception)
+                {
+                    tx.Rollback();
+                    HibernateUtil.Dispose();
+                    throw;
+                }
+            }
+        }
+
+        private IList<Cupos> DistribuirYActualizarDistribucion(
+            IList<Cupos> cuposADistribuir,
+            long cuentaVendedor,
+            DateTime fecha,
+            Consignacion consignacion,
+            long cuentaDestino,
+            string centro,
+            string observacion,
+            string contactoComercial,
+            CuposDist distribucion,
+            ISession session)
+        {
+            HibernateUtil.RefreshBeforeUpdate<CuposDist>(distribucion, session);
+            IList<Cupos> cuposDistribuidos = DistribuirCupos(
+                cuposADistribuir,
+                cuentaVendedor,
+                fecha,
+                consignacion,
+                cuentaDestino,
+                centro,
+                observacion,
+                contactoComercial,
+                distribucion.Uvalue,
+                session);
+
+            if (cuposDistribuidos == null || cuposDistribuidos.Count == 0)
+                return cuposDistribuidos;
+
+            distribucion.Cupos += cuposDistribuidos.Count;
+            distribucion.Usuario = ResourceServer.Models.Identity.IdentityHelper.GetUsuarioLogueado();
+            ServicioDistribucion.ActualizarDistribucion(distribucion, session);
+            return cuposDistribuidos;
         }
 
         public void BuscarYAnularDistribuciones(IList<Cupos> Cupos, string MotivoBaja, bool Cyo, ISession Session)
@@ -102,6 +386,9 @@ namespace ResourceServer.Models
             int totalDia19 = listaCuposDistribuir.Sum(x => x.Dia19);
             int totalDia20 = listaCuposDistribuir.Sum(x => x.Dia20);
             Cupos = new List<Cupos>();
+            // Limpiar captura por corrida: las asociaciones se concilian con los
+            // CUPOSCORRE.Id efectivamente distribuidos en esta VerificoDisponiblesYregistroDitrubucion.
+            CuposEfectivamenteDistribuidosPorFilaDia.Clear();
             IList<string> mapping = new List<string>();
             mapping.Add("Cupos.mpg.xml");
             mapping.Add("CuposDist.mpg.xml");
@@ -227,6 +514,27 @@ namespace ResourceServer.Models
                             HibernateUtil.RefreshBeforeUpdate<CuposDist>(Distribucion, session);
                             CuposADistribuir = this.ServicioCupo.GetCuposTransformarSiVendedorEsCYO(cuerposDisponibles, vistaCuposDistribViewRow.Vendcta, cupoPedidosDiaCteView, session);
                             IList<Cupos> CuposDistribuidos = DistribuirCupos(CuposADistribuir, vistaCuposDistribViewRow.Vendcta, retornaDiainDate(dia), cupoConsignacion.GetConsignacion(), vistaCuposDistribViewRow.Ctadestino, vistaCuposDistribViewRow.Centro, cupoConsignacion.Observa, cupoConsignacion.ContactoComercial, Distribucion.Uvalue, session);
+                            // Capturar CUPOSCORRE.Id efectivamente distribuidos para esta fila/día.
+                            // Lo consume ValidarYGuardarSolicitudMatch cuando concilia asociaciones
+                            // con CupoReferenciaId contra los IDs físicos seleccionados por el selector legacy.
+                            if (CuposDistribuidos != null && CuposDistribuidos.Count > 0)
+                            {
+                                long claveFilaDia = ClaveFilaDia(
+                                    vistaCuposDistribViewRow.Compcta,
+                                    vistaCuposDistribViewRow.Vendcta,
+                                    vistaCuposDistribViewRow.Codproducto,
+                                    vistaCuposDistribViewRow.Ctadestino,
+                                    vistaCuposDistribViewRow.Centro,
+                                    dia);
+                                if (!CuposEfectivamenteDistribuidosPorFilaDia.ContainsKey(claveFilaDia))
+                                {
+                                    CuposEfectivamenteDistribuidosPorFilaDia[claveFilaDia] = new List<long>();
+                                }
+                                foreach (var c in CuposDistribuidos)
+                                {
+                                    if (c != null) CuposEfectivamenteDistribuidosPorFilaDia[claveFilaDia].Add(c.Id);
+                                }
+                            }
                             Distribucion.Cupos += cupoPedidosDiaCteView;
                             Distribucion.Usuario = ResourceServer.Models.Identity.IdentityHelper.GetUsuarioLogueado();
                             this.ServicioDistribucion.ActualizarDistribucion(Distribucion, session);
@@ -426,20 +734,24 @@ namespace ResourceServer.Models
          *  si mayor que cero -> menos de los que tengo disponibles*/
         private int CheckCuposForConsignation(int nroCuposIngresados, Int64 compcta, Int64 vendcta, int grano, DateTime fecha, long puerto, Cupos cupoViejo, bool tieneVendedor, int cuposYaOtorgados, ISession Session)
         {
-            IList<Counter<Cupos>> cantConsig;
+            Consignacion consignacion = cupoViejo.GetConsignacion();
+            //IList<Counter<Cupos>> cantConsig;
+            int count;
             if (tieneVendedor)
             {
-                cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, vendcta, grano, fecha, puerto, cupoViejo, Session);
-                cuerposDisponibles = Cupostore.FindForKey(compcta, vendcta, puerto, grano, fecha, cupoViejo.GetConsignacion(), Session);
+                //cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, vendcta, grano, fecha, puerto, consignacion, Session);
+                count = Cupostore.CountCuposForConsignacion(compcta, vendcta, grano, fecha, puerto, consignacion, Session);
+                cuerposDisponibles = Cupostore.FindForKey(compcta, vendcta, puerto, grano, fecha, consignacion, Session);
             }
             else
             {
-                cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, 0, grano, fecha, puerto, cupoViejo, Session);
-                cuerposDisponibles = Cupostore.FindForKey(compcta, 0, puerto, grano, fecha, cupoViejo.GetConsignacion(), Session);
+                //cantConsig = Cupostore.FindNumberOfConsignacionesForKey(compcta, 0, grano, fecha, puerto, consignacion, Session);
+                count = Cupostore.CountCuposForConsignacion(compcta, 0, grano, fecha, puerto, consignacion, Session);
+                cuerposDisponibles = Cupostore.FindForKey(compcta, 0, puerto, grano, fecha, consignacion, Session);
             }
-            if (cantConsig != null && cantConsig.Count > 0)
+            if (count > 0)
             {
-                return cantConsig.ElementAt(0).Count - (nroCuposIngresados - cuposYaOtorgados);
+                return count - (nroCuposIngresados - cuposYaOtorgados);
             }
             else
             {
@@ -447,7 +759,9 @@ namespace ResourceServer.Models
             }
         }
 
-        public IList<Cupos> CuposPuertoSeleccionado(IList<Cupos> ListaCupos, long CuentaPuerto)
+        
+
+    public IList<Cupos> CuposPuertoSeleccionado(IList<Cupos> ListaCupos, long CuentaPuerto)
         {
             return ListaCupos.Where(Cupo => Cupo.Puerto == CuentaPuerto).ToList();
         }
